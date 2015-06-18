@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.arnaudpiroelle.manga.ui.manga.list.MangaView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="60dp"
+    android:background="@color/item_view_background">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="20sp"
+                tools:text="Naruto" />
+
+        </LinearLayout>
+
+</com.arnaudpiroelle.manga.ui.manga.list.MangaView>

@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Manga Downloader</string>
+
+    <string name="title_mymangas">My Mangas</string>
+    <string name="action_download">Download</string>
+
+    <string name="title_providers">Select provider</string>
+    <string name="title_provider_mangas">Select manga</string>
+
+    <string name="item_modify">Modify</string>
+    <string name="item_remove">Remove</string>
+    <string name="search_title">Search</string>
+    <string name="search_query_hint">Search a manga</string>
+    <string name="dialog_select_chapter">Select last chapter</string>
+</resources>
