@@ -12,4 +12,5 @@
     <string name="search_title">Search</string>
     <string name="search_query_hint">Search a manga</string>
     <string name="dialog_select_chapter">Select last chapter</string>
+    <string name="action_settings">Settings</string>
 </resources>
