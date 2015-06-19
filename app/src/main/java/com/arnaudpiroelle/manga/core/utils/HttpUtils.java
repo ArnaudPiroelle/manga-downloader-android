@@ -1,12 +1,17 @@
 package com.arnaudpiroelle.manga.core.utils;
 
-import retrofit.client.Response;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
+
+import retrofit.client.Response;
 
 public class HttpUtils {
     public static String convertFrom(Response response) {
@@ -16,12 +21,8 @@ public class HttpUtils {
             reader = new BufferedReader(new InputStreamReader(response.getBody().in()));
 
             String line;
-            try {
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
             }
         } catch (IOException e) {
             e.printStackTrace();
