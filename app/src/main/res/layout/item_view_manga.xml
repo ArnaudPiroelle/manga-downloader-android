@@ -2,13 +2,12 @@
 <com.arnaudpiroelle.manga.ui.manga.list.MangaView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:minHeight="60dp">
+    android:layout_height="@dimen/row_height">
 
     <com.daimajia.swipe.SwipeLayout
         android:id="@+id/instance_swipe_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:id="@+id/manga_action"
@@ -48,21 +47,25 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:padding="10dp"
+            android:gravity="center_vertical"
             android:background="@color/item_view_background">
 
             <TextView
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="20sp"
-                tools:text="Naruto" />
+                android:textSize="@dimen/text_size_big"
+                tools:text="Naruto"
+                android:layout_gravity="center_vertical" />
 
             <TextView
                 android:id="@+id/chapter"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                tools:text="789" />
+                android:textSize="@dimen/text_size_small"
+                tools:text="789"
+                android:visibility="gone"
+                android:layout_gravity="center_vertical" />
 
         </LinearLayout>
 

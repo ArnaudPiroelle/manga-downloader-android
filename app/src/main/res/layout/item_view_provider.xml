@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.arnaudpiroelle.manga.ui.manga.add.provider.MangaProviderView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/row_height"
+    android:gravity="center_vertical"
+    tools:text="Provider name"
+    android:textSize="@dimen/text_size_big"
+    android:padding="10dp"
+    android:background="@color/item_view_background">
+
+</com.arnaudpiroelle.manga.ui.manga.add.provider.MangaProviderView>

@@ -10,11 +10,13 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.arnaudpiroelle.manga.R;
+import com.arnaudpiroelle.manga.core.adapter.BaseAdapter;
 import com.arnaudpiroelle.manga.core.provider.MangaProvider;
 import com.arnaudpiroelle.manga.core.provider.ProviderRegistry;
 import com.arnaudpiroelle.manga.core.ui.presenter.Presenter;
 import com.arnaudpiroelle.manga.event.ProviderSelectedEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -41,7 +43,7 @@ public class ProviderListingFragment extends Fragment implements ProviderListing
     ListView listView;
 
     private Presenter<MangaProvider> presenter;
-    private ProviderListingAdapter adapter;
+    private BaseAdapter<MangaProvider, MangaProviderView> adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,7 +51,10 @@ public class ProviderListingFragment extends Fragment implements ProviderListing
 
         GRAPH.inject(this);
 
-        adapter = new ProviderListingAdapter(getActivity());
+        adapter = new BaseAdapter<MangaProvider, MangaProviderView>(getActivity(),
+                R.layout.item_view_provider,
+                new ArrayList<>()
+        );
 
         presenter = new ProviderListingPresenter(this, providerRegistry);
     }
@@ -93,7 +98,7 @@ public class ProviderListingFragment extends Fragment implements ProviderListing
     }
 
     @OnItemClick(R.id.list_provider)
-    public void onClickProvider(int position){
+    public void onClickProvider(int position) {
         MangaProvider provider = adapter.getItem(position);
         eventBus.post(new ProviderSelectedEvent(provider.getName()));
     }

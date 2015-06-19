@@ -87,8 +87,9 @@ public class MangaView extends FrameLayout implements BaseItemView<Manga> {
 
         title.setText(manga.getName());
 
-        if(chapter != null){
-            chapter.setText(manga.getLastChapter());
+        String lastChapter = manga.getLastChapter();
+        if(lastChapter != null && !lastChapter.isEmpty()){
+            chapter.setText(lastChapter);
             chapter.setVisibility(VISIBLE);
         }
 

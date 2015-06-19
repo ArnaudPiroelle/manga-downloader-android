@@ -151,7 +151,7 @@ public class MangaListingActivity extends AppCompatActivity implements MangaList
         }
     }
 
-    public void onEventMainThread(MangaUpdatedEvent event){
+    public void onEventMainThread(MangaUpdatedEvent event) {
         event.manga.save();
         presenter.list();
 
