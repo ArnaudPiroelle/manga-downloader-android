@@ -7,6 +7,7 @@ import com.arnaudpiroelle.manga.core.inject.DaggerMangaComponent;
 import com.arnaudpiroelle.manga.core.inject.MangaComponent;
 import com.arnaudpiroelle.manga.core.inject.module.ApplicationModule;
 
+import com.arnaudpiroelle.manga.service.DownloadService;
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 import se.emilsjolander.sprinkles.Migration;
@@ -20,6 +21,8 @@ public class MangaApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
+
+        DownloadService.updateScheduling(this);
 
         GRAPH = DaggerMangaComponent.builder()
                 .applicationModule(new ApplicationModule(this))

@@ -1,5 +1,6 @@
 package com.arnaudpiroelle.manga.core.inject;
 
+import com.arnaudpiroelle.manga.core.inject.module.AndroidModule;
 import com.arnaudpiroelle.manga.core.inject.module.ApplicationModule;
 import com.arnaudpiroelle.manga.provider.japscan.JapScanModule;
 import com.arnaudpiroelle.manga.service.DownloadService;
@@ -17,6 +18,7 @@ import dagger.Component;
 @Singleton
 @Component(modules = {
         ApplicationModule.class,
+        AndroidModule.class,
         JapScanModule.class
 })
 public interface MangaComponent {

@@ -13,4 +13,14 @@
     <string name="search_query_hint">Search a manga</string>
     <string name="dialog_select_chapter">Select last chapter</string>
     <string name="action_settings">Settings</string>
+
+    <string name="prefs_header_updates">Updates</string>
+
+    <string name="pref_intervalpicker_key">pref_intervalpicker</string>
+    <string name="pref_intervalpicker_title">Update interval</string>
+    <string name="pref_intervalpicker_defaultvalue">1440</string>
+
+    <string name="pref_wifiswitch_key">pref_wifiswitch</string>
+    <string name="pref_wifiswitch_title">Only update on Wi-Fi</string>
+    <string name="pref_wifiswitch_summary">Updating on Wi-Fi helps to reduce mobile data usage.</string>
 </resources>

@@ -1,11 +1,13 @@
 package com.arnaudpiroelle.manga.service;
 
+import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.os.Environment;
 import android.os.IBinder;
 import android.support.v7.app.NotificationCompat;
@@ -19,8 +21,10 @@ import com.arnaudpiroelle.manga.model.Chapter;
 import com.arnaudpiroelle.manga.model.Manga;
 import com.arnaudpiroelle.manga.model.Page;
 import com.arnaudpiroelle.manga.ui.manga.list.MangaListingActivity;
+import com.arnaudpiroelle.manga.utils.PreferencesHelper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,20 +42,32 @@ public class DownloadService extends Service implements MangaDownloadManager.Man
     private static final int PROGRESS_NOTIFICATION_ID = 1234567890;
     private static final int DOWNLOAD_NOTIFICATION_ID = 987654321;
 
+    public static final String UPDATE_SCHEDULING = "UPDATE_SCHEDULING";
+
     @Inject
     ProviderRegistry providerRegistry;
 
     @Inject
     EventBus eventBus;
 
-    MangaDownloadManager mangaDownloadManager;
-
+    @Inject
     NotificationManager mNotifyManager;
-    NotificationCompat.Builder mProgressNotificationBuilder = null;
-    NotificationCompat.Builder mDownloadNotificationBuilder = null;
 
-    Map<String, List<Chapter>> downloadCounter;
+    @Inject
+    WifiManager wifiManager;
 
+    @Inject
+    AlarmManager alarmManager;
+
+    @Inject
+    PreferencesHelper preferencesHelper;
+
+    private MangaDownloadManager mangaDownloadManager;
+
+    private NotificationCompat.Builder mProgressNotificationBuilder = null;
+    private NotificationCompat.Builder mDownloadNotificationBuilder = null;
+
+    private Map<String, List<Chapter>> downloadCounter;
     private int pageIndex = 0;
     private boolean running = false;
 
@@ -61,7 +77,6 @@ public class DownloadService extends Service implements MangaDownloadManager.Man
 
         GRAPH.inject(this);
 
-        mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mangaDownloadManager = new MangaDownloadManager(this, providerRegistry);
     }
 
@@ -81,8 +96,20 @@ public class DownloadService extends Service implements MangaDownloadManager.Man
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if(running){
-            return -1;
+        if (UPDATE_SCHEDULING.equals(intent.getAction())) {
+            updateScheduling();
+        } else {
+            startDownload();
+        }
+
+        return START_NOT_STICKY;
+    }
+
+    private void startDownload() {
+        boolean updateOnWifiOnly = preferencesHelper.isUpdateOnWifiOnly();
+
+        if (running || !wifiManager.isWifiEnabled() && updateOnWifiOnly) {
+            return;
         }
 
         running = true;
@@ -99,12 +126,10 @@ public class DownloadService extends Service implements MangaDownloadManager.Man
 
         mNotifyManager.notify(PROGRESS_NOTIFICATION_ID, mProgressNotificationBuilder.build());
 
-        try(CursorList<Manga> cursorList = Query.all(Manga.class).get()){
+        try (CursorList<Manga> cursorList = Query.all(Manga.class).get()) {
             List<Manga> mangas = cursorList.asList();
             mangaDownloadManager.startDownload(mangas);
         }
-
-        return START_NOT_STICKY;
     }
 
     @Override
@@ -161,7 +186,7 @@ public class DownloadService extends Service implements MangaDownloadManager.Man
 
         hasMultiChapter = hasMultiChapter || downloadCounter.keySet().size() > 1;
 
-        String title = "New chapter" + (hasMultiChapter ? "s" : "")  + " downloaded";
+        String title = "New chapter" + (hasMultiChapter ? "s" : "") + " downloaded";
         mDownloadNotificationBuilder.setContentTitle(title)
                 .setContentText(TextUtils.join(", ", issues))
                 .setSmallIcon(R.mipmap.ic_launcher);
@@ -186,7 +211,7 @@ public class DownloadService extends Service implements MangaDownloadManager.Man
     private void addToCounter(Manga manga, Chapter chapter) {
         List<Chapter> chapters = downloadCounter.get(manga.getName());
 
-        if(chapters == null){
+        if (chapters == null) {
             chapters = new ArrayList<>();
         }
 
@@ -204,4 +229,30 @@ public class DownloadService extends Service implements MangaDownloadManager.Man
         );
     }
 
+    public void updateScheduling() {
+        Intent service = new Intent(this, DownloadService.class);
+        PendingIntent pendingIntent = PendingIntent.getService(this, 0, service, 0);
+
+        PendingIntent existingPendingIntent = PendingIntent.getService(this, 0, service, PendingIntent.FLAG_NO_CREATE);
+        if (existingPendingIntent != null) {
+            alarmManager.cancel(pendingIntent);
+        }
+
+        long interval = Long.parseLong(preferencesHelper.getUpdateInterval()) * 60 * 1000;
+
+        alarmManager.setRepeating(
+                AlarmManager.RTC,
+                Calendar.getInstance().getTimeInMillis() + interval,
+                interval,
+                pendingIntent);
+
+
+    }
+
+    public static void updateScheduling(Context context) {
+        Intent serviceIntent = new Intent(context, DownloadService.class);
+        serviceIntent.setAction(DownloadService.UPDATE_SCHEDULING);
+
+        context.startService(serviceIntent);
+    }
 }

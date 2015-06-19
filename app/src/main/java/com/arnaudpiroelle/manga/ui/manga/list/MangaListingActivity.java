@@ -21,6 +21,7 @@ import com.arnaudpiroelle.manga.service.DownloadService;
 import com.arnaudpiroelle.manga.ui.manga.add.AddMangaActivity;
 import com.arnaudpiroelle.manga.ui.manga.list.MangaListingPresenter.MangaListingCallback;
 import com.arnaudpiroelle.manga.ui.manga.modify.ModifyMangaDialogFragment;
+import com.arnaudpiroelle.manga.ui.settings.SettingsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,8 +85,15 @@ public class MangaListingActivity extends AppCompatActivity implements MangaList
             case R.id.action_download:
                 manualDownload();
                 return true;
+            case R.id.action_settings:
+                goSettings();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void goSettings() {
+        startActivity(new Intent(this, SettingsActivity.class));
     }
 
     @Override

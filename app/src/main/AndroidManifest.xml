@@ -6,6 +6,10 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+
     <application
         android:name=".MangaApplication"
         android:allowBackup="true"
@@ -23,6 +27,8 @@
         </activity>
 
         <activity android:name=".ui.manga.add.AddMangaActivity" />
+
+        <activity android:name=".ui.settings.SettingsActivity" />
 
         <service android:name=".service.DownloadService" />
 

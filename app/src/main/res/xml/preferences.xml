@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/prefs_header_updates">
+        <ListPreference
+            android:defaultValue="@string/pref_intervalpicker_defaultvalue"
+            android:entries="@array/list_intervalpicker_entries"
+            android:entryValues="@array/list_intervalpicker_values"
+            android:key="@string/pref_intervalpicker_key"
+            android:persistent="true"
+            android:summary="%s"
+            android:title="@string/pref_intervalpicker_title" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/pref_wifiswitch_key"
+            android:persistent="true"
+            android:summary="@string/pref_wifiswitch_summary"
+            android:title="@string/pref_wifiswitch_title" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
