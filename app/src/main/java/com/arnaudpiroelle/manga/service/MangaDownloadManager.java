@@ -146,51 +146,55 @@ public class MangaDownloadManager {
 
     public void zipChapter(Manga manga, Chapter chapter) {
 
-        File mangaFolder = getMangaFolder(manga);
+        Observable.create((subscriber -> {
+            File mangaFolder = getMangaFolder(manga);
 
-        File zipFile = new File(String.format("%s/%s - %s.cbz",
-                mangaFolder.getAbsoluteFile(),
-                manga.getName(),
-                chapter.getChapterNumber()));
+            File zipFile = new File(String.format("%s/%s - %s.cbz",
+                    mangaFolder.getAbsoluteFile(),
+                    manga.getName(),
+                    chapter.getChapterNumber()));
 
+            try (FileOutputStream dest = new FileOutputStream(zipFile);
+                 ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest))) {
 
-        try (FileOutputStream dest = new FileOutputStream(zipFile);
-             ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest))) {
+                zipFile.createNewFile();
+                File chapterFolder = getChapterFolder(manga, chapter);
 
-            zipFile.createNewFile();
-            File chapterFolder = getChapterFolder(manga, chapter);
+                int buffer = 1024;
+                byte data[] = new byte[buffer];
 
-            int buffer = 1024;
-            byte data[] = new byte[buffer];
+                for (File file : chapterFolder.listFiles()) {
+                    try (FileInputStream fi = new FileInputStream(file);
+                         BufferedInputStream origin = new BufferedInputStream(fi, buffer)) {
 
-            for (File file : chapterFolder.listFiles()) {
-                try (FileInputStream fi = new FileInputStream(file);
-                     BufferedInputStream origin = new BufferedInputStream(fi, buffer)) {
+                        ZipEntry entry = new ZipEntry(file.getName());
+                        out.putNextEntry(entry);
 
-                    ZipEntry entry = new ZipEntry(file.getName());
-                    out.putNextEntry(entry);
-
-                    int count;
-                    while ((count = origin.read(data, 0, buffer)) != -1) {
-                        out.write(data, 0, count);
+                        int count;
+                        while ((count = origin.read(data, 0, buffer)) != -1) {
+                            out.write(data, 0, count);
+                        }
                     }
                 }
+
+                for (File file : chapterFolder.listFiles()) {
+                    file.delete();
+                }
+
+                chapterFolder.delete();
+
+            } catch (IOException e) {
+                Log.e("MangaDownloadManager", "Error when zip chapter");
+
+                if (zipFile.exists()) {
+                    zipFile.delete();
+                }
             }
+        }))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
 
-            for (File file : chapterFolder.listFiles()) {
-                file.delete();
-            }
-
-            chapterFolder.delete();
-
-        } catch (IOException e) {
-            Log.e("MangaDownloadManager", "Error when zip chapter");
-
-            if(zipFile.exists()){
-                zipFile.delete();
-            }
-
-        }
     }
 
     public interface MangaDownloaderCallback {
