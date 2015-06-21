@@ -19,7 +19,7 @@ public class BaseAdapter<T, R extends View & BaseItemView<T>> extends android.wi
     private final LayoutInflater layoutInflater;
 
     public BaseAdapter(Context context, int viewResId) {
-        this(context, viewResId, null);
+        this(context, viewResId, new ArrayList<>());
     }
 
     public BaseAdapter(Context context, int viewResId, List<T> data) {

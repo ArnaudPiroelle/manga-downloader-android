@@ -29,6 +29,7 @@ import com.arnaudpiroelle.manga.ui.manga.add.manga.ProviderMangaListingPresenter
 import com.arnaudpiroelle.manga.ui.manga.list.MangaView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -39,6 +40,7 @@ import butterknife.OnItemClick;
 import de.greenrobot.event.EventBus;
 
 import static com.arnaudpiroelle.manga.MangaApplication.GRAPH;
+import static com.arnaudpiroelle.manga.model.History.HistoryBuilder.createHisotry;
 
 public class ProviderMangaListingFragment extends Fragment
         implements ProviderMangaListingPresenterCallback, OnRefreshListener, OnQueryTextListener {
@@ -141,6 +143,12 @@ public class ProviderMangaListingFragment extends Fragment
         Manga manga = adapter.getItem(position);
 
         manga.save();
+
+        createHisotry()
+                .withDate(new Date())
+                .withLabel(manga.getName() + " added")
+                .build()
+                .save();
 
         eventBus.post(new MangaSelectedEvent(manga));
     }

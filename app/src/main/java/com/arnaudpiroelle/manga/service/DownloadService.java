@@ -18,13 +18,15 @@ import com.arnaudpiroelle.manga.R;
 import com.arnaudpiroelle.manga.core.provider.ProviderRegistry;
 import com.arnaudpiroelle.manga.event.ChapterDownloadedEvent;
 import com.arnaudpiroelle.manga.model.Chapter;
+import com.arnaudpiroelle.manga.model.History;
 import com.arnaudpiroelle.manga.model.Manga;
 import com.arnaudpiroelle.manga.model.Page;
-import com.arnaudpiroelle.manga.ui.NavigationActivity;
+import com.arnaudpiroelle.manga.ui.manga.NavigationActivity;
 import com.arnaudpiroelle.manga.utils.PreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +38,7 @@ import se.emilsjolander.sprinkles.CursorList;
 import se.emilsjolander.sprinkles.Query;
 
 import static com.arnaudpiroelle.manga.MangaApplication.GRAPH;
+import static com.arnaudpiroelle.manga.model.History.HistoryBuilder.createHisotry;
 
 public class DownloadService extends Service implements MangaDownloadManager.MangaDownloaderCallback {
 
@@ -170,6 +173,12 @@ public class DownloadService extends Service implements MangaDownloadManager.Man
 
         manga.setLastChapter(chapter.getChapterNumber());
         manga.save();
+
+        createHisotry()
+                .withDate(new Date())
+                .withLabel(manga.getName() + " " + chapter.getChapterNumber() + " downloaded")
+                .build()
+                .save();
 
         eventBus.post(new ChapterDownloadedEvent());
         addToCounter(manga, chapter);

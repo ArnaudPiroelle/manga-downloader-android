@@ -3,6 +3,7 @@
 
     <string name="title_mymangas">My Mangas</string>
     <string name="title_settings">Settings</string>
+    <string name="title_history">History</string>
     <string name="title_providers">Select provider</string>
     <string name="title_provider_mangas">Select manga</string>
 
@@ -27,4 +28,6 @@
     <string name="pref_wifiswitch_summary">Updating on Wi-Fi helps to reduce mobile data usage.</string>
 
     <string name="nav_mymangas">@string/title_mymangas</string>
+    <string name="nav_history">@string/title_history</string>
+    <string name="nav_settings">@string/title_settings</string>
 </resources>

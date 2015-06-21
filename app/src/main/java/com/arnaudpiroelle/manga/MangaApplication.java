@@ -6,9 +6,9 @@ import android.database.sqlite.SQLiteDatabase;
 import com.arnaudpiroelle.manga.core.inject.DaggerMangaComponent;
 import com.arnaudpiroelle.manga.core.inject.MangaComponent;
 import com.arnaudpiroelle.manga.core.inject.module.ApplicationModule;
-
 import com.arnaudpiroelle.manga.service.DownloadService;
 import com.crashlytics.android.Crashlytics;
+
 import io.fabric.sdk.android.Fabric;
 import se.emilsjolander.sprinkles.Migration;
 import se.emilsjolander.sprinkles.Sprinkles;
@@ -40,6 +40,19 @@ public class MangaApplication extends Application {
                                 "mangaAlias TEXT," +
                                 "provider TEXT," +
                                 "lastChapter TEXT" +
+                                ")"
+                );
+            }
+        });
+
+        sprinkles.addMigration(new Migration() {
+            @Override
+            protected void doMigration(SQLiteDatabase db) {
+                db.execSQL(
+                        "CREATE TABLE Histories (" +
+                                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                                "label TEXT," +
+                                "date INTEGER" +
                                 ")"
                 );
             }

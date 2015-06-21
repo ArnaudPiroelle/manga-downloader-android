@@ -43,11 +43,15 @@ import static com.arnaudpiroelle.manga.MangaApplication.GRAPH;
 
 
 public class MangaListingFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, MangaListingPresenter.MangaListingCallback {
-    @Inject EventBus eventBus;
-    @Inject ProviderRegistry providerRegistry;
+    @Inject
+    EventBus eventBus;
+    @Inject
+    ProviderRegistry providerRegistry;
 
-    @InjectView(R.id.list_manga) ListView listView;
-    @InjectView(R.id.swipe_refresh) SwipeRefreshLayout swipeRefreshLayout;
+    @InjectView(R.id.list_manga)
+    ListView listView;
+    @InjectView(R.id.swipe_refresh)
+    SwipeRefreshLayout swipeRefreshLayout;
 
     BaseAdapter<Manga, MangaView> adapter;
     Presenter<Manga> presenter;

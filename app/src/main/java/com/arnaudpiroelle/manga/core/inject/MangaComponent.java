@@ -4,7 +4,8 @@ import com.arnaudpiroelle.manga.core.inject.module.AndroidModule;
 import com.arnaudpiroelle.manga.core.inject.module.ApplicationModule;
 import com.arnaudpiroelle.manga.provider.japscan.JapScanModule;
 import com.arnaudpiroelle.manga.service.DownloadService;
-import com.arnaudpiroelle.manga.ui.NavigationActivity;
+import com.arnaudpiroelle.manga.ui.history.HistoryFragment;
+import com.arnaudpiroelle.manga.ui.manga.NavigationActivity;
 import com.arnaudpiroelle.manga.ui.manga.add.AddMangaActivity;
 import com.arnaudpiroelle.manga.ui.manga.add.manga.ProviderMangaListingFragment;
 import com.arnaudpiroelle.manga.ui.manga.add.provider.ProviderListingFragment;
@@ -33,6 +34,7 @@ public interface MangaComponent {
         void inject(ProviderMangaListingFragment providerMangaListingFragment);
         void inject(ModifyMangaDialogFragment modifyMangaDialogFragment);
         void inject(MangaListingFragment mangaListingFragment);
+        void inject(HistoryFragment historyFragment);
 
         void inject(MangaView mangaView);
 }

@@ -1,4 +1,4 @@
-package com.arnaudpiroelle.manga.ui;
+package com.arnaudpiroelle.manga.ui.manga;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.arnaudpiroelle.manga.R;
+import com.arnaudpiroelle.manga.ui.history.HistoryFragment;
 import com.arnaudpiroelle.manga.ui.manga.list.MangaListingFragment;
 import com.arnaudpiroelle.manga.ui.settings.SettingsActivity;
 
@@ -90,9 +91,16 @@ public class NavigationActivity extends AppCompatActivity implements NavigationV
                 fragment = new MangaListingFragment();
                 replaceFragment(fragment, false);
                 break;
-        }
 
-        replaceFragment(fragment, false);
+            case R.id.nav_history:
+                fragment = new HistoryFragment();
+                replaceFragment(fragment, false);
+                break;
+
+            case R.id.nav_settings:
+                goSettings();
+                break;
+        }
 
         mDrawerLayout.closeDrawers();
     }
