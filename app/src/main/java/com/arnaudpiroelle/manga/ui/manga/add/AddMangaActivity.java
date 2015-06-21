@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.arnaudpiroelle.manga.R;
@@ -16,12 +17,16 @@ import com.arnaudpiroelle.manga.ui.manga.add.provider.ProviderListingFragment;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import de.greenrobot.event.EventBus;
 
 import static com.arnaudpiroelle.manga.MangaApplication.GRAPH;
 import static com.arnaudpiroelle.manga.ui.manga.add.manga.ProviderMangaListingFragment.PROVIDER_NAME;
 
 public class AddMangaActivity extends AppCompatActivity {
+
+    @InjectView(R.id.toolbar) Toolbar toolbar;
 
     @Inject
     EventBus eventBus;
@@ -32,8 +37,10 @@ public class AddMangaActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_add_manga);
 
+        ButterKnife.inject(this);
         GRAPH.inject(this);
 
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         displayProviders();

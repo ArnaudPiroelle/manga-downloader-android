@@ -2,10 +2,15 @@ package com.arnaudpiroelle.manga.ui.manga.list;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.arnaudpiroelle.manga.R;
@@ -19,9 +24,7 @@ import com.arnaudpiroelle.manga.model.Chapter;
 import com.arnaudpiroelle.manga.model.Manga;
 import com.arnaudpiroelle.manga.service.DownloadService;
 import com.arnaudpiroelle.manga.ui.manga.add.AddMangaActivity;
-import com.arnaudpiroelle.manga.ui.manga.list.MangaListingPresenter.MangaListingCallback;
 import com.arnaudpiroelle.manga.ui.manga.modify.ModifyMangaDialogFragment;
-import com.arnaudpiroelle.manga.ui.settings.SettingsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,34 +41,41 @@ import rx.schedulers.Schedulers;
 
 import static com.arnaudpiroelle.manga.MangaApplication.GRAPH;
 
-public class MangaListingActivity extends AppCompatActivity implements MangaListingCallback, SwipeRefreshLayout.OnRefreshListener {
 
-    @Inject
-    EventBus eventBus;
+public class MangaListingFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, MangaListingPresenter.MangaListingCallback {
+    @Inject EventBus eventBus;
+    @Inject ProviderRegistry providerRegistry;
 
-    @Inject
-    ProviderRegistry providerRegistry;
-
-    @InjectView(R.id.list_manga)
-    ListView listView;
-
-    @InjectView(R.id.swipe_refresh)
-    SwipeRefreshLayout swipeRefreshLayout;
+    @InjectView(R.id.list_manga) ListView listView;
+    @InjectView(R.id.swipe_refresh) SwipeRefreshLayout swipeRefreshLayout;
 
     BaseAdapter<Manga, MangaView> adapter;
     Presenter<Manga> presenter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_listing_manga);
-
-        setTitle(R.string.title_mymangas);
 
         GRAPH.inject(this);
-        ButterKnife.inject(this);
 
-        adapter = new BaseAdapter<>(this, R.layout.item_view_manga, new ArrayList<>());
+        setHasOptionsMenu(true);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_list_manga, container, false);
+
+        ButterKnife.inject(this, view);
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        adapter = new BaseAdapter<>(getActivity(), R.layout.item_view_manga, new ArrayList<>());
 
         listView.setAdapter(adapter);
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -74,9 +84,33 @@ public class MangaListingActivity extends AppCompatActivity implements MangaList
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    public void onStart() {
+        super.onStart();
+
+        eventBus.register(this);
+    }
+
+    @Override
+    public void onStop() {
+        eventBus.unregister(this);
+
+        super.onStop();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        getActivity().setTitle(R.string.title_mymangas);
+
+        presenter.list();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        inflater.inflate(R.menu.menu_main, menu);
     }
 
     @Override
@@ -85,30 +119,8 @@ public class MangaListingActivity extends AppCompatActivity implements MangaList
             case R.id.action_download:
                 manualDownload();
                 return true;
-            case R.id.action_settings:
-                goSettings();
-                return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void goSettings() {
-        startActivity(new Intent(this, SettingsActivity.class));
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        eventBus.register(this);
-        presenter.list();
-    }
-
-    @Override
-    protected void onPause() {
-        eventBus.unregister(this);
-
-        super.onPause();
     }
 
     @Override
@@ -129,11 +141,11 @@ public class MangaListingActivity extends AppCompatActivity implements MangaList
 
     @OnClick(R.id.action_add_manga)
     public void addManga() {
-        startActivity(new Intent(this, AddMangaActivity.class));
+        getActivity().startActivity(new Intent(getActivity(), AddMangaActivity.class));
     }
 
     public void manualDownload() {
-        startService(new Intent(this, DownloadService.class));
+        getActivity().startService(new Intent(getActivity(), DownloadService.class));
     }
 
     public void onEventMainThread(ChapterDownloadedEvent event) {
@@ -171,8 +183,7 @@ public class MangaListingActivity extends AppCompatActivity implements MangaList
 
                     ModifyMangaDialogFragment modifyMangaDialogFragment = new ModifyMangaDialogFragment();
                     modifyMangaDialogFragment.setManga(manga);
-                    modifyMangaDialogFragment.show(getFragmentManager(), null);
-
+                    modifyMangaDialogFragment.show(getActivity().getFragmentManager(), null);
 
                 });
     }

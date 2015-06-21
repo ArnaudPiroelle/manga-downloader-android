@@ -20,7 +20,7 @@ import com.arnaudpiroelle.manga.event.ChapterDownloadedEvent;
 import com.arnaudpiroelle.manga.model.Chapter;
 import com.arnaudpiroelle.manga.model.Manga;
 import com.arnaudpiroelle.manga.model.Page;
-import com.arnaudpiroelle.manga.ui.manga.list.MangaListingActivity;
+import com.arnaudpiroelle.manga.ui.NavigationActivity;
 import com.arnaudpiroelle.manga.utils.PreferencesHelper;
 
 import java.util.ArrayList;
@@ -224,7 +224,7 @@ public class DownloadService extends Service implements MangaDownloadManager.Man
         return PendingIntent.getActivity(
                 this,
                 0,
-                new Intent(this, MangaListingActivity.class),
+                new Intent(this, NavigationActivity.class),
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
     }

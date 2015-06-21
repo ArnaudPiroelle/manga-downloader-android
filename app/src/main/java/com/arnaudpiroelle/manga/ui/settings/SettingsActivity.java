@@ -1,21 +1,29 @@
 package com.arnaudpiroelle.manga.ui.settings;
 
-import android.app.FragmentTransaction;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.arnaudpiroelle.manga.R;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class SettingsActivity extends AppCompatActivity {
+
+    @InjectView(R.id.toolbar) Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        ButterKnife.inject(this);
+
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle(R.string.title_settings);
 
         SettingsFragment settingsFragment = new SettingsFragment();
 
@@ -24,9 +32,6 @@ public class SettingsActivity extends AppCompatActivity {
                 .replace(R.id.settings_content, settingsFragment, settingsFragment.getTag())
                 .commit();
 
-        //PreferenceManager
-        //        .getDefaultSharedPreferences(this)
-        //        .registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
