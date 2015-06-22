@@ -5,6 +5,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -31,7 +34,7 @@ public class HistoryFragment extends Fragment implements HistoryPresenter.Histor
     @InjectView(R.id.swipe_refresh) SwipeRefreshLayout swipeRefreshLayout;
     @InjectView(R.id.list_history) ListView listView;
 
-    Presenter<History> presenter;
+    HistoryPresenter presenter;
     BaseAdapter<History, HistoryView> adapter;
 
     @Override
@@ -39,6 +42,8 @@ public class HistoryFragment extends Fragment implements HistoryPresenter.Histor
         super.onCreate(savedInstanceState);
 
         GRAPH.inject(this);
+
+        setHasOptionsMenu(true);
 
         presenter = new HistoryPresenter(this);
         adapter = new BaseAdapter<>(getActivity(), R.layout.item_view_history);
@@ -64,6 +69,27 @@ public class HistoryFragment extends Fragment implements HistoryPresenter.Histor
         getActivity().setTitle(R.string.title_history);
 
         presenter.list();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        inflater.inflate(R.menu.menu_history, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_clean_history:
+                cleanHistory();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void cleanHistory() {
+        presenter.cleanHistory();
     }
 
     @Override
