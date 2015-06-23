@@ -17,7 +17,11 @@
     <string name="dialog_select_chapter">Select last chapter</string>
     <string name="action_settings">Settings</string>
 
-    <string name="prefs_header_updates">Updates</string>
+    <string name="nav_mymangas">@string/title_mymangas</string>
+    <string name="nav_history">@string/title_history</string>
+    <string name="nav_settings">@string/title_settings</string>
+
+    <string name="prefs_header_updates">Update</string>
 
     <string name="pref_intervalpicker_key">pref_intervalpicker</string>
     <string name="pref_intervalpicker_title">Update interval</string>
@@ -27,7 +31,13 @@
     <string name="pref_wifiswitch_title">Only update on Wi-Fi</string>
     <string name="pref_wifiswitch_summary">Updating on Wi-Fi helps to reduce mobile data usage.</string>
 
-    <string name="nav_mymangas">@string/title_mymangas</string>
-    <string name="nav_history">@string/title_history</string>
-    <string name="nav_settings">@string/title_settings</string>
+    <string name="pref_auto_update_key">pref_auto_update</string>
+    <string name="pref_auto_update_title">Download automatically</string>
+    <string name="pref_auto_update_summary">Automatically download new chapters available</string>
+
+    <string name="prefs_header_storages">Storage</string>
+
+    <string name="pref_compress_chapters_key">pref_compress_chapters</string>
+    <string name="pref_compress_chapters_title">Compress chapters</string>
+    <string name="pref_compress_chapters_summary">Compress each chapter into a CBZ file</string>
 </resources>

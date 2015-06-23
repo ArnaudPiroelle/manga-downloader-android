@@ -1,4 +1,4 @@
-package com.arnaudpiroelle.manga.utils;
+package com.arnaudpiroelle.manga.core.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -20,6 +20,14 @@ public class PreferencesHelper {
 
     public boolean isUpdateOnWifiOnly(){
         return sharedPreferences.getBoolean(context.getString(R.string.pref_wifiswitch_key), true);
+    }
+
+    public boolean isAutoUpdate(){
+        return sharedPreferences.getBoolean(context.getString(R.string.pref_auto_update_key), true);
+    }
+
+    public boolean isCompressChapter(){
+        return sharedPreferences.getBoolean(context.getString(R.string.pref_compress_chapters_key), true);
     }
 
     public String getUpdateInterval() {

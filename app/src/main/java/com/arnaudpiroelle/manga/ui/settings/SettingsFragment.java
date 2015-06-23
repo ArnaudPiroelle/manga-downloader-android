@@ -1,15 +1,17 @@
 package com.arnaudpiroelle.manga.ui.settings;
 
 import android.os.Bundle;
-import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 
 import com.arnaudpiroelle.manga.R;
 import com.arnaudpiroelle.manga.service.DownloadService;
 
+import java.util.Objects;
+
 public class SettingsFragment extends PreferenceFragment {
 
+    private Preference autoUpdate;
     private Preference intervalUpdate;
 
     @Override
@@ -22,14 +24,16 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     private void setupPreferences() {
+        autoUpdate = findPreference(getString(R.string.pref_auto_update_key));
         intervalUpdate = findPreference(getString(R.string.pref_intervalpicker_key));
-        intervalUpdate.setOnPreferenceChangeListener((preference, newValue) -> {
-            updateServiceScheduler();
-            return true;
-        });
+
+        autoUpdate.setOnPreferenceChangeListener(this::onSchedulerPreferenceChangeListener);
+        intervalUpdate.setOnPreferenceChangeListener(this::onSchedulerPreferenceChangeListener);
+
     }
 
-    private void updateServiceScheduler() {
+    private boolean onSchedulerPreferenceChangeListener(Preference preference, Object newValue) {
         DownloadService.updateScheduling(getActivity());
+        return true;
     }
 }

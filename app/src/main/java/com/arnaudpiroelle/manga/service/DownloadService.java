@@ -18,11 +18,10 @@ import com.arnaudpiroelle.manga.R;
 import com.arnaudpiroelle.manga.core.provider.ProviderRegistry;
 import com.arnaudpiroelle.manga.event.ChapterDownloadedEvent;
 import com.arnaudpiroelle.manga.model.Chapter;
-import com.arnaudpiroelle.manga.model.History;
 import com.arnaudpiroelle.manga.model.Manga;
 import com.arnaudpiroelle.manga.model.Page;
 import com.arnaudpiroelle.manga.ui.manga.NavigationActivity;
-import com.arnaudpiroelle.manga.utils.PreferencesHelper;
+import com.arnaudpiroelle.manga.core.utils.PreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -169,7 +168,9 @@ public class DownloadService extends Service implements MangaDownloadManager.Man
     @Override
     public void onCompleteChapter(Manga manga, Chapter chapter) {
 
-        mangaDownloadManager.zipChapter(manga, chapter);
+        if (preferencesHelper.isCompressChapter()){
+            mangaDownloadManager.zipChapter(manga, chapter);
+        }
 
         manga.setLastChapter(chapter.getChapterNumber());
         manga.save();
@@ -247,15 +248,15 @@ public class DownloadService extends Service implements MangaDownloadManager.Man
             alarmManager.cancel(pendingIntent);
         }
 
-        long interval = Long.parseLong(preferencesHelper.getUpdateInterval()) * 60 * 1000;
+        if (preferencesHelper.isAutoUpdate()){
+            long interval = Long.parseLong(preferencesHelper.getUpdateInterval()) * 60 * 1000;
 
-        alarmManager.setRepeating(
-                AlarmManager.RTC,
-                Calendar.getInstance().getTimeInMillis() + interval,
-                interval,
-                pendingIntent);
-
-
+            alarmManager.setRepeating(
+                    AlarmManager.RTC,
+                    Calendar.getInstance().getTimeInMillis() + interval,
+                    interval,
+                    pendingIntent);
+        }
     }
 
     public static void updateScheduling(Context context) {

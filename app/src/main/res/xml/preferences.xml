@@ -2,6 +2,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory android:title="@string/prefs_header_updates">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/pref_auto_update_key"
+            android:persistent="true"
+            android:summary="@string/pref_auto_update_summary"
+            android:title="@string/pref_auto_update_title" />
+
         <ListPreference
             android:defaultValue="@string/pref_intervalpicker_defaultvalue"
             android:entries="@array/list_intervalpicker_entries"
@@ -18,5 +25,17 @@
             android:summary="@string/pref_wifiswitch_summary"
             android:title="@string/pref_wifiswitch_title" />
     </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/prefs_header_storages">
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/pref_compress_chapters_key"
+            android:persistent="true"
+            android:summary="@string/pref_compress_chapters_summary"
+            android:title="@string/pref_compress_chapters_title" />
+    </PreferenceCategory>
+
 
 </PreferenceScreen>
