@@ -23,14 +23,27 @@
             android:theme="@style/AppTheme.NavActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.manga.add.AddMangaActivity" />
+        <activity
+            android:name=".ui.manga.add.AddMangaActivity"
+            android:parentActivityName=".ui.manga.NavigationActivity">
 
-        <activity android:name=".ui.settings.SettingsActivity" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.manga.NavigationActivity" />
+        </activity>
+
+        <activity
+            android:name=".ui.settings.SettingsActivity"
+            android:parentActivityName=".ui.manga.NavigationActivity">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.manga.NavigationActivity" />
+        </activity>
 
         <service android:name=".service.DownloadService" />
 
@@ -39,6 +52,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="1a5c05cd44da4d5bdb36a429aeb4ac44b61c679e" />

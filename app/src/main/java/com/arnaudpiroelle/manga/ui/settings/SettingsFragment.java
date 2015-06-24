@@ -12,8 +12,8 @@ import java.util.Objects;
 public class SettingsFragment extends PreferenceFragment {
 
     private Preference autoUpdate;
-    private Preference intervalUpdate;
 
+    private Preference intervalUpdate;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,5 +35,9 @@ public class SettingsFragment extends PreferenceFragment {
     private boolean onSchedulerPreferenceChangeListener(Preference preference, Object newValue) {
         DownloadService.updateScheduling(getActivity());
         return true;
+    }
+
+    public static SettingsFragment newInstance(){
+        return new SettingsFragment();
     }
 }

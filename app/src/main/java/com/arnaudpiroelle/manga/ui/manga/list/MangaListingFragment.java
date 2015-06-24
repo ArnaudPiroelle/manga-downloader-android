@@ -53,6 +53,8 @@ public class MangaListingFragment extends Fragment implements SwipeRefreshLayout
     @InjectView(R.id.swipe_refresh)
     SwipeRefreshLayout swipeRefreshLayout;
 
+    @InjectView(R.id.manga_empty) View emptyView;
+
     BaseAdapter<Manga, MangaView> adapter;
     Presenter<Manga> presenter;
 
@@ -68,7 +70,7 @@ public class MangaListingFragment extends Fragment implements SwipeRefreshLayout
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_list_manga, container, false);
+        View view = inflater.inflate(R.layout.fragment_listing_manga, container, false);
 
         ButterKnife.inject(this, view);
 
@@ -82,6 +84,7 @@ public class MangaListingFragment extends Fragment implements SwipeRefreshLayout
         adapter = new BaseAdapter<>(getActivity(), R.layout.item_view_manga, new ArrayList<>());
 
         listView.setAdapter(adapter);
+        listView.setEmptyView(emptyView);
         swipeRefreshLayout.setOnRefreshListener(this);
 
         presenter = new MangaListingPresenter(this);

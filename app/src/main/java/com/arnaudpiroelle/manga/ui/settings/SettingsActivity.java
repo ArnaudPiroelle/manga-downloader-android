@@ -1,6 +1,7 @@
 package com.arnaudpiroelle.manga.ui.settings;
 
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -25,8 +26,7 @@ public class SettingsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle(R.string.title_settings);
 
-        SettingsFragment settingsFragment = new SettingsFragment();
-
+        SettingsFragment settingsFragment = SettingsFragment.newInstance();
         getFragmentManager()
                 .beginTransaction()
                 .replace(R.id.settings_content, settingsFragment, settingsFragment.getTag())
@@ -39,7 +39,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
+                NavUtils.navigateUpFromSameTask(this);
                 return true;
         }
 

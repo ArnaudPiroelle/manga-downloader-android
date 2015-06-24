@@ -20,7 +20,12 @@ public class MangaApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Fabric.with(this, new Crashlytics());
+
+        if (BuildConfig.DEBUG) {
+            //TODO: Add Timber
+        } else {
+            Fabric.with(this, new Crashlytics());
+        }
 
         DownloadService.updateScheduling(this);
 

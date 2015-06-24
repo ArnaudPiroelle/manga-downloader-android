@@ -1,5 +1,6 @@
 <resources>
     <dimen name="padding">10dp</dimen>
+    <dimen name="padding_double">20dp</dimen>
 
     <dimen name="row_height">80dp</dimen>
 

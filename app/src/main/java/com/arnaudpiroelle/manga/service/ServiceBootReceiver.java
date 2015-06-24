@@ -10,8 +10,8 @@ public class ServiceBootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.i("ServiceBootReceiver", "AlertManager " + intent.getAction());
-        if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
 
+        if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
             DownloadService.updateScheduling(context);
         }
     }

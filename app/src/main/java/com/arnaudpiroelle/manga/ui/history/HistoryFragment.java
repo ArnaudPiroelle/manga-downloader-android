@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.arnaudpiroelle.manga.R;
@@ -33,6 +34,7 @@ public class HistoryFragment extends Fragment implements HistoryPresenter.Histor
 
     @InjectView(R.id.swipe_refresh) SwipeRefreshLayout swipeRefreshLayout;
     @InjectView(R.id.list_history) ListView listView;
+    @InjectView(R.id.history_empty) View emptyView;
 
     HistoryPresenter presenter;
     BaseAdapter<History, HistoryView> adapter;
@@ -56,6 +58,7 @@ public class HistoryFragment extends Fragment implements HistoryPresenter.Histor
 
         ButterKnife.inject(this, view);
 
+        listView.setEmptyView(emptyView);
         listView.setAdapter(adapter);
         swipeRefreshLayout.setOnRefreshListener(this);
 
