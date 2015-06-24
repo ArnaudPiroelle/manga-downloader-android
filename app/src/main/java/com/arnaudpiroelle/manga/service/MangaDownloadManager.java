@@ -22,7 +22,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import rx.Observable;
-import rx.Observable.OnSubscribe;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -37,88 +36,112 @@ public class MangaDownloadManager {
     }
 
     public void startDownload(List<Manga> mangas) {
-        OnSubscribe<Manga> mangaOnSubscribe = subscriber -> {
-            for (Manga manga : mangas) {
-                downloadManga(manga);
-                subscriber.onNext(manga);
-            }
-            subscriber.onCompleted();
-        };
-
-        Observable.create(mangaOnSubscribe)
+        Observable.from(mangas)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        callback::onCompleteManga,
-                        callback::onDownloadError,
-                        callback::onDownloadCompleted
-                );
+                .filter(this::hasValidProvider)
+                .doOnNext(this::onMangaDownload)
+                .doOnCompleted(this::onAllMangasDownloaded)
+                .doOnError(this::onError)
+                .flatMap(this::downloadManga)
+                .subscribe();
+
     }
 
-    private void downloadManga(Manga manga) {
-        MangaProvider provider = providerRegistry.get(manga.getProvider());
-        if (provider != null) {
+    private Observable<?> downloadManga(Manga manga) {
+        MangaProvider mangaProvider = providerRegistry.get(manga.getProvider());
 
-            Log.i("Downloaded manga", manga.getName());
+        List<Chapter> chapters = mangaProvider.findChaptersFor(manga);
+        manga.setChapters(chapters);
 
-            boolean hasLastChapter = (manga.getLastChapter() != null &&
-                    !manga.getLastChapter().isEmpty());
-
-            boolean isFullDownload = hasLastChapter && "all".equals(manga.getLastChapter());
-
-            List<Chapter> chapters = provider.findChaptersFor(manga);
-            manga.setChapters(chapters);
-
-            int skip = 0;
-            if (hasLastChapter) {
-                if (isFullDownload) {
-                    skip = -1;
-                } else {
-                    while (skip < chapters.size() &&
-                            !chapters.get(skip).getChapterNumber().equals(manga.getLastChapter())) {
-                        skip++;
-                    }
-                }
-            } else {
-                skip = chapters.size() - 2;
-            }
-
-
-            for (int i = skip + 1; i < chapters.size(); i++) {
-                Chapter chapter = chapters.get(i);
-                downloadChapter(manga, chapter);
-            }
-        }
+        return Observable.from(chapters)
+                .skip(toBeSkipped(manga))
+                .doOnNext(this::onChapterDownload)
+                .doOnCompleted(this::onAllChaptersDownloaded)
+                .doOnError(this::onError)
+                .flatMap(chapter -> downloadChapter(manga, chapter));
     }
 
-    private void downloadChapter(Manga manga, Chapter chapter) {
-        Log.i("Downloaded chapter", chapter.getChapterNumber());
-        List<Page> pages = providerRegistry.get(manga.getProvider()).findPagesFor(chapter);
+    private Observable<?> downloadChapter(Manga manga, Chapter chapter) {
+        MangaProvider mangaProvider = providerRegistry.get(manga.getProvider());
 
+        List<Page> pages = mangaProvider.findPagesFor(chapter);
         chapter.setPages(pages);
 
-        for (Page page : pages) {
-            downloadPage(manga, chapter, page);
-        }
-
-        callback.onCompleteChapter(manga, chapter);
+        return Observable.from(pages)
+                .doOnNext(page -> onPageDownload(manga, chapter, page))
+                .doOnCompleted(() -> onAllPagesDownloaded(manga, chapter))
+                .doOnError(this::onError)
+                .flatMap(page -> downloadPage(manga, chapter, page));
     }
 
-    private void downloadPage(Manga manga, Chapter chapter, Page page) {
-        Log.i("DownloadService", page.getPageNumber() + "/" + chapter.getPages().size());
-        InputStream inputStream = providerRegistry.get(manga.getProvider()).findPage(page);
+    private void onError(Throwable throwable) {
 
-        File pageFile = getPageFile(manga, chapter, page);
+    }
 
-        if (!pageFile.exists()) {
+    private Observable<?> downloadPage(Manga manga, Chapter chapter, Page page) {
+        return Observable.create(subscriber -> {
+            InputStream inputStream = providerRegistry.get(manga.getProvider()).findPage(page);
+
+            File pageFile = getPageFile(manga, chapter, page);
+
             try {
                 pageFile.createNewFile();
                 HttpUtils.writeFile(inputStream, pageFile);
             } catch (IOException e) {
                 Log.e("DownloadService", "Error", e);
             }
+
+            subscriber.onNext(pageFile);
+            subscriber.onCompleted();
+        }).doOnError(this::onError);
+    }
+
+    private Boolean hasValidProvider(Manga manga) {
+        return providerRegistry.get(manga.getProvider()) != null;
+    }
+
+    private int toBeSkipped(Manga manga) {
+        if (manga.getLastChapter() == null || manga.getLastChapter().isEmpty()) {
+            return manga.getChapters().size() - 1;
+        } else {
+            if ("all".equals(manga.getLastChapter())){
+                return 0;
+            } else {
+                for (int i = 0; i < manga.getChapters().size(); i++) {
+                    if ( manga.getChapters().get(i).getChapterNumber().equals(manga.getLastChapter())){
+                        return i + 1;
+                    }
+                }
+            }
         }
 
+        return 0;
+    }
+
+    private void onAllMangasDownloaded() {
+        Log.i("NewMangaDownloader", "All mangas downloaded");
+        callback.onDownloadCompleted();
+    }
+
+    private void onMangaDownload(Manga manga) {
+        Log.i("NewMangaDownloader", "Manga " + manga.getName() + " download");
+    }
+
+    private void onAllChaptersDownloaded() {
+        Log.i("NewMangaDownloader", "All chapters downloaded");
+    }
+
+    private void onChapterDownload(Chapter chapter) {
+        Log.i("NewMangaDownloader", "Chapter " + chapter.getChapterNumber() + " download");
+    }
+
+    private void onAllPagesDownloaded(Manga manga, Chapter chapter) {
+        Log.i("NewMangaDownloader", "All pages downloaded");
+        callback.onCompleteChapter(manga, chapter);
+    }
+
+    private void onPageDownload(Manga manga, Chapter chapter, Page page) {
+        Log.i("NewMangaDownloader", "Page " + page.getPageNumber() + "/" + chapter.getPages().size() + " download");
         callback.onCompletePage(manga, chapter, page);
     }
 
@@ -191,7 +214,6 @@ public class MangaDownloadManager {
             }
         }))
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe();
 
     }

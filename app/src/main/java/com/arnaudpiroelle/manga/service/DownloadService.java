@@ -6,6 +6,8 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Environment;
@@ -20,6 +22,7 @@ import com.arnaudpiroelle.manga.event.ChapterDownloadedEvent;
 import com.arnaudpiroelle.manga.model.Chapter;
 import com.arnaudpiroelle.manga.model.Manga;
 import com.arnaudpiroelle.manga.model.Page;
+import com.arnaudpiroelle.manga.service.MangaDownloadManager.MangaDownloaderCallback;
 import com.arnaudpiroelle.manga.ui.manga.NavigationActivity;
 import com.arnaudpiroelle.manga.core.utils.PreferencesHelper;
 
@@ -39,7 +42,7 @@ import se.emilsjolander.sprinkles.Query;
 import static com.arnaudpiroelle.manga.MangaApplication.GRAPH;
 import static com.arnaudpiroelle.manga.model.History.HistoryBuilder.createHisotry;
 
-public class DownloadService extends Service implements MangaDownloadManager.MangaDownloaderCallback {
+public class DownloadService extends Service implements MangaDownloaderCallback {
 
     private static final int PROGRESS_NOTIFICATION_ID = 1234567890;
     private static final int DOWNLOAD_NOTIFICATION_ID = 987654321;
@@ -56,7 +59,7 @@ public class DownloadService extends Service implements MangaDownloadManager.Man
     NotificationManager mNotifyManager;
 
     @Inject
-    WifiManager wifiManager;
+    ConnectivityManager mConnectivityManager;
 
     @Inject
     AlarmManager alarmManager;
@@ -110,7 +113,8 @@ public class DownloadService extends Service implements MangaDownloadManager.Man
     private void startDownload() {
         boolean updateOnWifiOnly = preferencesHelper.isUpdateOnWifiOnly();
 
-        if (running || !wifiManager.isWifiEnabled() && updateOnWifiOnly) {
+        NetworkInfo mWifi = mConnectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        if (running || !mWifi.isConnected() && updateOnWifiOnly) {
             return;
         }
 
