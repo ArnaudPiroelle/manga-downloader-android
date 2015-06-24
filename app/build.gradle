@@ -3,6 +3,14 @@ apply plugin: 'io.fabric'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.neenbedankt.android-apt'
 
+def getBuildNumber() {
+    return System.getenv("CIRCLE_BUILD_NUM") as Integer ?: 0
+}
+
+def getKeystorePassword(){
+    return System.getenv("APP_KEYSTORE_PASSWORD") as String ?: "PASSWORD"
+}
+
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
@@ -11,7 +19,7 @@ android {
         applicationId "com.arnaudpiroelle.manga"
         minSdkVersion 21
         targetSdkVersion 22
-        versionCode 1
+        versionCode getBuildNumber()
         versionName "1.0.0"
     }
 
@@ -20,12 +28,24 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    signingConfigs {
+        release {
+            storeFile file('manga-downloader.keystore')
+            storePassword "${getKeystorePassword()}"
+            keyAlias 'manga-downloader'
+            keyPassword "${getKeystorePassword()}"
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            signingConfig signingConfigs.release
         }
     }
+
 }
 
 dependencies {
@@ -53,4 +73,6 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.4.0@aar') {
         transitive = true;
     }
+
+    testCompile 'junit:junit:4.12'
 }

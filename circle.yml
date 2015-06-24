@@ -1,0 +1,18 @@
+machine:
+  java:
+    version: oraclejdk8
+
+dependencies:
+  pre:
+    - echo y | android update sdk --no-ui --all
+
+test:
+  override:
+    - TERM=dumb ./gradlew assembleDebug
+    - cp -r app/build/outputs $CIRCLE_ARTIFACTS
+
+deployment:
+  production:
+    branch: master
+    commands:
+      - TERM=dumb ./gradlew crashlyticsUploadDistributionRelease --stacktrace
