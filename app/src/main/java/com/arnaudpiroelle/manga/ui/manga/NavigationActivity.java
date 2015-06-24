@@ -82,17 +82,16 @@ public class NavigationActivity extends AppCompatActivity implements NavigationV
     }
 
     private void navigate(int navIdRes) {
-        mNavItemId = navIdRes;
-        navigationView.getMenu().findItem(mNavItemId).setChecked(true);
-
         Fragment fragment = null;
-        switch (mNavItemId) {
+        switch (navIdRes) {
             case R.id.nav_mymangas:
+                mNavItemId = navIdRes;
                 fragment = new MangaListingFragment();
                 replaceFragment(fragment, false);
                 break;
 
             case R.id.nav_history:
+                mNavItemId = navIdRes;
                 fragment = new HistoryFragment();
                 replaceFragment(fragment, false);
                 break;
@@ -102,6 +101,7 @@ public class NavigationActivity extends AppCompatActivity implements NavigationV
                 break;
         }
 
+        navigationView.getMenu().findItem(mNavItemId).setChecked(true);
         mDrawerLayout.closeDrawers();
     }
 
