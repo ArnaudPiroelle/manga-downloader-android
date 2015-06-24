@@ -42,7 +42,7 @@ public class JapScanDownloader implements MangaProvider {
         return parseMangaList(body);
     }
 
-    public List<Chapter> findChaptersFor(Manga manga) {
+    public List<Chapter> findChapters(Manga manga) {
         Response mangaResponse = japScanApiService.getManga(manga.getMangaAlias());
 
         String body = HttpUtils.convertFrom(mangaResponse);
@@ -53,7 +53,7 @@ public class JapScanDownloader implements MangaProvider {
         return list;
     }
 
-    public List<Page> findPagesFor(Chapter chapter) {
+    public List<Page> findPages(Chapter chapter) {
         Response pageResponse = japScanApiService.getReader(chapter.getMangaAlias(), chapter.getChapterNumber());
 
         String body = HttpUtils.convertFrom(pageResponse);

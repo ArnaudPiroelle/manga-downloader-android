@@ -22,7 +22,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class MangaDownloadManager {
@@ -50,7 +49,7 @@ public class MangaDownloadManager {
     private Observable<?> downloadManga(Manga manga) {
         MangaProvider mangaProvider = providerRegistry.get(manga.getProvider());
 
-        List<Chapter> chapters = mangaProvider.findChaptersFor(manga);
+        List<Chapter> chapters = mangaProvider.findChapters(manga);
         manga.setChapters(chapters);
 
         return Observable.from(chapters)
@@ -64,7 +63,7 @@ public class MangaDownloadManager {
     private Observable<?> downloadChapter(Manga manga, Chapter chapter) {
         MangaProvider mangaProvider = providerRegistry.get(manga.getProvider());
 
-        List<Page> pages = mangaProvider.findPagesFor(chapter);
+        List<Page> pages = mangaProvider.findPages(chapter);
         chapter.setPages(pages);
 
         return Observable.from(pages)

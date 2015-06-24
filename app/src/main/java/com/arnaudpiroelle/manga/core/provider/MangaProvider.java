@@ -11,9 +11,9 @@ public interface MangaProvider {
 
     List<Manga> findMangas();
 
-    List<Chapter> findChaptersFor(Manga manga);
+    List<Chapter> findChapters(Manga manga);
 
-    List<Page> findPagesFor(Chapter chapter);
+    List<Page> findPages(Chapter chapter);
 
     InputStream findPage(Page page);
 

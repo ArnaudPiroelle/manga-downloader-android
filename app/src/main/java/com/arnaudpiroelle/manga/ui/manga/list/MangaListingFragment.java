@@ -176,7 +176,7 @@ public class MangaListingFragment extends Fragment implements SwipeRefreshLayout
 
     private void modifyManga(Manga manga) {
         Observable.<List<Chapter>>create((subscriber) -> {
-            subscriber.onNext(providerRegistry.get(manga.getProvider()).findChaptersFor(manga));
+            subscriber.onNext(providerRegistry.get(manga.getProvider()).findChapters(manga));
             subscriber.onCompleted();
         })
                 .subscribeOn(Schedulers.io())
