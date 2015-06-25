@@ -9,7 +9,10 @@ import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class ProviderMangaListingPresenter implements Presenter<Manga> {
@@ -27,28 +30,46 @@ public class ProviderMangaListingPresenter implements Presenter<Manga> {
     public void list() {
         callback.onListingLoading();
 
-        Observable.<List<Manga>>create(subscriber -> {
-            subscriber.onNext(provider.findMangas());
-            subscriber.onCompleted();
+        Observable.create(new Observable.OnSubscribe<List<Manga>>() {
+            @Override
+            public void call(Subscriber<? super List<Manga>> subscriber) {
+                subscriber.onNext(provider.findMangas());
+                subscriber.onCompleted();
+            }
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::onListingLoaded);
+                .subscribe(new Action1<List<Manga>>() {
+                    @Override
+                    public void call(List<Manga> mangas) {
+                        onListingLoaded(mangas);
+                    }
+                });
     }
 
-    private void onListingLoaded(List<Manga> mangas){
+    private void onListingLoaded(List<Manga> mangas) {
         this.mangas = mangas;
         callback.onListingLoaded(mangas);
     }
 
     @Override
-    public void filter(String query) {
+    public void filter(final String query) {
         Observable.from(mangas)
-                .filter(manga -> manga.getName().toLowerCase().contains(query.toLowerCase()))
+                .filter(new Func1<Manga, Boolean>() {
+                    @Override
+                    public Boolean call(Manga manga) {
+                        return manga.getName().toLowerCase().contains(query.toLowerCase());
+                    }
+                })
                 .toSortedList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(callback::onListingFiltered);
+                .subscribe(new Action1<List<Manga>>() {
+                    @Override
+                    public void call(List<Manga> mangas) {
+                        callback.onListingFiltered(mangas);
+                    }
+                });
     }
 
     public interface ProviderMangaListingPresenterCallback {

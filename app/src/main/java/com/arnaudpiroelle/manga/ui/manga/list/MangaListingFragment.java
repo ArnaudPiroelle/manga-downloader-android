@@ -36,7 +36,9 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.arnaudpiroelle.manga.MangaApplication.GRAPH;
@@ -53,7 +55,8 @@ public class MangaListingFragment extends Fragment implements SwipeRefreshLayout
     @InjectView(R.id.swipe_refresh)
     SwipeRefreshLayout swipeRefreshLayout;
 
-    @InjectView(R.id.manga_empty) View emptyView;
+    @InjectView(R.id.manga_empty)
+    View emptyView;
 
     BaseAdapter<Manga, MangaView> adapter;
     Presenter<Manga> presenter;
@@ -81,7 +84,7 @@ public class MangaListingFragment extends Fragment implements SwipeRefreshLayout
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        adapter = new BaseAdapter<>(getActivity(), R.layout.item_view_manga, new ArrayList<>());
+        adapter = new BaseAdapter<>(getActivity(), R.layout.item_view_manga, new ArrayList<Manga>());
 
         listView.setAdapter(adapter);
         listView.setEmptyView(emptyView);
@@ -177,21 +180,25 @@ public class MangaListingFragment extends Fragment implements SwipeRefreshLayout
         manualDownload();
     }
 
-    private void modifyManga(Manga manga) {
-        Observable.<List<Chapter>>create((subscriber) -> {
-            subscriber.onNext(providerRegistry.get(manga.getProvider()).findChapters(manga));
-            subscriber.onCompleted();
+    private void modifyManga(final Manga manga) {
+        Observable.create(new Observable.OnSubscribe<List<Chapter>>() {
+            @Override
+            public void call(Subscriber<? super List<Chapter>> subscriber) {
+                subscriber.onNext(providerRegistry.get(manga.getProvider()).findChapters(manga));
+                subscriber.onCompleted();
+            }
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((chapters) -> {
+                .subscribe(new Action1<List<Chapter>>() {
+                    @Override
+                    public void call(List<Chapter> chapters) {
+                        manga.setChapters(chapters);
 
-                    manga.setChapters(chapters);
-
-                    ModifyMangaDialogFragment modifyMangaDialogFragment = new ModifyMangaDialogFragment();
-                    modifyMangaDialogFragment.setManga(manga);
-                    modifyMangaDialogFragment.show(getActivity().getFragmentManager(), null);
-
+                        ModifyMangaDialogFragment modifyMangaDialogFragment = new ModifyMangaDialogFragment();
+                        modifyMangaDialogFragment.setManga(manga);
+                        modifyMangaDialogFragment.show(getActivity().getFragmentManager(), null);
+                    }
                 });
     }
 

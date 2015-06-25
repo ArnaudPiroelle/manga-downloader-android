@@ -7,7 +7,10 @@ import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import se.emilsjolander.sprinkles.CursorList;
 import se.emilsjolander.sprinkles.Model;
@@ -25,21 +28,29 @@ public class HistoryPresenter implements Presenter<History> {
     public void list() {
         callback.onListingLoading();
 
-        Observable.<List<History>>create((subscriber) -> {
-            try (CursorList<History> historyCursorList = Query.all(History.class).get()) {
+        Observable.create(new Observable.OnSubscribe<List<History>>() {
+            @Override
+            public void call(Subscriber<? super List<History>> subscriber) {
+                try (CursorList<History> historyCursorList = Query.all(History.class).get()) {
 
 
-                List<History> histories = historyCursorList.asList();
+                    List<History> histories = historyCursorList.asList();
 
-                Collections.reverse(histories);
-                subscriber.onNext(histories);
+                    Collections.reverse(histories);
+                    subscriber.onNext(histories);
+                }
+
+                subscriber.onCompleted();
             }
-
-            subscriber.onCompleted();
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(callback::onListingLoaded);
+                .subscribe(new Action1<List<History>>() {
+                    @Override
+                    public void call(List<History> histories) {
+                        callback.onListingLoaded(histories);
+                    }
+                });
     }
 
     @Override
@@ -51,9 +62,24 @@ public class HistoryPresenter implements Presenter<History> {
         Observable.from(Query.all(History.class).get().asList())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(Model::delete,
-                        throwable -> {},
-                        this::list);
+                .subscribe(
+                        new Action1<History>() {
+                            @Override
+                            public void call(History history) {
+                                history.delete();
+                            }
+                        }, new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+
+                            }
+                        },
+                        new Action0() {
+                            @Override
+                            public void call() {
+                                list();
+                            }
+                        });
     }
 
     public interface HistoryListingCallback {
