@@ -8,7 +8,7 @@ dependencies:
 
 test:
   override:
-    - TERM=dumb ./gradlew assembleDebug
+    - TERM=dumb ./gradlew test
     - cp -r app/build/outputs $CIRCLE_ARTIFACTS
 
 deployment:

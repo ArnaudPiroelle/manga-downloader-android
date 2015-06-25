@@ -36,6 +36,8 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
+            ext.betaDistributionGroupAliases = "release"
+
             signingConfig signingConfigs.release
         }
     }
