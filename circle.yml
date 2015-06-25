@@ -15,4 +15,4 @@ deployment:
   production:
     branch: master
     commands:
-      - TERM=dumb ./gradlew crashlyticsUploadDistributionRelease --stacktrace
+      - TERM=dumb ./gradlew assembleRelease crashlyticsUploadDistributionRelease --stacktrace
