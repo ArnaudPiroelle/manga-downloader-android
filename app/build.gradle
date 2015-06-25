@@ -19,7 +19,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 22
         versionCode getBuildNumber()
-        versionName "1.0.0"
+        versionName "1.1.0"
     }
 
     signingConfigs {
