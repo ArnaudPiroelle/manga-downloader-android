@@ -3,6 +3,7 @@ package com.arnaudpiroelle.manga.ui.manga.modify;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import com.arnaudpiroelle.manga.R;
@@ -36,15 +37,17 @@ public class ModifyMangaDialogFragment extends DialogFragment {
 
         dialogBuilder
                 .setTitle(R.string.dialog_select_chapter)
-                .setPositiveButton(android.R.string.ok, ((dialog, which) -> {
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        int checkedItemPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
 
-                    int checkedItemPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                        String lastChapter = chaptersNames.get(checkedItemPosition);
+                        manga.setLastChapter(lastChapter);
 
-                    String lastChapter = chaptersNames.get(checkedItemPosition);
-                    manga.setLastChapter(lastChapter);
-
-                    eventBus.post(new MangaUpdatedEvent(manga));
-                }));
+                        eventBus.post(new MangaUpdatedEvent(manga));
+                    }
+                });
 
 
         chaptersNames = new ArrayList<>();
@@ -55,8 +58,11 @@ public class ModifyMangaDialogFragment extends DialogFragment {
         }
         CharSequence[] charSequences = chaptersNames.toArray(new CharSequence[chaptersNames.size()]);
 
-        dialogBuilder.setSingleChoiceItems(charSequences, 0, (dialog, which) -> {
+        dialogBuilder.setSingleChoiceItems(charSequences, 0, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
 
+            }
         });
 
         return dialogBuilder.create();

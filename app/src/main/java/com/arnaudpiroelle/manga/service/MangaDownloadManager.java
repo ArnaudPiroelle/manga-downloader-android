@@ -22,6 +22,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import rx.Observable;
+import rx.Subscriber;
+import rx.functions.Action0;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class MangaDownloadManager {
@@ -37,16 +41,41 @@ public class MangaDownloadManager {
     public void startDownload(List<Manga> mangas) {
         Observable.from(mangas)
                 .subscribeOn(Schedulers.io())
-                .filter(this::hasValidProvider)
-                .doOnNext(this::onMangaDownload)
-                .doOnCompleted(this::onAllMangasDownloaded)
-                .doOnError(this::onError)
-                .flatMap(this::downloadManga)
+                .filter(new Func1<Manga, Boolean>() {
+                    @Override
+                    public Boolean call(Manga manga) {
+                        return hasValidProvider(manga);
+                    }
+                })
+                .doOnNext(new Action1<Manga>() {
+                    @Override
+                    public void call(Manga manga) {
+                        onMangaDownload(manga);
+                    }
+                })
+                .doOnCompleted(new Action0() {
+                    @Override
+                    public void call() {
+                        onAllMangasDownloaded();
+                    }
+                })
+                .doOnError(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        onError(throwable);
+                    }
+                })
+                .flatMap(new Func1<Manga, Observable<?>>() {
+                    @Override
+                    public Observable<?> call(Manga manga) {
+                        return downloadManga(manga);
+                    }
+                })
                 .subscribe();
 
     }
 
-    private Observable<?> downloadManga(Manga manga) {
+    private Observable<?> downloadManga(final Manga manga) {
         MangaProvider mangaProvider = providerRegistry.get(manga.getProvider());
 
         List<Chapter> chapters = mangaProvider.findChapters(manga);
@@ -54,45 +83,93 @@ public class MangaDownloadManager {
 
         return Observable.from(chapters)
                 .skip(toBeSkipped(manga))
-                .doOnNext(this::onChapterDownload)
-                .doOnCompleted(this::onAllChaptersDownloaded)
-                .doOnError(this::onError)
-                .flatMap(chapter -> downloadChapter(manga, chapter));
+                .doOnNext(new Action1<Chapter>() {
+                    @Override
+                    public void call(Chapter chapter) {
+                        onChapterDownload(chapter);
+                    }
+                })
+                .doOnCompleted(new Action0() {
+                    @Override
+                    public void call() {
+                        onAllChaptersDownloaded(manga);
+                    }
+                })
+                .doOnError(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        onError(throwable);
+                    }
+                })
+                .flatMap(new Func1<Chapter, Observable<?>>() {
+                    @Override
+                    public Observable<?> call(Chapter chapter) {
+                        return downloadChapter(manga, chapter);
+                    }
+                });
     }
 
-    private Observable<?> downloadChapter(Manga manga, Chapter chapter) {
+    private Observable<?> downloadChapter(final Manga manga, final Chapter chapter) {
         MangaProvider mangaProvider = providerRegistry.get(manga.getProvider());
 
         List<Page> pages = mangaProvider.findPages(chapter);
         chapter.setPages(pages);
 
         return Observable.from(pages)
-                .doOnNext(page -> onPageDownload(manga, chapter, page))
-                .doOnCompleted(() -> onAllPagesDownloaded(manga, chapter))
-                .doOnError(this::onError)
-                .flatMap(page -> downloadPage(manga, chapter, page));
+                .doOnNext(new Action1<Page>() {
+                    @Override
+                    public void call(Page page) {
+                        onPageDownload(manga, chapter, page);
+                    }
+                })
+                .doOnCompleted(new Action0() {
+                    @Override
+                    public void call() {
+                        onAllPagesDownloaded(manga, chapter);
+                    }
+                })
+                .doOnError(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        onError(throwable);
+                    }
+                })
+                .flatMap(new Func1<Page, Observable<?>>() {
+                    @Override
+                    public Observable<?> call(Page page) {
+                        return downloadPage(manga, chapter, page);
+                    }
+                });
+    }
+
+    private Observable<File> downloadPage(final Manga manga, final Chapter chapter, final Page page) {
+        return Observable.create(new Observable.OnSubscribe<File>() {
+            @Override
+            public void call(Subscriber<? super File> subscriber) {
+                InputStream inputStream = providerRegistry.get(manga.getProvider()).findPage(page);
+
+                File pageFile = getPageFile(manga, chapter, page);
+
+                try {
+                    pageFile.createNewFile();
+                    HttpUtils.writeFile(inputStream, pageFile);
+                } catch (IOException e) {
+                    Log.e("DownloadService", "Error", e);
+                }
+
+                subscriber.onNext(pageFile);
+                subscriber.onCompleted();
+            }
+        }).doOnError(new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                onError(throwable);
+            }
+        });
     }
 
     private void onError(Throwable throwable) {
-
-    }
-
-    private Observable<?> downloadPage(Manga manga, Chapter chapter, Page page) {
-        return Observable.create(subscriber -> {
-            InputStream inputStream = providerRegistry.get(manga.getProvider()).findPage(page);
-
-            File pageFile = getPageFile(manga, chapter, page);
-
-            try {
-                pageFile.createNewFile();
-                HttpUtils.writeFile(inputStream, pageFile);
-            } catch (IOException e) {
-                Log.e("DownloadService", "Error", e);
-            }
-
-            subscriber.onNext(pageFile);
-            subscriber.onCompleted();
-        }).doOnError(this::onError);
+        callback.onDownloadError(throwable);
     }
 
     private Boolean hasValidProvider(Manga manga) {
@@ -103,11 +180,11 @@ public class MangaDownloadManager {
         if (manga.getLastChapter() == null || manga.getLastChapter().isEmpty()) {
             return manga.getChapters().size() - 1;
         } else {
-            if ("all".equals(manga.getLastChapter())){
+            if ("all".equals(manga.getLastChapter())) {
                 return 0;
             } else {
                 for (int i = 0; i < manga.getChapters().size(); i++) {
-                    if ( manga.getChapters().get(i).getChapterNumber().equals(manga.getLastChapter())){
+                    if (manga.getChapters().get(i).getChapterNumber().equals(manga.getLastChapter())) {
                         return i + 1;
                     }
                 }
@@ -126,8 +203,9 @@ public class MangaDownloadManager {
         Log.i("NewMangaDownloader", "Manga " + manga.getName() + " download");
     }
 
-    private void onAllChaptersDownloaded() {
+    private void onAllChaptersDownloaded(Manga manga) {
         Log.i("NewMangaDownloader", "All chapters downloaded");
+        callback.onCompleteManga(manga);
     }
 
     private void onChapterDownload(Chapter chapter) {
@@ -165,53 +243,59 @@ public class MangaDownloadManager {
         return new File(chapterFolder + "/" + pageFormated);
     }
 
-    public void zipChapter(Manga manga, Chapter chapter) {
+    public void zipChapter(final Manga manga, final Chapter chapter) {
 
-        Observable.create((subscriber -> {
-            File mangaFolder = getMangaFolder(manga);
+        Observable.create(new Observable.OnSubscribe<Object>() {
+                              @Override
+                              public void call(Subscriber<? super Object> subscriber) {
+                                  File mangaFolder = getMangaFolder(manga);
 
-            File zipFile = new File(String.format("%s/%s - %s.cbz",
-                    mangaFolder.getAbsoluteFile(),
-                    manga.getName(),
-                    chapter.getChapterNumber()));
+                                  File zipFile = new File(String.format("%s/%s - %s.cbz",
+                                          mangaFolder.getAbsoluteFile(),
+                                          manga.getName(),
+                                          chapter.getChapterNumber()));
 
-            try (FileOutputStream dest = new FileOutputStream(zipFile);
-                 ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest))) {
+                                  try (FileOutputStream dest = new FileOutputStream(zipFile);
+                                       ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest))) {
 
-                zipFile.createNewFile();
-                File chapterFolder = getChapterFolder(manga, chapter);
+                                      zipFile.createNewFile();
+                                      File chapterFolder = getChapterFolder(manga, chapter);
 
-                int buffer = 1024;
-                byte data[] = new byte[buffer];
+                                      int buffer = 1024;
+                                      byte data[] = new byte[buffer];
 
-                for (File file : chapterFolder.listFiles()) {
-                    try (FileInputStream fi = new FileInputStream(file);
-                         BufferedInputStream origin = new BufferedInputStream(fi, buffer)) {
+                                      for (File file : chapterFolder.listFiles()) {
+                                          try (FileInputStream fi = new FileInputStream(file);
+                                               BufferedInputStream origin = new BufferedInputStream(fi, buffer)) {
 
-                        ZipEntry entry = new ZipEntry(file.getName());
-                        out.putNextEntry(entry);
+                                              ZipEntry entry = new ZipEntry(file.getName());
+                                              out.putNextEntry(entry);
 
-                        int count;
-                        while ((count = origin.read(data, 0, buffer)) != -1) {
-                            out.write(data, 0, count);
-                        }
-                    }
-                }
+                                              int count;
+                                              while ((count = origin.read(data, 0, buffer)) != -1) {
+                                                  out.write(data, 0, count);
+                                              }
+                                          }
+                                      }
 
-                for (File file : chapterFolder.listFiles()) {
-                    file.delete();
-                }
+                                      for (File file : chapterFolder.listFiles()) {
+                                          file.delete();
+                                      }
 
-                chapterFolder.delete();
+                                      chapterFolder.delete();
 
-            } catch (IOException e) {
-                Log.e("MangaDownloadManager", "Error when zip chapter");
+                                  } catch (IOException e) {
+                                      Log.e("MangaDownloadManager", "Error when zip chapter");
 
-                if (zipFile.exists()) {
-                    zipFile.delete();
-                }
-            }
-        }))
+                                      if (zipFile.exists()) {
+                                          zipFile.delete();
+                                      }
+                                  } finally {
+                                      subscriber.onCompleted();
+                                  }
+                              }
+                          }
+        )
                 .subscribeOn(Schedulers.io())
                 .subscribe();
 

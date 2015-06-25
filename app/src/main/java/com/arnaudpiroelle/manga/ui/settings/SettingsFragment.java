@@ -7,13 +7,12 @@ import android.preference.PreferenceFragment;
 import com.arnaudpiroelle.manga.R;
 import com.arnaudpiroelle.manga.service.DownloadService;
 
-import java.util.Objects;
-
 public class SettingsFragment extends PreferenceFragment {
 
     private Preference autoUpdate;
 
     private Preference intervalUpdate;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,8 +26,18 @@ public class SettingsFragment extends PreferenceFragment {
         autoUpdate = findPreference(getString(R.string.pref_auto_update_key));
         intervalUpdate = findPreference(getString(R.string.pref_intervalpicker_key));
 
-        autoUpdate.setOnPreferenceChangeListener(this::onSchedulerPreferenceChangeListener);
-        intervalUpdate.setOnPreferenceChangeListener(this::onSchedulerPreferenceChangeListener);
+        autoUpdate.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                return onSchedulerPreferenceChangeListener(preference, newValue);
+            }
+        });
+        intervalUpdate.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                return onSchedulerPreferenceChangeListener(preference, newValue);
+            }
+        });
 
     }
 
@@ -37,7 +46,7 @@ public class SettingsFragment extends PreferenceFragment {
         return true;
     }
 
-    public static SettingsFragment newInstance(){
+    public static SettingsFragment newInstance() {
         return new SettingsFragment();
     }
 }

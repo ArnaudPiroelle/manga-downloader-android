@@ -51,9 +51,9 @@ public class ProviderListingFragment extends Fragment implements ProviderListing
 
         GRAPH.inject(this);
 
-        adapter = new BaseAdapter<MangaProvider, MangaProviderView>(getActivity(),
+        adapter = new BaseAdapter<>(getActivity(),
                 R.layout.item_view_provider,
-                new ArrayList<>()
+                new ArrayList<MangaProvider>()
         );
 
         presenter = new ProviderListingPresenter(this, providerRegistry);

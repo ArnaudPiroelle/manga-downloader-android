@@ -8,7 +8,9 @@ import com.arnaudpiroelle.manga.model.Manga;
 import java.util.List;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class ProviderListingPresenter implements Presenter<MangaProvider> {
@@ -25,15 +27,22 @@ public class ProviderListingPresenter implements Presenter<MangaProvider> {
     public void list() {
         callback.onListingLoading();
 
-        Observable.<List<MangaProvider>>create(subscriber -> {
+        Observable.create(new Observable.OnSubscribe<List<MangaProvider>>() {
+            @Override
+            public void call(Subscriber<? super List<MangaProvider>> subscriber) {
+                subscriber.onNext(providerRegistry.list());
 
-            subscriber.onNext(providerRegistry.list());
-
-            subscriber.onCompleted();
+                subscriber.onCompleted();
+            }
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(callback::onListingLoaded);
+                .subscribe(new Action1<List<MangaProvider>>() {
+                    @Override
+                    public void call(List<MangaProvider> mangaProviders) {
+                        callback.onListingLoaded(mangaProviders);
+                    }
+                });
     }
 
     @Override
@@ -43,6 +52,7 @@ public class ProviderListingPresenter implements Presenter<MangaProvider> {
 
     public interface ProviderListingCallback {
         void onListingLoading();
+
         void onListingLoaded(List<MangaProvider> providers);
     }
 }
