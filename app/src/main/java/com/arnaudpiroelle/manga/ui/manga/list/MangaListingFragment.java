@@ -3,6 +3,7 @@ package com.arnaudpiroelle.manga.ui.manga.list;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -20,6 +21,8 @@ import com.arnaudpiroelle.manga.core.ui.presenter.Presenter;
 import com.arnaudpiroelle.manga.event.ChapterDownloadedEvent;
 import com.arnaudpiroelle.manga.event.MangaActionEvent;
 import com.arnaudpiroelle.manga.event.MangaUpdatedEvent;
+import com.arnaudpiroelle.manga.event.SwipeCloseEvent;
+import com.arnaudpiroelle.manga.event.SwipeStartEvent;
 import com.arnaudpiroelle.manga.model.Chapter;
 import com.arnaudpiroelle.manga.model.Manga;
 import com.arnaudpiroelle.manga.service.DownloadService;
@@ -57,6 +60,9 @@ public class MangaListingFragment extends Fragment implements SwipeRefreshLayout
 
     @InjectView(R.id.manga_empty)
     View emptyView;
+
+    @InjectView(R.id.action_add_manga)
+    FloatingActionButton addMangaButton;
 
     BaseAdapter<Manga, MangaView> adapter;
     Presenter<Manga> presenter;
@@ -178,6 +184,15 @@ public class MangaListingFragment extends Fragment implements SwipeRefreshLayout
         presenter.list();
 
         manualDownload();
+    }
+
+    public void onEventMainThread(SwipeStartEvent event) {
+        addMangaButton.animate().y(getView().getBottom()).start();
+    }
+
+    public void onEventMainThread(SwipeCloseEvent event) {
+        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) addMangaButton.getLayoutParams();
+        addMangaButton.animate().y(getView().getBottom() - lp.bottomMargin - addMangaButton.getHeight() ).start();
     }
 
     private void modifyManga(final Manga manga) {

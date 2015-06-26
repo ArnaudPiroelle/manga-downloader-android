@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.arnaudpiroelle.manga.R;
 import com.arnaudpiroelle.manga.core.ui.presenter.view.BaseItemView;
 import com.arnaudpiroelle.manga.event.MangaActionEvent;
+import com.arnaudpiroelle.manga.event.SwipeCloseEvent;
 import com.arnaudpiroelle.manga.event.SwipeStartEvent;
 import com.arnaudpiroelle.manga.model.Manga;
 import com.daimajia.swipe.SwipeLayout;
@@ -116,7 +117,7 @@ public class MangaView extends FrameLayout implements BaseItemView<Manga> {
 
             @Override
             public void onClose(SwipeLayout swipeLayout) {
-
+                eventBus.post(new SwipeCloseEvent());
             }
 
             @Override
