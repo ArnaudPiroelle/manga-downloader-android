@@ -52,7 +52,6 @@ public class ProviderMangaListingPresenter implements Presenter<Manga> {
         callback.onListingLoaded(mangas);
     }
 
-    @Override
     public void filter(final String query) {
         Observable.from(mangas)
                 .filter(new Func1<Manga, Boolean>() {

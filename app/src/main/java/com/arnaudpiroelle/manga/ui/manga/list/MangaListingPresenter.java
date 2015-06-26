@@ -45,11 +45,6 @@ public class MangaListingPresenter implements Presenter<Manga> {
                 });
     }
 
-    @Override
-    public void filter(String query) {
-
-    }
-
     public interface MangaListingCallback {
         void onListingLoading();
 

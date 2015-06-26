@@ -45,11 +45,6 @@ public class ProviderListingPresenter implements Presenter<MangaProvider> {
                 });
     }
 
-    @Override
-    public void filter(String query) {
-
-    }
-
     public interface ProviderListingCallback {
         void onListingLoading();
 

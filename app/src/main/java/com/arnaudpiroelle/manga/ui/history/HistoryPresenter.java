@@ -53,11 +53,6 @@ public class HistoryPresenter implements Presenter<History> {
                 });
     }
 
-    @Override
-    public void filter(String query) {
-
-    }
-
     public void cleanHistory() {
         Observable.from(Query.all(History.class).get().asList())
                 .subscribeOn(Schedulers.io())

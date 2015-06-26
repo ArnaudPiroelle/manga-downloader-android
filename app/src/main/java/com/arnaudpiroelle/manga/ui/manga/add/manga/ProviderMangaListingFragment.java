@@ -55,7 +55,7 @@ public class ProviderMangaListingFragment extends Fragment
     @InjectView(R.id.swipe_refresh) SwipeRefreshLayout swipeRefreshLayout;
     @InjectView(R.id.list_provider_mangas) ListView listView;
 
-    private Presenter<Manga> presenter;
+    private ProviderMangaListingPresenter presenter;
 
     private MangaProvider provider = null;
     private BaseAdapter<Manga, MangaView> adapter;
