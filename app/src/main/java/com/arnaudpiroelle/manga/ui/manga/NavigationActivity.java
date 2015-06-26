@@ -102,7 +102,7 @@ public class NavigationActivity extends AppCompatActivity implements NavigationV
         }
 
         navigationView.getMenu().findItem(mNavItemId).setChecked(true);
-        mDrawerLayout.closeDrawers();
+
     }
 
 
@@ -120,7 +120,11 @@ public class NavigationActivity extends AppCompatActivity implements NavigationV
 
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
-        navigate(menuItem.getItemId());
+        if (mNavItemId != menuItem.getItemId()){
+            navigate(menuItem.getItemId());
+        }
+
+        mDrawerLayout.closeDrawers();
         return true;
     }
 }
