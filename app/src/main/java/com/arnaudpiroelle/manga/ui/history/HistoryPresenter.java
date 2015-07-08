@@ -63,7 +63,8 @@ public class HistoryPresenter implements Presenter<History> {
                             public void call(History history) {
                                 history.delete();
                             }
-                        }, new Action1<Throwable>() {
+                        },
+                        new Action1<Throwable>() {
                             @Override
                             public void call(Throwable throwable) {
 

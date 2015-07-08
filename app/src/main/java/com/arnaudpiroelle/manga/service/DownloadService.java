@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.net.wifi.WifiManager;
 import android.os.Environment;
 import android.os.IBinder;
 import android.support.v7.app.NotificationCompat;
@@ -18,13 +17,13 @@ import android.util.Log;
 
 import com.arnaudpiroelle.manga.R;
 import com.arnaudpiroelle.manga.core.provider.ProviderRegistry;
+import com.arnaudpiroelle.manga.core.utils.PreferencesHelper;
 import com.arnaudpiroelle.manga.event.ChapterDownloadedEvent;
 import com.arnaudpiroelle.manga.model.Chapter;
 import com.arnaudpiroelle.manga.model.Manga;
 import com.arnaudpiroelle.manga.model.Page;
 import com.arnaudpiroelle.manga.service.MangaDownloadManager.MangaDownloaderCallback;
 import com.arnaudpiroelle.manga.ui.manga.NavigationActivity;
-import com.arnaudpiroelle.manga.core.utils.PreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -129,6 +128,10 @@ public class DownloadService extends Service implements MangaDownloaderCallback 
                 .setContentIntent(getPendingIntent())
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setOngoing(true);
+
+        mDownloadNotificationBuilder
+                .setContentIntent(getPendingIntent())
+                .setSmallIcon(R.mipmap.ic_launcher);
 
         mNotifyManager.notify(PROGRESS_NOTIFICATION_ID, mProgressNotificationBuilder.build());
 
