@@ -20,6 +20,7 @@ import com.arnaudpiroelle.manga.core.provider.ProviderRegistry;
 import com.arnaudpiroelle.manga.core.utils.PreferencesHelper;
 import com.arnaudpiroelle.manga.event.ChapterDownloadedEvent;
 import com.arnaudpiroelle.manga.model.Chapter;
+import com.arnaudpiroelle.manga.model.History;
 import com.arnaudpiroelle.manga.model.Manga;
 import com.arnaudpiroelle.manga.model.Page;
 import com.arnaudpiroelle.manga.service.MangaDownloadManager.MangaDownloaderCallback;
@@ -43,12 +44,10 @@ import static com.arnaudpiroelle.manga.model.History.HistoryBuilder.createHisotr
 
 public class DownloadService extends Service implements MangaDownloaderCallback {
 
-    private static final int PROGRESS_NOTIFICATION_ID = 1234567890;
-    private static final int DOWNLOAD_NOTIFICATION_ID = 987654321;
-
     public static final String UPDATE_SCHEDULING = "UPDATE_SCHEDULING";
     public static final String MANUAL_DOWNLOAD = "MANUAL_DOWNLOAD";
-
+    private static final int PROGRESS_NOTIFICATION_ID = 1234567890;
+    private static final int DOWNLOAD_NOTIFICATION_ID = 987654321;
     @Inject
     ProviderRegistry providerRegistry;
 
@@ -75,6 +74,13 @@ public class DownloadService extends Service implements MangaDownloaderCallback 
     private Map<String, List<Chapter>> downloadCounter;
     private int pageIndex = 0;
     private boolean running = false;
+
+    public static void updateScheduling(Context context) {
+        Intent serviceIntent = new Intent(context, DownloadService.class);
+        serviceIntent.setAction(DownloadService.UPDATE_SCHEDULING);
+
+        context.startService(serviceIntent);
+    }
 
     @Override
     public void onCreate() {
@@ -117,6 +123,14 @@ public class DownloadService extends Service implements MangaDownloaderCallback 
         if (running || !manualDownload && !mWifi.isConnected() && updateOnWifiOnly) {
             return;
         }
+
+        History.HistoryBuilder.createHisotry()
+                .withDate(new Date())
+                .withLabel(getString(manualDownload ?
+                        R.string.check_manual_manga_availability :
+                        R.string.check_manga_availability))
+                .build()
+                .save();
 
         running = true;
         downloadCounter = new HashMap<>();
@@ -176,7 +190,7 @@ public class DownloadService extends Service implements MangaDownloaderCallback 
     @Override
     public void onCompleteChapter(Manga manga, Chapter chapter) {
 
-        if (preferencesHelper.isCompressChapter()){
+        if (preferencesHelper.isCompressChapter()) {
             mangaDownloadManager.zipChapter(manga, chapter);
         }
 
@@ -256,7 +270,7 @@ public class DownloadService extends Service implements MangaDownloaderCallback 
             alarmManager.cancel(pendingIntent);
         }
 
-        if (preferencesHelper.isAutoUpdate()){
+        if (preferencesHelper.isAutoUpdate()) {
             long interval = Long.parseLong(preferencesHelper.getUpdateInterval()) * 60 * 1000;
 
             alarmManager.setRepeating(
@@ -265,12 +279,5 @@ public class DownloadService extends Service implements MangaDownloaderCallback 
                     interval,
                     pendingIntent);
         }
-    }
-
-    public static void updateScheduling(Context context) {
-        Intent serviceIntent = new Intent(context, DownloadService.class);
-        serviceIntent.setAction(DownloadService.UPDATE_SCHEDULING);
-
-        context.startService(serviceIntent);
     }
 }
