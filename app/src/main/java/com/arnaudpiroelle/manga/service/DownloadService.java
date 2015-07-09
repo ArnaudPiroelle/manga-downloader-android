@@ -47,6 +47,7 @@ public class DownloadService extends Service implements MangaDownloaderCallback 
     private static final int DOWNLOAD_NOTIFICATION_ID = 987654321;
 
     public static final String UPDATE_SCHEDULING = "UPDATE_SCHEDULING";
+    public static final String MANUAL_DOWNLOAD = "MANUAL_DOWNLOAD";
 
     @Inject
     ProviderRegistry providerRegistry;
@@ -103,17 +104,17 @@ public class DownloadService extends Service implements MangaDownloaderCallback 
         if (UPDATE_SCHEDULING.equals(intent.getAction())) {
             updateScheduling();
         } else {
-            startDownload();
+            startDownload(MANUAL_DOWNLOAD.equals(intent.getAction()));
         }
 
         return START_NOT_STICKY;
     }
 
-    private void startDownload() {
+    private void startDownload(boolean manualDownload) {
         boolean updateOnWifiOnly = preferencesHelper.isUpdateOnWifiOnly();
 
         NetworkInfo mWifi = mConnectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        if (running || !mWifi.isConnected() && updateOnWifiOnly) {
+        if (running || !manualDownload && !mWifi.isConnected() && updateOnWifiOnly) {
             return;
         }
 

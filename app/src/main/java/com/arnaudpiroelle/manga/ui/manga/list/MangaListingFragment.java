@@ -161,7 +161,10 @@ public class MangaListingFragment extends Fragment implements SwipeRefreshLayout
     }
 
     public void manualDownload() {
-        getActivity().startService(new Intent(getActivity(), DownloadService.class));
+        Intent manualDownload = new Intent(getActivity(), DownloadService.class);
+        manualDownload.setAction(DownloadService.MANUAL_DOWNLOAD);
+
+        getActivity().startService(manualDownload);
     }
 
     public void onEventMainThread(ChapterDownloadedEvent event) {
