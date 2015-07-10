@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'me.tatarka.retrolambda'
 
 def getBuildNumber() {
     return System.getenv("CIRCLE_BUILD_NUM") as Integer ?: 0
@@ -20,6 +21,11 @@ android {
         targetSdkVersion 22
         versionCode getBuildNumber()
         versionName "1.1.0"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     signingConfigs {
