@@ -15,4 +15,4 @@ deployment:
     branch: release
     commands:
       - echo "apiSecret=$FABRIC_API_SECRET" > app/fabric.properties
-      - TERM=dumb ./gradlew assembleRelease crashlyticsUploadDistributionRelease --stacktrace
+      - TERM=dumb ./gradlew assembleRealRelease crashlyticsUploadDistributionRealRelease --stacktrace
