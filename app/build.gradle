@@ -31,6 +31,24 @@ android {
         }
     }
 
+    productFlavors {
+        mock {
+            buildConfigField 'String', 'JAPSCAN_BASE_URL', '"http://192.168.60.1:8989/japscan"'
+            buildConfigField 'String', 'JAPSCAN_CDN_BASE_URL', '"http://192.168.60.1:8989/japscan"'
+
+            buildConfigField 'String', 'MANGAPANDA_BASE_URL', '"http://192.168.60.1:8989/mangapanda"'
+            buildConfigField 'String', 'MANGAPANDA_CDN_BASE_URL', '"http://192.168.60.1:8989/mangapanda"'
+        }
+
+        real {
+            buildConfigField 'String', 'JAPSCAN_BASE_URL', '"http://www.japscan.com"'
+            buildConfigField 'String', 'JAPSCAN_CDN_BASE_URL', '"http://cdn.japscan.com"'
+
+            buildConfigField 'String', 'MANGAPANDA_BASE_URL', '"http://www.mangapanda.com"'
+            buildConfigField 'String', 'MANGAPANDA_CDN_BASE_URL', '"http://i10.mangacdn.com"'
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -41,6 +59,7 @@ android {
             signingConfig signingConfigs.release
         }
     }
+
 
 }
 
