@@ -2,9 +2,9 @@ package com.arnaudpiroelle.manga.core.inject.module;
 
 import android.content.Context;
 
-import com.arnaudpiroelle.manga.MangaApplication;
 import com.arnaudpiroelle.manga.core.provider.ProviderRegistry;
 import com.arnaudpiroelle.manga.provider.japscan.downloader.JapScanDownloader;
+import com.arnaudpiroelle.manga.provider.mangapanda.downloader.MangaPandaDownloader;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;
@@ -46,9 +46,9 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    public ProviderRegistry providesProviderRegistry(JapScanDownloader japScanDownloader) {
+    public ProviderRegistry providesProviderRegistry(JapScanDownloader japScanDownloader, MangaPandaDownloader mangaPandaDownloader) {
         return createProviderRegister()
-                .withProvider(japScanDownloader)
+                .withProvider(japScanDownloader, mangaPandaDownloader)
                 .build();
     }
 

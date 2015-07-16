@@ -80,7 +80,7 @@ public class Manga extends Model implements Comparable<Manga>{
 
     @Override
     public int compareTo(Manga another) {
-        return name.compareTo(another.getName());
+        return name.trim().compareTo(another.getName());
     }
 
     public static class MangaBuilder {

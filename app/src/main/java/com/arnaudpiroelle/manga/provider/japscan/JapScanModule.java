@@ -1,5 +1,6 @@
 package com.arnaudpiroelle.manga.provider.japscan;
 
+import com.arnaudpiroelle.manga.BuildConfig;
 import com.arnaudpiroelle.manga.provider.japscan.api.JapScanApiService;
 import com.arnaudpiroelle.manga.provider.japscan.api.JapScanDataApiService;
 import com.arnaudpiroelle.manga.provider.japscan.downloader.JapScanDownloader;
@@ -12,6 +13,9 @@ import dagger.Provides;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 
+import static com.arnaudpiroelle.manga.BuildConfig.JAPSCAN_BASE_URL;
+import static com.arnaudpiroelle.manga.BuildConfig.JAPSCAN_CDN_BASE_URL;
+import static retrofit.RestAdapter.LogLevel.BASIC;
 import static retrofit.RestAdapter.LogLevel.NONE;
 
 @Module
@@ -22,7 +26,7 @@ public class JapScanModule {
     @Named("JapScanRestAdapter")
     public RestAdapter provideJapScanRestAdapter(OkClient client) {
         return new RestAdapter.Builder()
-                .setEndpoint("http://www.japscan.com")
+                .setEndpoint(JAPSCAN_BASE_URL)
                 .setLogLevel(NONE)
                 .setClient(client)
                 .build();
@@ -33,7 +37,7 @@ public class JapScanModule {
     @Named("JapScanCdnRestAdapter")
     public RestAdapter provideJapScanCdnRestAdapter(OkClient client) {
         return new RestAdapter.Builder()
-                .setEndpoint("http://cdn.japscan.com")
+                .setEndpoint(JAPSCAN_CDN_BASE_URL)
                 .setLogLevel(NONE)
                 .setClient(client)
                 .build();
