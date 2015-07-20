@@ -26,19 +26,8 @@ public class SettingsFragment extends PreferenceFragment {
         autoUpdate = findPreference(getString(R.string.pref_auto_update_key));
         intervalUpdate = findPreference(getString(R.string.pref_intervalpicker_key));
 
-        autoUpdate.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                return onSchedulerPreferenceChangeListener(preference, newValue);
-            }
-        });
-        intervalUpdate.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                return onSchedulerPreferenceChangeListener(preference, newValue);
-            }
-        });
-
+        autoUpdate.setOnPreferenceChangeListener(this::onSchedulerPreferenceChangeListener);
+        intervalUpdate.setOnPreferenceChangeListener(this::onSchedulerPreferenceChangeListener);
     }
 
     private boolean onSchedulerPreferenceChangeListener(Preference preference, Object newValue) {

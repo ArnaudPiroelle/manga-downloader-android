@@ -45,12 +45,7 @@ public class HistoryPresenter implements Presenter<History> {
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<History>>() {
-                    @Override
-                    public void call(List<History> histories) {
-                        callback.onListingLoaded(histories);
-                    }
-                });
+                .subscribe(callback::onListingLoaded);
     }
 
     public void cleanHistory() {
@@ -58,24 +53,11 @@ public class HistoryPresenter implements Presenter<History> {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        new Action1<History>() {
-                            @Override
-                            public void call(History history) {
-                                history.delete();
-                            }
-                        },
-                        new Action1<Throwable>() {
-                            @Override
-                            public void call(Throwable throwable) {
+                        History::delete,
+                        throwable -> {
 
-                            }
                         },
-                        new Action0() {
-                            @Override
-                            public void call() {
-                                list();
-                            }
-                        });
+                        this::list);
     }
 
     public interface HistoryListingCallback {

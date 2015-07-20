@@ -39,9 +39,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.arnaudpiroelle.manga.MangaApplication.GRAPH;
@@ -195,28 +193,22 @@ public class MangaListingFragment extends Fragment implements SwipeRefreshLayout
 
     public void onEventMainThread(SwipeCloseEvent event) {
         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) addMangaButton.getLayoutParams();
-        addMangaButton.animate().y(getView().getBottom() - lp.bottomMargin - addMangaButton.getHeight() ).start();
+        addMangaButton.animate().y(getView().getBottom() - lp.bottomMargin - addMangaButton.getHeight()).start();
     }
 
     private void modifyManga(final Manga manga) {
-        Observable.create(new Observable.OnSubscribe<List<Chapter>>() {
-            @Override
-            public void call(Subscriber<? super List<Chapter>> subscriber) {
-                subscriber.onNext(providerRegistry.get(manga.getProvider()).findChapters(manga));
-                subscriber.onCompleted();
-            }
+        Observable.<List<Chapter>>create(subscriber -> {
+            subscriber.onNext(providerRegistry.get(manga.getProvider()).findChapters(manga));
+            subscriber.onCompleted();
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<Chapter>>() {
-                    @Override
-                    public void call(List<Chapter> chapters) {
-                        manga.setChapters(chapters);
+                .subscribe(chapters -> {
+                    manga.setChapters(chapters);
 
-                        ModifyMangaDialogFragment modifyMangaDialogFragment = new ModifyMangaDialogFragment();
-                        modifyMangaDialogFragment.setManga(manga);
-                        modifyMangaDialogFragment.show(getActivity().getFragmentManager(), null);
-                    }
+                    ModifyMangaDialogFragment modifyMangaDialogFragment = new ModifyMangaDialogFragment();
+                    modifyMangaDialogFragment.setManga(manga);
+                    modifyMangaDialogFragment.show(getActivity().getFragmentManager(), null);
                 });
     }
 
