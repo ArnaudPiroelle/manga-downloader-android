@@ -2,7 +2,6 @@ package com.arnaudpiroelle.manga.ui.history;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -14,15 +13,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class HistoryView extends LinearLayout implements BaseItemView<History>{
 
     private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yy hh:mm", Locale.getDefault());
 
-    @InjectView(R.id.history_date) TextView date;
-    @InjectView(R.id.history_label) TextView label;
+    @Bind(R.id.history_date) TextView date;
+    @Bind(R.id.history_label) TextView label;
 
     public HistoryView(Context context) {
         super(context);
@@ -39,7 +38,7 @@ public class HistoryView extends LinearLayout implements BaseItemView<History>{
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override

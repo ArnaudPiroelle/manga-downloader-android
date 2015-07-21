@@ -35,7 +35,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 import rx.Observable;
@@ -51,15 +51,16 @@ public class MangaListingFragment extends Fragment implements SwipeRefreshLayout
     @Inject
     ProviderRegistry providerRegistry;
 
-    @InjectView(R.id.list_manga)
+    @Bind(R.id.list_manga)
     ListView listView;
-    @InjectView(R.id.swipe_refresh)
+
+    @Bind(R.id.swipe_refresh)
     SwipeRefreshLayout swipeRefreshLayout;
 
-    @InjectView(R.id.manga_empty)
+    @Bind(R.id.manga_empty)
     View emptyView;
 
-    @InjectView(R.id.action_add_manga)
+    @Bind(R.id.action_add_manga)
     FloatingActionButton addMangaButton;
 
     BaseAdapter<Manga, MangaView> adapter;
@@ -79,7 +80,7 @@ public class MangaListingFragment extends Fragment implements SwipeRefreshLayout
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_listing_manga, container, false);
 
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
 
         return view;
     }

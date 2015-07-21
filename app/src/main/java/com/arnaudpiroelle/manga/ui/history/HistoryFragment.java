@@ -22,8 +22,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import de.greenrobot.event.EventBus;
 
 import static com.arnaudpiroelle.manga.MangaApplication.GRAPH;
@@ -32,9 +32,9 @@ public class HistoryFragment extends Fragment implements HistoryPresenter.Histor
 
     @Inject EventBus eventBus;
 
-    @InjectView(R.id.swipe_refresh) SwipeRefreshLayout swipeRefreshLayout;
-    @InjectView(R.id.list_history) ListView listView;
-    @InjectView(R.id.history_empty) View emptyView;
+    @Bind(R.id.swipe_refresh) SwipeRefreshLayout swipeRefreshLayout;
+    @Bind(R.id.list_history) ListView listView;
+    @Bind(R.id.history_empty) View emptyView;
 
     HistoryPresenter presenter;
     BaseAdapter<History, HistoryView> adapter;
@@ -56,7 +56,7 @@ public class HistoryFragment extends Fragment implements HistoryPresenter.Histor
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_listing_history, container, false);
 
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
 
         listView.setEmptyView(emptyView);
         listView.setAdapter(adapter);

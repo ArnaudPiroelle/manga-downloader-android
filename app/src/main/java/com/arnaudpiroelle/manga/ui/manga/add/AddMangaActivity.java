@@ -18,8 +18,8 @@ import com.arnaudpiroelle.manga.ui.manga.add.provider.ProviderListingFragment;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import de.greenrobot.event.EventBus;
 
 import static com.arnaudpiroelle.manga.MangaApplication.GRAPH;
@@ -27,7 +27,7 @@ import static com.arnaudpiroelle.manga.ui.manga.add.manga.ProviderMangaListingFr
 
 public class AddMangaActivity extends AppCompatActivity {
 
-    @InjectView(R.id.toolbar) Toolbar toolbar;
+    @Bind(R.id.toolbar) Toolbar toolbar;
 
     @Inject
     EventBus eventBus;
@@ -38,7 +38,7 @@ public class AddMangaActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_add_manga);
 
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         GRAPH.inject(this);
 
         setSupportActionBar(toolbar);

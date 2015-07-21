@@ -1,6 +1,7 @@
 package com.arnaudpiroelle.manga.ui.manga.list;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -16,10 +17,9 @@ import com.daimajia.swipe.SwipeLayout;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
-import butterknife.Optional;
 import de.greenrobot.event.EventBus;
 
 import static com.arnaudpiroelle.manga.MangaApplication.GRAPH;
@@ -28,20 +28,14 @@ import static com.arnaudpiroelle.manga.event.MangaActionEvent.ActionType.REMOVE;
 
 public class MangaView extends FrameLayout implements BaseItemView<Manga> {
 
-    private Manga manga;
-
     @Inject EventBus eventBus;
 
-    @InjectView(R.id.title) TextView title;
+    @Bind(R.id.title) TextView title;
+    @Bind(R.id.chapter) @Nullable TextView chapter;
+    @Bind(R.id.instance_swipe_layout) @Nullable SwipeLayout swipeView;
+    @Bind(R.id.manga_action) @Nullable ViewGroup mangaActionView;
 
-    @Optional
-    @InjectView(R.id.chapter) TextView chapter;
-
-    @Optional
-    @InjectView(R.id.instance_swipe_layout) SwipeLayout swipeView;
-
-    @Optional
-    @InjectView(R.id.manga_action) ViewGroup mangaActionView;
+    private Manga manga;
 
     public MangaView(Context context) {
         super(context);
@@ -58,14 +52,14 @@ public class MangaView extends FrameLayout implements BaseItemView<Manga> {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if(eventBus != null){
+        if (eventBus != null) {
             eventBus.register(this);
         }
     }
 
     @Override
     protected void onDetachedFromWindow() {
-        if(eventBus != null){
+        if (eventBus != null) {
             eventBus.unregister(this);
         }
         super.onDetachedFromWindow();
@@ -74,24 +68,31 @@ public class MangaView extends FrameLayout implements BaseItemView<Manga> {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override
     public void bindView(Manga manga) {
-            GRAPH.inject(this);
+        GRAPH.inject(this);
 
-        if(swipeView != null){
+        if (swipeView != null) {
             setupSwipe();
         }
+
         this.manga = manga;
 
         title.setText(manga.getName());
 
         String lastChapter = manga.getLastChapter();
-        if(lastChapter != null && !lastChapter.isEmpty()){
-            chapter.setText(lastChapter);
-            chapter.setVisibility(VISIBLE);
+        if (lastChapter != null && !lastChapter.isEmpty()) {
+            if (chapter != null) {
+                chapter.setText(lastChapter);
+                chapter.setVisibility(VISIBLE);
+            }
+        } else {
+            if (chapter != null) {
+                chapter.setText("");
+            }
         }
 
     }
@@ -132,16 +133,12 @@ public class MangaView extends FrameLayout implements BaseItemView<Manga> {
         });
     }
 
-    @Optional
-    @OnClick(R.id.manga_modify)
-    public void modify(){
+    @Nullable @OnClick(R.id.manga_modify) public void modify() {
         eventBus.post(new MangaActionEvent(manga, MODIFY));
         swipeView.close();
     }
 
-    @Optional
-    @OnClick(R.id.manga_remove)
-    public void remove(){
+    @Nullable @OnClick(R.id.manga_remove) public void remove() {
         eventBus.post(new MangaActionEvent(manga, REMOVE));
         swipeView.close();
     }

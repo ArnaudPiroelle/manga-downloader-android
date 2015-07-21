@@ -21,8 +21,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnItemClick;
 import de.greenrobot.event.EventBus;
 
@@ -36,10 +36,10 @@ public class ProviderListingFragment extends Fragment implements ProviderListing
     @Inject
     EventBus eventBus;
 
-    @InjectView(R.id.swipe_refresh)
+    @Bind(R.id.swipe_refresh)
     SwipeRefreshLayout swipeRefreshLayout;
 
-    @InjectView(R.id.list_provider)
+    @Bind(R.id.list_provider)
     ListView listView;
 
     private Presenter<MangaProvider> presenter;
@@ -53,7 +53,7 @@ public class ProviderListingFragment extends Fragment implements ProviderListing
 
         adapter = new BaseAdapter<>(getActivity(),
                 R.layout.item_view_provider,
-                new ArrayList<MangaProvider>()
+                new ArrayList<>()
         );
 
         presenter = new ProviderListingPresenter(this, providerRegistry);
@@ -64,7 +64,7 @@ public class ProviderListingFragment extends Fragment implements ProviderListing
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_listing_provider, container, false);
 
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
 
         listView.setAdapter(adapter);
         swipeRefreshLayout.setOnRefreshListener(this);
