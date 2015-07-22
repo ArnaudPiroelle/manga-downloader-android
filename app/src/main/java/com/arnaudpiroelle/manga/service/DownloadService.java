@@ -48,6 +48,7 @@ public class DownloadService extends Service implements MangaDownloaderCallback 
     public static final String MANUAL_DOWNLOAD = "MANUAL_DOWNLOAD";
     private static final int PROGRESS_NOTIFICATION_ID = 1234567890;
     private static final int DOWNLOAD_NOTIFICATION_ID = 987654321;
+
     @Inject
     ProviderRegistry providerRegistry;
 

@@ -1,5 +1,7 @@
 package com.arnaudpiroelle.manga.provider.mangapanda.downloader;
 
+import android.support.annotation.VisibleForTesting;
+
 import com.arnaudpiroelle.manga.core.provider.MangaProvider;
 import com.arnaudpiroelle.manga.core.utils.HttpUtils;
 import com.arnaudpiroelle.manga.model.Chapter;
@@ -84,7 +86,7 @@ public class MangaPandaDownloader implements MangaProvider{
         return "MangaPanda";
     }
 
-    private List<Manga> parseMangaList(String body) {
+    @VisibleForTesting List<Manga> parseMangaList(String body) {
         List<Manga> mangas = new ArrayList<Manga>();
 
         Pattern pattern = Pattern.compile("<li><a href=\"\\/([^\"]+)\">([^<]+)<\\/a>(<span class=\"mangacompleted\">\\[Completed]<\\/span>)?<\\/li>");
@@ -106,7 +108,7 @@ public class MangaPandaDownloader implements MangaProvider{
         return mangas;
     }
 
-    private List<Chapter> parseMangaChapters(String body) {
+    @VisibleForTesting List<Chapter> parseMangaChapters(String body) {
         List<Chapter> chapters = new ArrayList<Chapter>();
 
         Pattern pattern = Pattern.compile("<td>([^<]*)<div class=\"chico_manga\"><\\/div>([^<]*)<a href=\"\\/([^\\/]*)\\/([^\"]*)\">([^<]*)<\\/a>([^<]*)<\\/td>");
@@ -128,7 +130,7 @@ public class MangaPandaDownloader implements MangaProvider{
         return chapters;
     }
 
-    private List<Page> parseMangaChapterPages(String body) {
+    @VisibleForTesting List<Page> parseMangaChapterPages(String body) {
         List<Page> pages = new ArrayList<Page>();
 
         Pattern pattern = Pattern.compile("<option value=\"\\/([^\\/]+)\\/([^\\/\"]+)(\\/([^\"]+))?\"( selected=\"selected\")?>([0-9]+)<\\/option>");
@@ -150,7 +152,7 @@ public class MangaPandaDownloader implements MangaProvider{
         return pages;
     }
 
-    private Page parseMangaChapterPage(String body) {
+    @VisibleForTesting Page parseMangaChapterPage(String body) {
         Pattern pattern = Pattern.compile("src=\"http:\\/\\/([^.]+).mangacdn.com\\/([^\"]+)\\/([^\"]+)\\/([^\".]+).([^\"]+)\" alt=\"([^-]+)- Page ([^\"]+)");
         Matcher matcher = pattern.matcher(body);
         while (matcher.find()) {
