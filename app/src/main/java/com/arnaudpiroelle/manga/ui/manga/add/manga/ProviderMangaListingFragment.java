@@ -144,14 +144,6 @@ public class ProviderMangaListingFragment extends Fragment
     public void onMangaClick(int position){
         Manga manga = adapter.getItem(position);
 
-        manga.save();
-
-        createHisotry()
-                .withDate(new Date())
-                .withLabel(manga.getName() + " added")
-                .build()
-                .save();
-
         eventBus.post(new MangaSelectedEvent(manga));
     }
 

@@ -6,6 +6,7 @@
     <string name="title_history">History</string>
     <string name="title_providers">Select provider</string>
     <string name="title_provider_mangas">Select manga</string>
+    <string name="title_provider_manga_chapters">Select last chapter</string>
 
     <string name="action_download">Download</string>
 

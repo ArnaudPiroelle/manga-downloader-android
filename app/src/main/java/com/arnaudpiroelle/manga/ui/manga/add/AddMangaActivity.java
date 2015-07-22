@@ -10,11 +10,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.arnaudpiroelle.manga.R;
+import com.arnaudpiroelle.manga.event.ChapterSelectedEvent;
 import com.arnaudpiroelle.manga.event.MangaSelectedEvent;
 import com.arnaudpiroelle.manga.event.ProviderSelectedEvent;
+import com.arnaudpiroelle.manga.model.Manga;
 import com.arnaudpiroelle.manga.service.DownloadService;
+import com.arnaudpiroelle.manga.ui.manga.add.chapter.ProviderMangaChaptersListingFragment;
 import com.arnaudpiroelle.manga.ui.manga.add.manga.ProviderMangaListingFragment;
 import com.arnaudpiroelle.manga.ui.manga.add.provider.ProviderListingFragment;
+
+import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -23,6 +28,8 @@ import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 
 import static com.arnaudpiroelle.manga.MangaApplication.GRAPH;
+import static com.arnaudpiroelle.manga.model.History.HistoryBuilder.createHisotry;
+import static com.arnaudpiroelle.manga.ui.manga.add.chapter.ProviderMangaChaptersListingFragment.MANGA;
 import static com.arnaudpiroelle.manga.ui.manga.add.manga.ProviderMangaListingFragment.PROVIDER_NAME;
 
 public class AddMangaActivity extends AppCompatActivity {
@@ -97,11 +104,35 @@ public class AddMangaActivity extends AppCompatActivity {
         replace(R.id.add_content, fragment, true);
     }
 
+    private void displayMangasChapters(Manga manga) {
+        final Bundle bundle = new Bundle();
+        bundle.putParcelable(MANGA, manga);
+
+        ProviderMangaChaptersListingFragment fragment = new ProviderMangaChaptersListingFragment();
+        fragment.setArguments(bundle);
+
+        replace(R.id.add_content, fragment, true);
+    }
+
     public void onEventMainThread(ProviderSelectedEvent event){
         displayProviderMangas(event.provider);
     }
 
     public void onEventMainThread(MangaSelectedEvent event){
+        displayMangasChapters(event.manga);
+    }
+
+    public void onEventMainThread(ChapterSelectedEvent event){
+        Manga manga = event.manga;
+
+        manga.save();
+
+        createHisotry()
+                .withDate(new Date())
+                .withLabel(manga.getName() + " added")
+                .build()
+                .save();
+
         startService(new Intent(this, DownloadService.class));
         finish();
     }

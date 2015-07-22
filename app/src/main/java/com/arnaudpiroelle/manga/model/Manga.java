@@ -1,5 +1,8 @@
 package com.arnaudpiroelle.manga.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 import se.emilsjolander.sprinkles.Model;
@@ -9,7 +12,7 @@ import se.emilsjolander.sprinkles.annotations.Key;
 import se.emilsjolander.sprinkles.annotations.Table;
 
 @Table("Mangas")
-public class Manga extends Model implements Comparable<Manga>{
+public class Manga extends Model implements Comparable<Manga>, Parcelable{
 
     @Key
     @AutoIncrement
@@ -81,6 +84,16 @@ public class Manga extends Model implements Comparable<Manga>{
     @Override
     public int compareTo(Manga another) {
         return name.trim().compareTo(another.getName());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
     }
 
     public static class MangaBuilder {
