@@ -156,7 +156,7 @@ public class JapScanDownloader implements MangaProvider {
             String mangaAlias = URLDecoder.decode(matcher.group(1));
             String chapterNumber = URLDecoder.decode(matcher.group(2));
             String pageNumber = URLDecoder.decode(matcher.group(3));
-            String extension = URLDecoder.decode(matcher.group(4).toLowerCase());
+            String extension = URLDecoder.decode(matcher.group(4));
 
             Page page = createPage()
                     .withPageNumber(pageNumber)
