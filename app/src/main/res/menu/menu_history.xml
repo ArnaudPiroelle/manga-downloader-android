@@ -6,6 +6,6 @@
         android:id="@+id/action_clean_history"
         android:icon="@drawable/ic_delete"
         android:orderInCategory="100"
-        android:title="@string/action_download"
+        android:title="@string/action_clean_history"
         app:showAsAction="ifRoom|withText" />
 </menu>

@@ -37,16 +37,13 @@ public class ModifyMangaDialogFragment extends DialogFragment {
 
         dialogBuilder
                 .setTitle(R.string.dialog_select_chapter)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        int checkedItemPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                    int checkedItemPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
 
-                        String lastChapter = chaptersNames.get(checkedItemPosition);
-                        manga.setLastChapter(lastChapter);
+                    String lastChapter = chaptersNames.get(checkedItemPosition);
+                    manga.setLastChapter(lastChapter);
 
-                        eventBus.post(new MangaUpdatedEvent(manga));
-                    }
+                    eventBus.post(new MangaUpdatedEvent(manga));
                 });
 
 
@@ -58,11 +55,8 @@ public class ModifyMangaDialogFragment extends DialogFragment {
         }
         CharSequence[] charSequences = chaptersNames.toArray(new CharSequence[chaptersNames.size()]);
 
-        dialogBuilder.setSingleChoiceItems(charSequences, 0, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+        dialogBuilder.setSingleChoiceItems(charSequences, 0, (dialog, which) -> {
 
-            }
         });
 
         return dialogBuilder.create();

@@ -4,6 +4,7 @@ public class Page {
     private String mangaAlias;
     private String chapterNumber;
     private String pageNumber;
+    private String pageName;
     private String extension;
 
     public String getMangaAlias() {
@@ -38,6 +39,14 @@ public class Page {
         this.extension = extension;
     }
 
+    public String getPageName() {
+        return pageName;
+    }
+
+    public void setPageName(String pageName) {
+        this.pageName = pageName;
+    }
+
     public static class PageBuilder {
         private Page page;
 
@@ -66,6 +75,11 @@ public class Page {
 
         public PageBuilder withExtenstion(String extension) {
             page.setExtension(extension);
+            return this;
+        }
+
+        public PageBuilder withName(String name) {
+            page.setPageName(name);
             return this;
         }
 

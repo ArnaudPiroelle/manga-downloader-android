@@ -16,8 +16,8 @@ import com.arnaudpiroelle.manga.ui.history.HistoryFragment;
 import com.arnaudpiroelle.manga.ui.manga.list.MangaListingFragment;
 import com.arnaudpiroelle.manga.ui.settings.SettingsActivity;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 import static com.arnaudpiroelle.manga.MangaApplication.GRAPH;
 
@@ -25,11 +25,11 @@ public class NavigationActivity extends AppCompatActivity implements NavigationV
 
     private static final String NAV_ITEM_ID = "NAV_ITEM_ID";
 
-    @InjectView(R.id.toolbar)
+    @Bind(R.id.toolbar)
     Toolbar toolbar;
-    @InjectView(R.id.nav_view)
+    @Bind(R.id.nav_view)
     NavigationView navigationView;
-    @InjectView(R.id.drawer_layout)
+    @Bind(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
 
     private int mNavItemId = R.id.nav_mymangas;
@@ -41,7 +41,7 @@ public class NavigationActivity extends AppCompatActivity implements NavigationV
         setContentView(R.layout.activity_navigation);
 
         GRAPH.inject(this);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         if (savedInstanceState == null) {
             mNavItemId = R.id.nav_mymangas;

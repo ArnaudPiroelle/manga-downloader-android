@@ -6,6 +6,7 @@
     <string name="title_history">History</string>
     <string name="title_providers">Select provider</string>
     <string name="title_provider_mangas">Select manga</string>
+    <string name="title_provider_manga_chapters">Select last chapter</string>
 
     <string name="action_download">Download</string>
 
@@ -43,4 +44,7 @@
     <string name="message_hint">Hey!</string>
     <string name="message_empty_instance">You do not have any manga yet, why don\'t you start now by using the create button?</string>
     <string name="message_empty_history">You do not have any history yet</string>
+    <string name="action_clean_history">Clean</string>
+    <string name="check_manga_availability">Check mangas availabilities</string>
+    <string name="check_manual_manga_availability">Manual check mangas availabilities</string>
 </resources>

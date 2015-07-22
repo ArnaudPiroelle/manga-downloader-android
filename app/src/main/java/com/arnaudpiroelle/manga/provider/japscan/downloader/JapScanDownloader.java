@@ -1,6 +1,8 @@
 package com.arnaudpiroelle.manga.provider.japscan.downloader;
 
 
+import android.support.annotation.VisibleForTesting;
+
 import com.arnaudpiroelle.manga.core.provider.MangaProvider;
 import com.arnaudpiroelle.manga.core.utils.HttpUtils;
 import com.arnaudpiroelle.manga.model.Chapter;
@@ -81,7 +83,7 @@ public class JapScanDownloader implements MangaProvider {
         return "JapScan";
     }
 
-    List<Manga> parseMangaList(String body) {
+    @VisibleForTesting List<Manga> parseMangaList(String body) {
         List<Manga> mangas = new ArrayList<Manga>();
 
         Pattern pattern = Pattern.compile("<div class=\"row\"><div class=\"cell\"><a href=\"\\/mangas\\/([^\"]+)\\/\">([^<]+)<\\/a><\\/div><div class=\"cell\">([^<]+)<\\/div><div class=\"cell\">([^<]+)<\\/div><div class=\"cell\"><a href=\"([^\"]+)\">([^<]+)<\\/a><\\/div><\\/div>");
@@ -103,7 +105,7 @@ public class JapScanDownloader implements MangaProvider {
         return mangas;
     }
 
-    List<Chapter> parseMangaChapters(String body) {
+    @VisibleForTesting List<Chapter> parseMangaChapters(String body) {
         List<Chapter> chapters = new ArrayList<Chapter>();
 
         Pattern pattern = Pattern.compile("<li><a href=\"\\/\\/www.japscan.com\\/lecture-en-ligne\\/([^\"]+)\\/([^\"]*)\\/\">([^<]*)<\\/a><\\/li>");
@@ -125,7 +127,7 @@ public class JapScanDownloader implements MangaProvider {
         return chapters;
     }
 
-    List<Page> parseMangaChapterPages(String body) {
+    @VisibleForTesting List<Page> parseMangaChapterPages(String body) {
         List<Page> pages = new ArrayList<Page>();
 
         Pattern pattern = Pattern.compile("<option value=\"\\/lecture-en-ligne\\/([^\"]+)\\/([^\"]+)\\/([^\"]+).html\"( selected=\"selected\")?>Page ([0-9]+)<\\/option>");
@@ -147,14 +149,14 @@ public class JapScanDownloader implements MangaProvider {
         return pages;
     }
 
-    Page parseMangaChapterPage(String body) {
+    @VisibleForTesting Page parseMangaChapterPage(String body) {
         Pattern pattern = Pattern.compile("src=\"\\/\\/cdn.japscan.com\\/lecture-en-ligne\\/([^\"]+)\\/([^\"]+)\\/([^\".]+).([^\"]+)\"");
         Matcher matcher = pattern.matcher(body);
         while (matcher.find()) {
             String mangaAlias = URLDecoder.decode(matcher.group(1));
             String chapterNumber = URLDecoder.decode(matcher.group(2));
             String pageNumber = URLDecoder.decode(matcher.group(3));
-            String extension = URLDecoder.decode(matcher.group(4).toLowerCase());
+            String extension = URLDecoder.decode(matcher.group(4));
 
             Page page = createPage()
                     .withPageNumber(pageNumber)
