@@ -17,6 +17,7 @@ import android.util.Log;
 
 import com.arnaudpiroelle.manga.R;
 import com.arnaudpiroelle.manga.core.provider.ProviderRegistry;
+import com.arnaudpiroelle.manga.core.utils.FileHelper;
 import com.arnaudpiroelle.manga.core.utils.PreferencesHelper;
 import com.arnaudpiroelle.manga.event.ChapterDownloadedEvent;
 import com.arnaudpiroelle.manga.model.Chapter;
@@ -67,6 +68,9 @@ public class DownloadService extends Service implements MangaDownloaderCallback 
     @Inject
     PreferencesHelper preferencesHelper;
 
+    @Inject
+    FileHelper fileHelper;
+
     private MangaDownloadManager mangaDownloadManager;
 
     private NotificationCompat.Builder mProgressNotificationBuilder = null;
@@ -89,7 +93,7 @@ public class DownloadService extends Service implements MangaDownloaderCallback 
 
         GRAPH.inject(this);
 
-        mangaDownloadManager = new MangaDownloadManager(this, providerRegistry);
+        mangaDownloadManager = new MangaDownloadManager(this, providerRegistry, fileHelper);
     }
 
     @Override

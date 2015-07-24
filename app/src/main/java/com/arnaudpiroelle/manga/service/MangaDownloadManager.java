@@ -1,10 +1,12 @@
 package com.arnaudpiroelle.manga.service;
 
 import android.os.Environment;
+import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
 import com.arnaudpiroelle.manga.core.provider.MangaProvider;
 import com.arnaudpiroelle.manga.core.provider.ProviderRegistry;
+import com.arnaudpiroelle.manga.core.utils.FileHelper;
 import com.arnaudpiroelle.manga.core.utils.HttpUtils;
 import com.arnaudpiroelle.manga.model.Chapter;
 import com.arnaudpiroelle.manga.model.Manga;
@@ -28,16 +30,17 @@ public class MangaDownloadManager {
 
     private MangaDownloaderCallback callback;
     private ProviderRegistry providerRegistry;
+    private FileHelper fileHelper;
 
-    public MangaDownloadManager(MangaDownloaderCallback callback, ProviderRegistry providerRegistry) {
+    public MangaDownloadManager(MangaDownloaderCallback callback, ProviderRegistry providerRegistry, FileHelper fileHelper) {
         this.callback = callback;
         this.providerRegistry = providerRegistry;
+        this.fileHelper = fileHelper;
     }
 
     public void startDownload(List<Manga> mangas) {
-        Observable.from(mangas)
+        getValidMangas(mangas)
                 .subscribeOn(Schedulers.io())
-                .filter(this::hasValidProvider)
                 .doOnNext(this::onMangaDownload)
                 .doOnCompleted(this::onAllMangasDownloaded)
                 .doOnError(this::onError)
@@ -46,14 +49,33 @@ public class MangaDownloadManager {
 
     }
 
-    private Observable<?> downloadManga(final Manga manga) {
+    @VisibleForTesting Observable<Manga> getValidMangas(List<Manga> mangas){
+        return Observable.from(mangas)
+                .filter(this::hasValidProvider);
+    }
+
+    @VisibleForTesting Observable<Chapter> getNewChapters(Manga manga){
         MangaProvider mangaProvider = providerRegistry.get(manga.getProvider());
 
         List<Chapter> chapters = mangaProvider.findChapters(manga);
         manga.setChapters(chapters);
 
         return Observable.from(chapters)
-                .skip(toBeSkipped(manga))
+                .skip(alreadyDownloadedChapters(manga));
+    }
+
+    @VisibleForTesting Observable<Page> getPages(Manga manga, Chapter chapter){
+        MangaProvider mangaProvider = providerRegistry.get(manga.getProvider());
+
+        List<Page> pages = mangaProvider.findPages(chapter);
+        chapter.setPages(pages);
+
+        return Observable.from(pages)
+                .doOnNext(page -> onPageDownload(manga, chapter, page));
+    }
+
+    private Observable<?> downloadManga(final Manga manga) {
+        return getNewChapters(manga)
                 .doOnNext(this::onChapterDownload)
                 .doOnCompleted(() -> onAllChaptersDownloaded(manga))
                 .doOnError(this::onError)
@@ -61,12 +83,7 @@ public class MangaDownloadManager {
     }
 
     private Observable<?> downloadChapter(final Manga manga, final Chapter chapter) {
-        MangaProvider mangaProvider = providerRegistry.get(manga.getProvider());
-
-        List<Page> pages = mangaProvider.findPages(chapter);
-        chapter.setPages(pages);
-
-        return Observable.from(pages)
+        return getPages(manga, chapter)
                 .doOnNext(page -> onPageDownload(manga, chapter, page))
                 .doOnCompleted(() -> onAllPagesDownloaded(manga, chapter))
                 .doOnError(this::onError)
@@ -77,7 +94,7 @@ public class MangaDownloadManager {
         return Observable.<File>create(subscriber -> {
             InputStream inputStream = providerRegistry.get(manga.getProvider()).findPage(page);
 
-            File pageFile = getPageFile(manga, chapter, page);
+            File pageFile = fileHelper.getPageFile(manga, chapter, page);
 
             try {
                 pageFile.createNewFile();
@@ -95,11 +112,11 @@ public class MangaDownloadManager {
         callback.onDownloadError(throwable);
     }
 
-    private Boolean hasValidProvider(Manga manga) {
+    @VisibleForTesting Boolean hasValidProvider(Manga manga) {
         return providerRegistry.get(manga.getProvider()) != null;
     }
 
-    private int toBeSkipped(Manga manga) {
+    @VisibleForTesting int alreadyDownloadedChapters(Manga manga) {
         if (manga.getLastChapter() == null || manga.getLastChapter().isEmpty()) {
             return manga.getChapters().size() - 1;
         } else {
@@ -145,31 +162,10 @@ public class MangaDownloadManager {
         callback.onCompletePage(manga, chapter, page);
     }
 
-    private File getEbooksFolder() {
-        return new File(Environment.getExternalStorageDirectory(), "eBooks");
-    }
-
-    private File getMangaFolder(Manga manga) {
-        return new File(getEbooksFolder(), manga.getName());
-    }
-
-    private File getChapterFolder(Manga manga, Chapter chapter) {
-        return new File(getMangaFolder(manga), chapter.getChapterNumber());
-    }
-
-    private File getPageFile(Manga manga, Chapter chapter, Page page) {
-        String pageFormated = String.format("%03d.%s", Integer.valueOf(page.getPageNumber()), page.getExtension());
-
-        File chapterFolder = getChapterFolder(manga, chapter);
-        chapterFolder.mkdirs();
-
-        return new File(chapterFolder + "/" + pageFormated);
-    }
-
     public void zipChapter(final Manga manga, final Chapter chapter) {
 
         Observable.create(subscriber -> {
-            File mangaFolder = getMangaFolder(manga);
+            File mangaFolder = fileHelper.getMangaFolder(manga);
 
             File zipFile = new File(String.format("%s/%s - %s.cbz",
                     mangaFolder.getAbsoluteFile(),
@@ -180,7 +176,7 @@ public class MangaDownloadManager {
                  ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest))) {
 
                 zipFile.createNewFile();
-                File chapterFolder = getChapterFolder(manga, chapter);
+                File chapterFolder = fileHelper.getChapterFolder(manga, chapter);
 
                 int buffer = 1024;
                 byte data[] = new byte[buffer];
