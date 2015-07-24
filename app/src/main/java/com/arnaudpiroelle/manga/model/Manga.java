@@ -3,6 +3,7 @@ package com.arnaudpiroelle.manga.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import se.emilsjolander.sprinkles.Model;
@@ -13,6 +14,21 @@ import se.emilsjolander.sprinkles.annotations.Table;
 
 @Table("Mangas")
 public class Manga extends Model implements Comparable<Manga>, Parcelable{
+
+    public Manga() {
+
+    }
+
+    private Manga(Parcel in) {
+        id = in.readLong();
+        name = in.readString();
+        mangaAlias = in.readString();
+        provider = in.readString();
+        lastChapter = in.readString();
+
+        chapters = new ArrayList<>();
+        in.readTypedList(chapters, Chapter.CREATOR);
+    }
 
     @Key
     @AutoIncrement
@@ -93,8 +109,23 @@ public class Manga extends Model implements Comparable<Manga>, Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
+        dest.writeLong(id);
+        dest.writeString(name);
+        dest.writeString(mangaAlias);
+        dest.writeString(provider);
+        dest.writeString(lastChapter);
+        dest.writeTypedList(chapters);
     }
+
+    public static final Parcelable.Creator<Manga> CREATOR = new Parcelable.Creator<Manga>() {
+        public Manga createFromParcel(Parcel in) {
+            return new Manga(in);
+        }
+
+        public Manga[] newArray(int size) {
+            return new Manga[size];
+        }
+    };
 
     public static class MangaBuilder {
         private Manga manga;

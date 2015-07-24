@@ -1,11 +1,26 @@
 package com.arnaudpiroelle.manga.model;
 
-public class Page {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Page implements Parcelable{
     private String mangaAlias;
     private String chapterNumber;
     private String pageNumber;
     private String pageName;
     private String extension;
+
+    public Page() {
+
+    }
+
+    private Page(Parcel in) {
+        mangaAlias = in.readString();
+        chapterNumber = in.readString();
+        pageNumber = in.readString();
+        pageName = in.readString();
+        extension = in.readString();
+    }
 
     public String getMangaAlias() {
         return mangaAlias;
@@ -46,6 +61,30 @@ public class Page {
     public void setPageName(String pageName) {
         this.pageName = pageName;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mangaAlias);
+        dest.writeString(chapterNumber);
+        dest.writeString(pageNumber);
+        dest.writeString(pageName);
+        dest.writeString(extension);
+    }
+
+    public static final Parcelable.Creator<Page> CREATOR = new Parcelable.Creator<Page>() {
+        public Page createFromParcel(Parcel in) {
+            return new Page(in);
+        }
+
+        public Page[] newArray(int size) {
+            return new Page[size];
+        }
+    };
 
     public static class PageBuilder {
         private Page page;

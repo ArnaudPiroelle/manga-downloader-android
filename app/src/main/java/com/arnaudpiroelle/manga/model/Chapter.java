@@ -1,13 +1,30 @@
 package com.arnaudpiroelle.manga.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class Chapter {
+public class Chapter implements Parcelable {
     private String name;
     private String mangaAlias;
     private String chapterNumber;
+
     private List<Page> pages;
 
+    public Chapter() {
+
+    }
+
+    private Chapter(Parcel in) {
+        name = in.readString();
+        mangaAlias = in.readString();
+        chapterNumber = in.readString();
+
+        pages = new ArrayList<>();
+        in.readTypedList(pages, Page.CREATOR);
+    }
 
     public String getName() {
         return name;
@@ -44,6 +61,29 @@ public class Chapter {
     public void setPages(List<Page> pages) {
         this.pages = pages;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(mangaAlias);
+        dest.writeString(chapterNumber);
+        dest.writeTypedList(pages);
+    }
+
+    public static final Parcelable.Creator<Chapter> CREATOR = new Parcelable.Creator<Chapter>() {
+        public Chapter createFromParcel(Parcel in) {
+            return new Chapter(in);
+        }
+
+        public Chapter[] newArray(int size) {
+            return new Chapter[size];
+        }
+    };
 
     public static class ChapterBuilder {
         private Chapter chapter;
