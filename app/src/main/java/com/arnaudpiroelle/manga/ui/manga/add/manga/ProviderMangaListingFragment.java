@@ -72,7 +72,7 @@ public class ProviderMangaListingFragment extends Fragment
             provider = providerRegistry.get(providerName);
         }
 
-        adapter = new BaseAdapter<>(getActivity(), R.layout.item_view_provider_manga, new ArrayList<Manga>());
+        adapter = new BaseAdapter<>(getActivity(), R.layout.item_view_provider_manga, new ArrayList<>());
 
         presenter = new ProviderMangaListingPresenter(this, provider);
 
