@@ -24,7 +24,7 @@ public class ProviderRegistryTest {
         MangaProvider provider = Mockito.mock(MangaProvider.class);
         when(provider.getName()).thenReturn("myProvider");
 
-        ProviderRegistry registry = createProviderRegister()
+        ProviderRegistry registry = Companion.createProviderRegister()
                 .withProvider(provider)
                 .build();
 

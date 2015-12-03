@@ -45,7 +45,7 @@ public class FileHelperTest {
     @Test
     public void should_compute_manga_folder() {
         // Given
-        Manga manga = createManga().withName("My Manga").build();
+        Manga manga = Companion.createManga().withName("My Manga").build();
 
         // When
         File ebooksFolder = fileHelper.getMangaFolder(manga);
@@ -58,8 +58,8 @@ public class FileHelperTest {
     @Test
     public void should_compute_chapter_folder() {
         // Given
-        Manga manga = createManga().withName("My Manga").build();
-        Chapter chapter = createChapter().withChapterNumber("01").build();
+        Manga manga = Companion.createManga().withName("My Manga").build();
+        Chapter chapter = Companion.createChapter().withChapterNumber("01").build();
 
         // When
         File ebooksFolder = fileHelper.getChapterFolder(manga, chapter);
@@ -72,9 +72,9 @@ public class FileHelperTest {
     @Test
     public void should_compute_page_file() {
         // Given
-        Manga manga = createManga().withName("My Manga").build();
-        Chapter chapter = createChapter().withChapterNumber("01").build();
-        Page page = createPage().withExtenstion("jpg").withPageNumber("1").build();
+        Manga manga = Companion.createManga().withName("My Manga").build();
+        Chapter chapter = Companion.createChapter().withChapterNumber("01").build();
+        Page page = Companion.createPage().withExtenstion("jpg").withPageNumber("1").build();
 
         // When
         File ebooksFolder = fileHelper.getPageFile(manga, chapter, page);

@@ -1,61 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.arnaudpiroelle.manga">
+<manifest
+    package="com.arnaudpiroelle.manga"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
 
     <application
         android:name=".MangaApplication"
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".ui.manga.NavigationActivity"
+            android:name=".ui.manga.list.MangaListingActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NavActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
         <activity
+            android:name=".ui.history.HistoryActivity"
+            android:theme="@style/AppTheme.NavActivity"/>
+
+        <activity
             android:name=".ui.manga.add.AddMangaActivity"
-            android:parentActivityName=".ui.manga.NavigationActivity">
+            android:parentActivityName=".ui.manga.list.MangaListingActivity">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.manga.NavigationActivity" />
+                android:value=".ui.manga.list.MangaListingActivity"/>
         </activity>
 
         <activity
             android:name=".ui.settings.SettingsActivity"
-            android:parentActivityName=".ui.manga.NavigationActivity">
+            android:parentActivityName=".ui.manga.list.MangaListingActivity">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.manga.NavigationActivity" />
+                android:value=".ui.manga.list.MangaListingActivity"/>
         </activity>
 
-        <service android:name=".service.DownloadService" />
+        <service android:name=".service.DownloadService"/>
 
         <receiver android:name=".service.ServiceBootReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="1a5c05cd44da4d5bdb36a429aeb4ac44b61c679e" />
+            android:value="1a5c05cd44da4d5bdb36a429aeb4ac44b61c679e"/>
     </application>
 
 </manifest>

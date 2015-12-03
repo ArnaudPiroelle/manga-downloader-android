@@ -32,7 +32,7 @@ app.get('/japscan/lecture-en-ligne/:mangaAlias/:chapterNumber/:page.html', funct
     returnHtmlFile('japscan', 'manga-reader', res);
 });
 
-app.get('/japscan/lecture-en-ligne/:mangaAlias/:chapterNumber/:page.jpg', function(req, res){
+app.get('/japscan/cr-images/:mangaAlias/:chapterNumber/:page.jpg', function(req, res){
     //req.params.alias
     returnImageFile(res);
 });

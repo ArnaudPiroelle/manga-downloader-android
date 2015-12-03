@@ -23,10 +23,10 @@ public class MangaTest {
 
     @Test
     public void should_compare_two_manga() throws Exception {
-        Manga manga1 = createManga()
+        Manga manga1 = Companion.createManga()
                 .withName("bbb")
                 .build();
-        Manga manga2 = createManga()
+        Manga manga2 = Companion.createManga()
                 .withName("aaa")
                 .build();
 
@@ -39,7 +39,7 @@ public class MangaTest {
     @Test
     public void should_restore_manga_from_parcel() throws Exception {
         // Given
-        Manga manga = createManga()
+        Manga manga = Companion.createManga()
                 .withId(1)
                 .withName("Title")
                 .withMangaAlias("Alias")
@@ -47,13 +47,13 @@ public class MangaTest {
                 .withLastChapter("Last Chapter")
                 .build();
 
-        Chapter chapter = createChapter()
+        Chapter chapter = Companion.createChapter()
                 .withName("Chapter")
                 .withMangaAlias("Alias")
                 .withChapterNumber("01")
                 .build();
 
-        Page page = createPage()
+        Page page = Companion.createPage()
                 .withName("01")
                 .withChapterNumber("01")
                 .withMangaAlias("Alias")

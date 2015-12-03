@@ -31,7 +31,7 @@ public class MangaDownloadManagerTest {
     @Test
     public void should_return_false_if_manga_has_an_invalid_provider() throws Exception {
         // Given
-        Manga manga = createManga().withName("manga1").withProvider("provider2").build();
+        Manga manga = Companion.createManga().withName("manga1").withProvider("provider2").build();
 
         MangaProvider provider = Mockito.mock(MangaProvider.class);
         when(providerRegistry.get("provider1")).thenReturn(provider);
@@ -46,7 +46,7 @@ public class MangaDownloadManagerTest {
     @Test
     public void should_return_true_if_manga_has_a_valid_provider() throws Exception {
         // Given
-        Manga manga = createManga().withName("manga1").withProvider("provider1").build();
+        Manga manga = Companion.createManga().withName("manga1").withProvider("provider1").build();
 
         MangaProvider provider = Mockito.mock(MangaProvider.class);
         when(providerRegistry.get("provider1")).thenReturn(provider);
@@ -61,9 +61,9 @@ public class MangaDownloadManagerTest {
     @Test
     public void should_return_last_chapter_if_manga_has_empty_last_chapter() throws Exception {
         // Given
-        Manga manga = createManga().withLastChapter(null).build();
-        Chapter chapter1 = createChapter().withChapterNumber("1").build();
-        Chapter chapter2 = createChapter().withChapterNumber("2").build();
+        Manga manga = Companion.createManga().withLastChapter(null).build();
+        Chapter chapter1 = Companion.createChapter().withChapterNumber("1").build();
+        Chapter chapter2 = Companion.createChapter().withChapterNumber("2").build();
         manga.setChapters(Lists.newArrayList(chapter1, chapter2));
 
         // When
@@ -76,7 +76,7 @@ public class MangaDownloadManagerTest {
     @Test
     public void should_return_0_if_manga_has_all_value_for_last_chapter() throws Exception {
         // Given
-        Manga manga = createManga().withLastChapter("all").build();
+        Manga manga = Companion.createManga().withLastChapter("all").build();
 
         // When
         int result = mangaDownloadManager.alreadyDownloadedChapters(manga);
@@ -88,11 +88,11 @@ public class MangaDownloadManagerTest {
     @Test
     public void should_return_correct_position_if_manga_has_a_last_chapter() throws Exception {
         // Given
-        Manga manga = createManga().withLastChapter("3").build();
-        Chapter chapter1 = createChapter().withChapterNumber("1").build();
-        Chapter chapter2 = createChapter().withChapterNumber("2").build();
-        Chapter chapter3 = createChapter().withChapterNumber("3").build();
-        Chapter chapter4 = createChapter().withChapterNumber("4").build();
+        Manga manga = Companion.createManga().withLastChapter("3").build();
+        Chapter chapter1 = Companion.createChapter().withChapterNumber("1").build();
+        Chapter chapter2 = Companion.createChapter().withChapterNumber("2").build();
+        Chapter chapter3 = Companion.createChapter().withChapterNumber("3").build();
+        Chapter chapter4 = Companion.createChapter().withChapterNumber("4").build();
         manga.setChapters(Lists.newArrayList(chapter1, chapter2, chapter3, chapter4));
 
         // When
@@ -105,8 +105,8 @@ public class MangaDownloadManagerTest {
     @Test
     public void should_filter_invalid_mangas() {
         // Given
-        Manga manga1 = createManga().withName("manga1").withProvider("provider1").build();
-        Manga manga2 = createManga().withName("manga2").withProvider("provider2").build();
+        Manga manga1 = Companion.createManga().withName("manga1").withProvider("provider1").build();
+        Manga manga2 = Companion.createManga().withName("manga2").withProvider("provider2").build();
         List<Manga> mangas = Lists.newArrayList(manga1, manga2);
 
         MangaProvider provider = Mockito.mock(MangaProvider.class);
@@ -126,10 +126,10 @@ public class MangaDownloadManagerTest {
     @Test
     public void should_return_all_chapters_of_manga() throws Exception {
         // Given
-        Manga manga = createManga().withName("manga1").withLastChapter("all").withProvider("provider1").build();
+        Manga manga = Companion.createManga().withName("manga1").withLastChapter("all").withProvider("provider1").build();
 
-        Chapter chapter1 = createChapter().withName("Chapter 1").withMangaAlias("manga1").withChapterNumber("01").build();
-        Chapter chapter2 = createChapter().withName("Chapter 2").withMangaAlias("manga1").withChapterNumber("02").build();
+        Chapter chapter1 = Companion.createChapter().withName("Chapter 1").withMangaAlias("manga1").withChapterNumber("01").build();
+        Chapter chapter2 = Companion.createChapter().withName("Chapter 2").withMangaAlias("manga1").withChapterNumber("02").build();
 
         MangaProvider provider = Mockito.mock(MangaProvider.class);
         when(providerRegistry.get("provider1")).thenReturn(provider);
@@ -150,10 +150,10 @@ public class MangaDownloadManagerTest {
     @Test
     public void should_return_last_chapters_of_manga() throws Exception {
         // Given
-        Manga manga = createManga().withName("manga1").withLastChapter("").withProvider("provider1").build();
+        Manga manga = Companion.createManga().withName("manga1").withLastChapter("").withProvider("provider1").build();
 
-        Chapter chapter1 = createChapter().withName("Chapter 1").withMangaAlias("manga1").withChapterNumber("01").build();
-        Chapter chapter2 = createChapter().withName("Chapter 2").withMangaAlias("manga1").withChapterNumber("02").build();
+        Chapter chapter1 = Companion.createChapter().withName("Chapter 1").withMangaAlias("manga1").withChapterNumber("01").build();
+        Chapter chapter2 = Companion.createChapter().withName("Chapter 2").withMangaAlias("manga1").withChapterNumber("02").build();
 
         MangaProvider provider = Mockito.mock(MangaProvider.class);
         when(providerRegistry.get("provider1")).thenReturn(provider);
@@ -175,11 +175,11 @@ public class MangaDownloadManagerTest {
     @Test
     public void should_return_only_new_chapters_of_manga() throws Exception {
         // Given
-        Manga manga = createManga().withName("manga1").withLastChapter("01").withProvider("provider1").build();
+        Manga manga = Companion.createManga().withName("manga1").withLastChapter("01").withProvider("provider1").build();
 
-        Chapter chapter1 = createChapter().withName("Chapter 1").withMangaAlias("manga1").withChapterNumber("01").build();
-        Chapter chapter2 = createChapter().withName("Chapter 2").withMangaAlias("manga1").withChapterNumber("02").build();
-        Chapter chapter3 = createChapter().withName("Chapter 3").withMangaAlias("manga1").withChapterNumber("03").build();
+        Chapter chapter1 = Companion.createChapter().withName("Chapter 1").withMangaAlias("manga1").withChapterNumber("01").build();
+        Chapter chapter2 = Companion.createChapter().withName("Chapter 2").withMangaAlias("manga1").withChapterNumber("02").build();
+        Chapter chapter3 = Companion.createChapter().withName("Chapter 3").withMangaAlias("manga1").withChapterNumber("03").build();
 
         MangaProvider provider = Mockito.mock(MangaProvider.class);
         when(providerRegistry.get("provider1")).thenReturn(provider);
