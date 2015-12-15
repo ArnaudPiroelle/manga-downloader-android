@@ -7,7 +7,7 @@ import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.preference.PreferenceManager
 import com.arnaudpiroelle.manga.core.provider.ProviderRegistry
-import com.arnaudpiroelle.manga.core.provider.ProviderRegistry.ProviderRegistryBuilder.Companion.createProviderRegister
+import com.arnaudpiroelle.manga.core.provider.ProviderRegistryBuilder.Companion.createProviderRegister
 import com.arnaudpiroelle.manga.provider.japscan.downloader.JapScanDownloader
 import com.arnaudpiroelle.manga.provider.mangapanda.downloader.MangaPandaDownloader
 import com.google.gson.Gson

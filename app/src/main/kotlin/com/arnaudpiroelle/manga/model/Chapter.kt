@@ -2,8 +2,7 @@ package com.arnaudpiroelle.manga.model
 
 import android.os.Parcel
 import android.os.Parcelable
-
-import java.util.ArrayList
+import java.util.*
 
 class Chapter : Parcelable {
     var name: String? = null
@@ -36,6 +35,35 @@ class Chapter : Parcelable {
         dest.writeString(mangaAlias)
         dest.writeString(chapterNumber)
         dest.writeTypedList(pages)
+    }
+
+    public class ChapterBuilder {
+        var chapter: Chapter = Chapter()
+
+        public fun withName(name: String): ChapterBuilder {
+            chapter.name = name
+            return this
+        }
+
+        public fun withMangaAlias(mangaAlias: String): ChapterBuilder {
+            chapter.mangaAlias = mangaAlias
+            return this
+        }
+
+        public fun withChapterNumber(chapterNumber: String): ChapterBuilder {
+            chapter.chapterNumber = chapterNumber
+            return this
+        }
+
+        public fun build(): Chapter {
+            return chapter
+        }
+
+        companion object {
+            public fun createChapter(): ChapterBuilder {
+                return ChapterBuilder();
+            }
+        }
     }
 
     companion object {

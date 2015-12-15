@@ -34,6 +34,45 @@ class Page : Parcelable {
         dest.writeString(extension)
     }
 
+    public class PageBuilder {
+        private var page: Page = Page()
+
+        public fun withPageNumber(pageNumber: String): PageBuilder {
+            page.pageNumber = pageNumber
+            return this
+        }
+
+        public fun withMangaAlias(mangaAlias: String): PageBuilder {
+            page.mangaAlias = mangaAlias
+            return this
+        }
+
+        public fun withChapterNumber(chapterNumber: String): PageBuilder {
+            page.chapterNumber = chapterNumber
+            return this
+        }
+
+        public fun withExtenstion(extension: String): PageBuilder {
+            page.extension = extension
+            return this
+        }
+
+        public fun withName(name: String): PageBuilder {
+            page.pageName = name
+            return this
+        }
+
+        public fun build(): Page {
+            return page;
+        }
+
+        companion object {
+            public fun createPage(): PageBuilder {
+                return PageBuilder();
+            }
+        }
+    }
+
     companion object {
 
         val CREATOR: Parcelable.Creator<Page> = object : Parcelable.Creator<Page> {

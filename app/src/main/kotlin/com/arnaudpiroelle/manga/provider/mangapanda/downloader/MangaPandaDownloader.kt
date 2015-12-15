@@ -61,7 +61,7 @@ constructor(private val mangaPandaApiService: MangaPandaApiService, private val 
     override val name: String
         get() = "MangaPanda"
 
-    @VisibleForTesting internal fun parseMangaList(body: String): List<Manga> {
+    @VisibleForTesting fun parseMangaList(body: String): List<Manga> {
         val mangas = ArrayList<Manga>()
 
         val pattern = Pattern.compile("<li><a href=\"\\/([^\"]+)\">([^<]+)<\\/a>(<span class=\"mangacompleted\">\\[Completed]<\\/span>)?<\\/li>")
@@ -81,7 +81,7 @@ constructor(private val mangaPandaApiService: MangaPandaApiService, private val 
         return mangas
     }
 
-    @VisibleForTesting internal fun parseMangaChapters(body: String): List<Chapter> {
+    @VisibleForTesting fun parseMangaChapters(body: String): List<Chapter> {
         val chapters = ArrayList<Chapter>()
 
         val pattern = Pattern.compile("<td>([^<]*)<div class=\"chico_manga\"><\\/div>([^<]*)<a href=\"\\/([^\\/]*)\\/([^\"]*)\">([^<]*)<\\/a>([^<]*)<\\/td>")
@@ -102,7 +102,7 @@ constructor(private val mangaPandaApiService: MangaPandaApiService, private val 
         return chapters
     }
 
-    @VisibleForTesting internal fun parseMangaChapterPages(body: String): List<Page> {
+    @VisibleForTesting fun parseMangaChapterPages(body: String): List<Page> {
         val pages = ArrayList<Page>()
 
         val pattern = Pattern.compile("<option value=\"\\/([^\\/]+)\\/([^\\/\"]+)(\\/([^\"]+))?\"( selected=\"selected\")?>([0-9]+)<\\/option>")
@@ -123,7 +123,7 @@ constructor(private val mangaPandaApiService: MangaPandaApiService, private val 
         return pages
     }
 
-    @VisibleForTesting internal fun parseMangaChapterPage(body: String): Page? {
+    @VisibleForTesting fun parseMangaChapterPage(body: String): Page? {
         val pattern = Pattern.compile("src=\"http:\\/\\/([^.]+).mangacdn.com\\/([^\"]+)\\/([^\"]+)\\/([^\".]+).([^\"]+)\" alt=\"([^-]+)- Page ([^\"]+)")
         val matcher = pattern.matcher(body)
         while (matcher.find()) {

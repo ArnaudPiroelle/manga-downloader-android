@@ -63,8 +63,7 @@ class JapScanDownloader(private val japScanApiService: JapScanApiService, privat
     override val name: String
         get() = "JapScan"
 
-    @VisibleForTesting
-    internal fun parseMangaList(body: String): List<Manga> {
+    @VisibleForTesting fun parseMangaList(body: String): List<Manga> {
         val mangas = ArrayList<Manga>()
 
         val pattern = Pattern.compile("<div class=\"row\"><div class=\"cell\"><a href=\"\\/mangas\\/([^\"]+)\\/\">([^<]+)<\\/a><\\/div><div class=\"cell\">([^<]+)<\\/div><div class=\"cell\">([^<]+)<\\/div><div class=\"cell\"><a href=\"([^\"]+)\">([^<]+)<\\/a><\\/div><\\/div>")
@@ -87,8 +86,7 @@ class JapScanDownloader(private val japScanApiService: JapScanApiService, privat
         return mangas
     }
 
-    @VisibleForTesting
-    internal fun parseMangaChapters(body: String): List<Chapter> {
+    @VisibleForTesting fun parseMangaChapters(body: String): List<Chapter> {
         val chapters = ArrayList<Chapter>()
 
         val pattern = Pattern.compile("<li><a href=\"\\/\\/www.japscan.com\\/lecture-en-ligne\\/([^\"]+)\\/([^\"]*)\\/\">([^<]*)<\\/a><\\/li>")
@@ -109,8 +107,7 @@ class JapScanDownloader(private val japScanApiService: JapScanApiService, privat
         return chapters
     }
 
-    @VisibleForTesting
-    internal fun parseMangaChapterPages(body: String): List<Page> {
+    @VisibleForTesting fun parseMangaChapterPages(body: String): List<Page> {
         val pages = ArrayList<Page>()
 
         val mangaPattern = Pattern.compile("<select name=\"mangas\" id=\"mangas\" data-nom=\"([^\"]+)\" data-uri=\"([^\"]+)\"><\\/select>")

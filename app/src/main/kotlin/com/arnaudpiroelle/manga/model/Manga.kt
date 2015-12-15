@@ -63,6 +63,45 @@ class Manga : Model, Comparable<Manga>, Parcelable {
         dest.writeTypedList(chapters)
     }
 
+    public class MangaBuilder {
+        var manga: Manga = Manga()
+
+        public fun withName(name: String): MangaBuilder {
+            manga.name = name
+            return this
+        }
+
+        public fun withMangaAlias(mangaAlias: String): MangaBuilder {
+            manga.mangaAlias = mangaAlias
+            return this
+        }
+
+        public fun withProvider(provider: String): MangaBuilder {
+            manga.provider = provider
+            return this
+        }
+
+        public fun withLastChapter(lastChapter: String): MangaBuilder {
+            manga.lastChapter = lastChapter
+            return this
+        }
+
+        public fun withId(id: Long): MangaBuilder {
+            manga.id = id
+            return this
+        }
+
+        public fun build(): Manga {
+            return manga!!
+        }
+
+        companion object {
+            public fun createManga(): MangaBuilder {
+                return MangaBuilder();
+            }
+        }
+    }
+
     companion object {
 
         val CREATOR: Parcelable.Creator<Manga> = object : Parcelable.Creator<Manga> {

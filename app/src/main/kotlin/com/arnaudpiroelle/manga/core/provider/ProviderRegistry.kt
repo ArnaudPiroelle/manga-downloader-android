@@ -2,19 +2,15 @@ package com.arnaudpiroelle.manga.core.provider
 
 import java.util.*
 
-class ProviderRegistry {
+open class ProviderRegistry {
 
-    internal var registry: MutableMap<String, MangaProvider>
+    var registry: MutableMap<String, MangaProvider> = HashMap()
 
-    init {
-        registry = HashMap<String, MangaProvider>()
-    }
-
-    private fun register(mangaProvider: MangaProvider) {
+    fun register(mangaProvider: MangaProvider) {
         registry.put(mangaProvider.name, mangaProvider)
     }
 
-    operator fun get(providerName: String): MangaProvider? {
+    fun find(providerName: String): MangaProvider? {
         return registry[providerName]
     }
 
@@ -22,32 +18,34 @@ class ProviderRegistry {
         return ArrayList(registry.values.sortedBy { it.name })
     }
 
-    class ProviderRegistryBuilder {
 
-        private val providerRegistry: ProviderRegistry
+}
 
-        init {
-            providerRegistry = ProviderRegistry()
-        }
+class ProviderRegistryBuilder {
 
-        fun withProvider(vararg mangaProviders: MangaProvider): ProviderRegistryBuilder {
-            for (mangaProvider in mangaProviders) {
-                providerRegistry.register(mangaProvider)
-            }
+    private val providerRegistry: ProviderRegistry
 
-            return this
-        }
-
-        fun build(): ProviderRegistry {
-            return providerRegistry
-        }
-
-        companion object {
-
-            fun createProviderRegister(): ProviderRegistryBuilder {
-                return ProviderRegistryBuilder()
-            }
-        }
-
+    init {
+        providerRegistry = ProviderRegistry()
     }
+
+    fun withProvider(vararg mangaProviders: MangaProvider): ProviderRegistryBuilder {
+        for (mangaProvider in mangaProviders) {
+            providerRegistry.register(mangaProvider)
+        }
+
+        return this
+    }
+
+    fun build(): ProviderRegistry {
+        return providerRegistry
+    }
+
+    companion object {
+
+        fun createProviderRegister(): ProviderRegistryBuilder {
+            return ProviderRegistryBuilder()
+        }
+    }
+
 }

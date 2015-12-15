@@ -42,7 +42,7 @@ class MangaDownloadManager(private val callback: MangaDownloadManager.MangaDownl
         )
     }
 
-    private fun getChapters(provider: MangaProvider, manga: Manga): Observable<Chapter> {
+    @VisibleForTesting fun getChapters(provider: MangaProvider, manga: Manga): Observable<Chapter> {
         val chapters = provider.findChapters(manga)
         manga.chapters = chapters
 
@@ -85,7 +85,7 @@ class MangaDownloadManager(private val callback: MangaDownloadManager.MangaDownl
         callback.onDownloadError(throwable)
     }
 
-    @VisibleForTesting internal fun alreadyDownloadedChapters(manga: Manga): Int {
+    @VisibleForTesting fun alreadyDownloadedChapters(manga: Manga): Int {
         if (manga.lastChapter == null || manga.lastChapter?.isEmpty()!!) {
             return manga.chapters?.size!! - 1
         } else {
@@ -202,7 +202,7 @@ class MangaDownloadManager(private val callback: MangaDownloadManager.MangaDownl
         val chapterFolder = fileHelper.getChapterFolder(manga, chapter)
         chapterFolder.listFiles().forEach {
             Log.d("PostProcess", it.absolutePath)
-            providerRegistry.get(manga.provider!!)?.postProcess(it)
+            providerRegistry.find(manga.provider!!)?.postProcess(it)
         }
     }
 }

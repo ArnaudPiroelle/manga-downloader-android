@@ -47,7 +47,7 @@ class ModifyMangaDialogFragment : DialogFragment() {
         val dialog = dialogBuilder.create()
 
         Observable.create<List<Chapter>> { subscriber ->
-            subscriber.onNext(providerRegistry[manga!!.provider!!]?.findChapters(manga!!))
+            subscriber.onNext(providerRegistry.find(manga!!.provider!!)?.findChapters(manga!!))
             subscriber.onCompleted()
         }
                 .subscribeOn(Schedulers.io())

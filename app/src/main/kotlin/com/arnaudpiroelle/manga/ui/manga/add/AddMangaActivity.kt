@@ -10,9 +10,6 @@ import android.view.MenuItem
 import com.arnaudpiroelle.manga.MangaApplication.Companion.GRAPH
 import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.core.permission.PermissionHelper
-import com.arnaudpiroelle.manga.event.ChapterSelectedEvent
-import com.arnaudpiroelle.manga.event.MangaSelectedEvent
-import com.arnaudpiroelle.manga.event.ProviderSelectedEvent
 import com.arnaudpiroelle.manga.model.History
 import com.arnaudpiroelle.manga.model.Manga
 import com.arnaudpiroelle.manga.service.DownloadService

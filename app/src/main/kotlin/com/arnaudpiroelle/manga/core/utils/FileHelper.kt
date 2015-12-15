@@ -10,7 +10,7 @@ import java.io.File
 
 import javax.inject.Inject
 
-class FileHelper {
+open class FileHelper {
 
     @Inject constructor() {}
 
