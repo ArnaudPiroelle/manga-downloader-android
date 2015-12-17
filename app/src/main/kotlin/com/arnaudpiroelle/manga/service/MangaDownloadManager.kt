@@ -75,7 +75,7 @@ class MangaDownloadManager(private val callback: MangaDownloadManager.MangaDownl
         fileHelper.getPageFile(manga, chapter, page).apply {
             createNewFile()
             HttpUtils.writeFile(inputStream, this)
-            postProcess(manga, chapter)
+            postProcess(provider, this)
 
         }
 
@@ -185,6 +185,11 @@ class MangaDownloadManager(private val callback: MangaDownloadManager.MangaDownl
 
     }
 
+    fun postProcess(provider: MangaProvider, file: File) {
+        Log.i("PostProcess", "post process : ${file.absolutePath}")
+        provider.postProcess(file)
+    }
+
     interface MangaDownloaderCallback {
 
         fun onDownloadError(throwable: Throwable)
@@ -196,13 +201,5 @@ class MangaDownloadManager(private val callback: MangaDownloadManager.MangaDownl
         fun onCompleteChapter(manga: Manga, chapter: Chapter)
 
         fun onCompletePage(manga: Manga, chapter: Chapter, page: Page)
-    }
-
-    fun postProcess(manga: Manga, chapter: Chapter) {
-        val chapterFolder = fileHelper.getChapterFolder(manga, chapter)
-        chapterFolder.listFiles().forEach {
-            Log.d("PostProcess", it.absolutePath)
-            providerRegistry.find(manga.provider!!)?.postProcess(it)
-        }
     }
 }
