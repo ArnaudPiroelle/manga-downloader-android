@@ -110,6 +110,10 @@ android {
         incremental false
     }
 
+    adbOptions {
+        timeOutInMs 600000
+    }
+
     // Remove mockRelease as it's not needed.
     android.variantFilter { variant ->
         if (variant.buildType.name.equals('release')
