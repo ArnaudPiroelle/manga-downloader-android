@@ -42,7 +42,7 @@
     <string name="pref_compress_chapters_title">Compress chapters</string>
     <string name="pref_compress_chapters_summary">Compress each chapter into a CBZ file</string>
     <string name="message_hint">Hey!</string>
-    <string name="message_empty_instance">You do not have any manga yet, why don\'t you start now by using the create button?</string>
+    <string name="message_empty_manga">You do not have any manga yet, why don\'t you start now by using the create button?</string>
     <string name="message_empty_history">You do not have any history yet</string>
     <string name="action_clean_history">Clean</string>
     <string name="check_manga_availability">Check mangas availabilities</string>

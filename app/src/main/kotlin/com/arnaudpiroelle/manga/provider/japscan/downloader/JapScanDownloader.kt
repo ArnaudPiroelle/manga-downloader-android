@@ -22,7 +22,8 @@ import java.net.URLDecoder
 import java.util.*
 import java.util.regex.Pattern
 
-class JapScanDownloader(private val japScanApiService: JapScanApiService, private val japScanDataApiService: JapScanDataApiService) : MangaProvider {
+class JapScanDownloader(private val japScanApiService: JapScanApiService,
+                        private val japScanDataApiService: JapScanDataApiService) : MangaProvider {
 
     override fun findMangas(): List<Manga> {
         val mangaListResponse = japScanApiService.getMangaList()

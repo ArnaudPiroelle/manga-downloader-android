@@ -70,7 +70,6 @@ class AddMangaFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, Searc
                 manga.lastChapter = it.chapterNumber
                 manga.save()
 
-                activity.startService(Intent(activity, DownloadService::class.java));
                 activity.finish()
             }
 

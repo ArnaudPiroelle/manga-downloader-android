@@ -1,4 +1,4 @@
-package com.arnaudpiroelle.manga.provider.japscan
+package com.arnaudpiroelle.manga.core.inject.module
 
 import com.arnaudpiroelle.manga.provider.japscan.api.JapScanApiService
 import com.arnaudpiroelle.manga.provider.japscan.api.JapScanDataApiService
@@ -48,7 +48,7 @@ class JapScanModule {
 
     @Provides
     @Singleton
-    fun provideJapScanDownloader(japScanApiService: JapScanApiService, japScanDataApiService: JapScanDataApiService): JapScanDownloader {
+    fun provideJapScanDownloader(japScanApiService: JapScanApiService, japScanDataApiService: JapScanDataApiService): MangaProvider {
         return JapScanDownloader(japScanApiService, japScanDataApiService)
     }
 }

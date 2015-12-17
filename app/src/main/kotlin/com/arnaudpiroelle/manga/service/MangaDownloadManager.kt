@@ -173,7 +173,7 @@ class MangaDownloadManager(private val callback: MangaDownloadManager.MangaDownl
                     }
                 }
             } catch (e: IOException) {
-                Log.e("MangaDownloadManager", "Error when zip chapter")
+                Log.e("MangaDownloadManager", "Error when zip chapter", e)
 
                 if (zipFile.exists()) {
                     zipFile.delete()

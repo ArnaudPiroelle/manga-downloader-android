@@ -15,7 +15,7 @@ test:
     - TERM=dumb ./gradlew testMockDebug
     - mkdir -p  $CIRCLE_TEST_REPORTS/unit && cp -r app/build/test-results/mockDebug/* $CIRCLE_TEST_REPORTS/unit
     - circle-android wait-for-boot
-    - TERM=dumb ./gradlew spoonRealDebugAndroidTest
+    - TERM=dumb ./gradlew connectMockDebugAndroidTest
 
 deployment:
   develop:
@@ -28,4 +28,4 @@ deployment:
     branch: master
     commands:
       - echo "apiSecret=$FABRIC_API_SECRET" > app/fabric.properties
-      - TERM=dumb ./gradlew assembleRealRelease crashlyticsUploadDistributionRealRelease -PdisablePreDex
+      - TERM=dumb ./gradlew assembleProdRelease crashlyticsUploadDistributionProdRelease -PdisablePreDex

@@ -13,11 +13,8 @@ import java.io.InputStream
 import java.net.URLDecoder
 import java.util.*
 import java.util.regex.Pattern
-import javax.inject.Inject
 
-class MangaPandaDownloader
-@Inject
-constructor(private val mangaPandaApiService: MangaPandaApiService, private val mangaPandaDataApiService: MangaPandaDataApiService) : MangaProvider {
+class MangaPandaDownloader(private val mangaPandaApiService: MangaPandaApiService, private val mangaPandaDataApiService: MangaPandaDataApiService) : MangaProvider {
 
     override fun findMangas(): List<Manga> {
         val mangaListResponse = mangaPandaApiService.getMangaList()

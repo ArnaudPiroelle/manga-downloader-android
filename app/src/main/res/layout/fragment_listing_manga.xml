@@ -42,7 +42,7 @@
             android:drawablePadding="@dimen/padding_double"
             android:gravity="center"
             android:padding="@dimen/padding_double"
-            android:text="@string/message_empty_instance"
+            android:text="@string/message_empty_manga"
             android:textSize="@dimen/text_size_normal"/>
     </LinearLayout>
 

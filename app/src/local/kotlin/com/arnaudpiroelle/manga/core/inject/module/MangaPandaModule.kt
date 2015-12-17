@@ -1,4 +1,4 @@
-package com.arnaudpiroelle.manga.provider.mangapanda
+package com.arnaudpiroelle.manga.core.inject.module
 
 import com.arnaudpiroelle.manga.provider.mangapanda.api.MangaPandaApiService
 import com.arnaudpiroelle.manga.provider.mangapanda.api.MangaPandaDataApiService

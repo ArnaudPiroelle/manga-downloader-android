@@ -1,8 +1,8 @@
 package com.arnaudpiroelle.manga.core.inject
 
 import com.arnaudpiroelle.manga.core.inject.module.ApplicationModule
-import com.arnaudpiroelle.manga.provider.japscan.JapScanModule
-import com.arnaudpiroelle.manga.provider.mangapanda.MangaPandaModule
+import com.arnaudpiroelle.manga.core.inject.module.JapScanModule
+import com.arnaudpiroelle.manga.core.inject.module.MangaPandaModule
 import com.arnaudpiroelle.manga.service.DownloadService
 import com.arnaudpiroelle.manga.ui.history.HistoryFragment
 import com.arnaudpiroelle.manga.ui.manga.NavigationActivity

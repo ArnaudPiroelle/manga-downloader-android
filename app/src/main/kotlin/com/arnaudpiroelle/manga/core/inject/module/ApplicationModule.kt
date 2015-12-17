@@ -6,10 +6,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.preference.PreferenceManager
+import com.arnaudpiroelle.manga.core.provider.MangaProvider
 import com.arnaudpiroelle.manga.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.core.provider.ProviderRegistryBuilder.Companion.createProviderRegister
-import com.arnaudpiroelle.manga.provider.japscan.downloader.JapScanDownloader
-import com.arnaudpiroelle.manga.provider.mangapanda.downloader.MangaPandaDownloader
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.squareup.okhttp.OkHttpClient
@@ -17,6 +16,7 @@ import dagger.Module
 import dagger.Provides
 import retrofit.client.OkClient
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
 
 
@@ -41,7 +41,8 @@ class ApplicationModule(private val mContext: Context) {
 
     @Provides
     @Singleton
-    fun providesProviderRegistry(japScanDownloader: JapScanDownloader, mangaPandaDownloader: MangaPandaDownloader): ProviderRegistry {
+    fun providesProviderRegistry(@Named("JapScanDownloader") japScanDownloader: MangaProvider,
+                                 @Named("MangaPandaDownloader") mangaPandaDownloader: MangaProvider): ProviderRegistry {
         return createProviderRegister().withProvider(japScanDownloader, mangaPandaDownloader).build()
     }
 
