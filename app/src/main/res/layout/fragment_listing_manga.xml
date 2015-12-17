@@ -1,8 +1,9 @@
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    android:id="@+id/manga_listing_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/manga_listing_content">
+    android:layout_height="match_parent">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
@@ -12,7 +13,7 @@
         <ListView
             android:id="@+id/list_manga"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
@@ -41,7 +42,7 @@
             android:drawablePadding="@dimen/padding_double"
             android:gravity="center"
             android:padding="@dimen/padding_double"
-            android:text="@string/message_empty_instance"
+            android:text="@string/message_empty_manga"
             android:textSize="@dimen/text_size_normal"/>
     </LinearLayout>
 
@@ -52,8 +53,8 @@
         android:layout_margin="15dp"
         android:clickable="true"
         android:src="@drawable/ic_add"
+        app:borderWidth="@dimen/floating_action_button_border_width"
         app:layout_anchor="@id/manga_listing_content"
-        app:layout_anchorGravity="bottom|right|end"
-        app:borderWidth="@dimen/floating_action_button_border_width"/>
+        app:layout_anchorGravity="bottom|right|end"/>
 
 </android.support.design.widget.CoordinatorLayout>
