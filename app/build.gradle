@@ -5,11 +5,16 @@ apply plugin: 'kotlin-android'
 apply plugin: 'spoon'
 
 buildscript {
+    ext {
+        kotlin_version = '1.0.0-beta-4589'
+    }
+
     repositories {
         mavenCentral()
     }
 
     dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlin_version"
     }
 }
@@ -78,6 +83,7 @@ android {
 
     buildTypes {
         debug {
+            minifyEnabled false
             testCoverageEnabled = true
         }
 

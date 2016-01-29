@@ -14,6 +14,7 @@ import retrofit.client.OkClient
 
 import com.arnaudpiroelle.manga.BuildConfig.JAPSCAN_BASE_URL
 import com.arnaudpiroelle.manga.BuildConfig.JAPSCAN_CDN_BASE_URL
+import com.arnaudpiroelle.manga.core.provider.MangaProvider
 import retrofit.RestAdapter.LogLevel.BASIC
 import retrofit.RestAdapter.LogLevel.NONE
 
@@ -48,6 +49,7 @@ class JapScanModule {
 
     @Provides
     @Singleton
+    @Named("JapScanDownloader")
     fun provideJapScanDownloader(japScanApiService: JapScanApiService, japScanDataApiService: JapScanDataApiService): MangaProvider {
         return JapScanDownloader(japScanApiService, japScanDataApiService)
     }
