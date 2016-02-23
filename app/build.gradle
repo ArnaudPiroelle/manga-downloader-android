@@ -60,10 +60,6 @@ android {
     }
 
     productFlavors {
-        mock {
-            applicationIdSuffix = ".mock"
-        }
-
         local {
             buildConfigField 'String', 'JAPSCAN_BASE_URL', '"http://192.168.60.1:8989/japscan"'
             buildConfigField 'String', 'JAPSCAN_CDN_BASE_URL', '"http://192.168.60.1:8989/japscan"'
