@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.widget.LinearLayout
 import com.arnaudpiroelle.manga.core.ui.presenter.view.BaseItemView
 import com.arnaudpiroelle.manga.model.History
-import kotlinx.android.synthetic.item_view_history.view.*
+import kotlinx.android.synthetic.main.item_view_history.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 

@@ -119,9 +119,9 @@ class DownloadService : Service(), MangaDownloaderCallback {
     override fun onDownloadError(throwable: Throwable) {
         Log.e("DownloadService", "Error on download", throwable)
 
-        mNotifyManager.cancel(PROGRESS_NOTIFICATION_ID)
+        //mNotifyManager.cancel(PROGRESS_NOTIFICATION_ID)
 
-        stopSelf()
+        //stopSelf()
     }
 
     override fun onDownloadCompleted() {

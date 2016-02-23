@@ -9,7 +9,7 @@ import java.util.*
 
 
 class PermissionHelper(val permission: String) {
-    fun permissionGranted(context: Context?, permission: String): Boolean {
+    fun permissionGranted(context: Context, permission: String): Boolean {
         return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
     }
 

@@ -12,8 +12,8 @@ import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.ui.history.HistoryActivity
 import com.arnaudpiroelle.manga.ui.manga.list.MangaListingActivity
 import com.arnaudpiroelle.manga.ui.settings.SettingsActivity
-import kotlinx.android.synthetic.activity_navigation.*
-import kotlinx.android.synthetic.include_navigation.*
+import kotlinx.android.synthetic.main.activity_navigation.*
+import kotlinx.android.synthetic.main.include_navigation.*
 
 open class NavigationActivity(var mNavItemId : Int) : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 

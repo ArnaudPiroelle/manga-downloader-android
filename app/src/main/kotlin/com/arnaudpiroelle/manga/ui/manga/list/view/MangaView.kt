@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.FrameLayout
 import com.arnaudpiroelle.manga.core.ui.presenter.view.BaseItemView
 import com.arnaudpiroelle.manga.model.Manga
-import kotlinx.android.synthetic.item_view_manga.view.*
+import kotlinx.android.synthetic.main.item_view_manga.view.*
 
 class MangaView : FrameLayout, BaseItemView<Manga> {
 

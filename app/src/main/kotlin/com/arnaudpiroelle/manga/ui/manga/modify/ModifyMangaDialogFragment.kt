@@ -65,7 +65,7 @@ class ModifyMangaDialogFragment : DialogFragment() {
                     mAdapter.datas = allChapters
                     mAdapter.notifyDataSetChanged()
 
-                    val indexOfRaw = allChapters.indexOfRaw(allChapters.find { it.chapterNumber.equals(manga!!.lastChapter) })
+                    val indexOfRaw = allChapters.indexOf(allChapters.find { it.chapterNumber.equals(manga!!.lastChapter) })
                     dialog.listView.setSelection(indexOfRaw)
                     dialog.listView.setItemChecked(indexOfRaw, true)
                 }

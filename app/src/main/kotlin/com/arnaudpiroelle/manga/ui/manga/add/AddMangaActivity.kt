@@ -10,12 +10,9 @@ import android.view.MenuItem
 import com.arnaudpiroelle.manga.MangaApplication.Companion.GRAPH
 import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.core.permission.PermissionHelper
-import com.arnaudpiroelle.manga.model.History
-import com.arnaudpiroelle.manga.model.Manga
 import com.arnaudpiroelle.manga.service.DownloadService
 import com.arnaudpiroelle.manga.ui.manga.list.MangaListingFragment
-import kotlinx.android.synthetic.activity_add_manga.*
-import java.util.*
+import kotlinx.android.synthetic.main.activity_add_manga.*
 
 class AddMangaActivity : AppCompatActivity() {
 
@@ -61,7 +58,7 @@ class AddMangaActivity : AppCompatActivity() {
         replace(R.id.add_content, AddMangaFragment(), false)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>?, grantResults: IntArray?) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         when (requestCode) {

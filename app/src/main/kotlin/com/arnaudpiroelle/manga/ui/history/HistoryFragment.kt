@@ -8,7 +8,7 @@ import com.arnaudpiroelle.manga.MangaApplication.Companion.GRAPH
 import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.core.adapter.BaseAdapter
 import com.arnaudpiroelle.manga.model.History
-import kotlinx.android.synthetic.fragment_listing_history.*
+import kotlinx.android.synthetic.main.fragment_listing_history.*
 
 class HistoryFragment : Fragment(), HistoryPresenter.HistoryListingCallback, SwipeRefreshLayout.OnRefreshListener {
 

@@ -65,7 +65,7 @@ class ProviderMangaListingAdapter(val context: Context, val layoutId: Int) :
         val sectionIndices = ArrayList<Int>()
 
         for (i in items.indices) {
-            var curChar = items[i].name!!.charAt(0)
+            var curChar = items[i].name!![0]
             if (!Character.isLetter(curChar)) {
                 curChar = OTHER_SECTION
             }
@@ -91,7 +91,7 @@ class ProviderMangaListingAdapter(val context: Context, val layoutId: Int) :
         val length = sectionIndices.size
         val letters = arrayOfNulls<Char>(length)
         for (i in 0..length - 1) {
-            var curChar = items[sectionIndices[i]].name!!.charAt(0)
+            var curChar = items[sectionIndices[i]].name!![0]
             if (!Character.isLetter(curChar)) {
                 curChar = OTHER_SECTION
             }

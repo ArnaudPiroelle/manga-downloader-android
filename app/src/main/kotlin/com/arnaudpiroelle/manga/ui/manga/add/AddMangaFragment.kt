@@ -23,7 +23,7 @@ import com.arnaudpiroelle.manga.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.model.Manga
 import com.arnaudpiroelle.manga.service.DownloadService
 import com.arnaudpiroelle.manga.ui.manga.modify.ModifyMangaDialogFragment
-import kotlinx.android.synthetic.fragment_add_manga.*
+import kotlinx.android.synthetic.main.fragment_add_manga.*
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -91,11 +91,11 @@ class AddMangaFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, Searc
         searchView.queryHint = resources.getString(R.string.search_title)
         searchView.setOnCloseListener {
             searchView.onActionViewCollapsed()
-            supportActionBar.setDisplayShowCustomEnabled(true)
+            supportActionBar?.setDisplayShowCustomEnabled(true)
             false
         }
         searchView.setOnSearchClickListener {
-            supportActionBar.setDisplayShowCustomEnabled(false)
+            supportActionBar?.setDisplayShowCustomEnabled(false)
         }
 
         searchView.isIconified = true
@@ -105,13 +105,13 @@ class AddMangaFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, Searc
 
     private fun computeProviders() {
         val supportActionBar = (activity as AppCompatActivity).supportActionBar
-        supportActionBar.setDisplayShowCustomEnabled(true)
+        supportActionBar?.setDisplayShowCustomEnabled(true)
 
         var spinnerContainer: View = LayoutInflater.from(activity).inflate(R.layout.toolbar_spinner, null);
         var lp = ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
 
-        supportActionBar.setCustomView(spinnerContainer, lp);
-        supportActionBar.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setCustomView(spinnerContainer, lp);
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         spinnerAdapter.addItems(providerRegistry.list())
 

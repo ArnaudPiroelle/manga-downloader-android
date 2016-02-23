@@ -32,14 +32,12 @@ class MangaDownloadManager(private val callback: MangaDownloadManager.MangaDownl
     }
 
     private fun downloadManga(provider: MangaProvider, manga: Manga) {
-        getChapters(provider, manga).forEach (
-                {
+        getChapters(provider, manga)
+                .doOnCompleted { onAllChaptersDownloaded(manga) }
+                .forEach {
                     onChapterDownload(it)
                     downloadChapter(provider, manga, it)
-                },
-                { onError(it) },
-                { onAllChaptersDownloaded(manga) }
-        )
+                }
     }
 
     @VisibleForTesting fun getChapters(provider: MangaProvider, manga: Manga): Observable<Chapter> {
@@ -52,14 +50,11 @@ class MangaDownloadManager(private val callback: MangaDownloadManager.MangaDownl
 
     private fun downloadChapter(provider: MangaProvider, manga: Manga, chapter: Chapter) {
         getPages(provider, manga, chapter)
-                .forEach (
-                        {
-                            onPageDownload(manga, chapter, it)
-                            downloadPage(provider, manga, chapter, it)
-                        },
-                        { onError(it) },
-                        { onAllPagesDownloaded(manga, chapter) }
-                )
+                .doOnCompleted { onAllPagesDownloaded(manga, chapter) }
+                .forEach {
+                    onPageDownload(manga, chapter, it)
+                    downloadPage(provider, manga, chapter, it)
+                }
     }
 
     fun getPages(provider: MangaProvider, manga: Manga, chapter: Chapter): Observable<Page> {

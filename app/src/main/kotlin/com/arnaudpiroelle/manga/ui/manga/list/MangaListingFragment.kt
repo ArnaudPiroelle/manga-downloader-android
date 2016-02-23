@@ -21,7 +21,7 @@ import com.arnaudpiroelle.manga.service.DownloadService
 import com.arnaudpiroelle.manga.ui.manga.add.AddMangaActivity
 import com.arnaudpiroelle.manga.ui.manga.list.view.MangaView
 import com.arnaudpiroelle.manga.ui.manga.modify.ModifyMangaDialogFragment
-import kotlinx.android.synthetic.fragment_listing_manga.*
+import kotlinx.android.synthetic.main.fragment_listing_manga.*
 import javax.inject.Inject
 
 class MangaListingFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, MangaListingPresenter.MangaListingCallback {
@@ -129,7 +129,7 @@ class MangaListingFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, M
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>?, grantResults: IntArray?) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         when (requestCode) {
