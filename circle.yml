@@ -15,5 +15,5 @@ deployment:
   develop:
     branch: develop
     commands:
-      - TERM=dumb ./gradlew assembleProdRelease crashlyticsUploadDistributionProdRelease -PdisablePreDex
-      - cp -r app/build/outputs/apk/app-prod-realease.apk $CIRCLE_ARTIFACTS
+      - ./gradlew assembleProdRelease crashlyticsUploadDistributionProdRelease -PdisablePreDex
+      - cp -r app/build/outputs/apk/app-prod-release.apk $CIRCLE_ARTIFACTS
