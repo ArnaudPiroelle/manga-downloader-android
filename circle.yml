@@ -4,29 +4,11 @@ machine:
 
 dependencies:
   pre:
-    - echo y | android update sdk --no-ui --all --filter tools,platform-tools
-    - echo y | android update sdk --no-ui --all --filter tool,extra-android-m2repository,extra-android-support,extra-google-google_play_services,extra-google-m2repository,android-23
+    - echo y | android update sdk --no-ui --all --filter tools,platform-tools,extra-android-m2repository,extra-android-support,extra-google-google_play_services,extra-google-m2repository,android-23
     - echo y | android update sdk --no-ui --all --filter build-tools-23.0.2
-test:
-  pre:
-    - emulator -avd circleci-android22 -no-audio -no-window:
-        background: true
-        parallel: true
-  override:
-    - TERM=dumb ./gradlew testMockDebug -PpreDexEnable=false -Pcom.android.build.threadPoolSize=1 -Dorg.gradle.parallel=false -Dorg.gradle.jvmargs="-Xms512m -Xmx512m" -Dorg.gradle.daemon=false
-    - mkdir -p  $CIRCLE_TEST_REPORTS/unit && cp -r app/build/test-results/mockDebug/* $CIRCLE_TEST_REPORTS/unit
-    - circle-android wait-for-boot
-    - ADB_INSTALL_TIMEOUT=10 TERM=dumb ./gradlew connectMockDebugAndroidTest -PpreDexEnable=false -Pcom.android.build.threadPoolSize=1 -Dorg.gradle.parallel=false -Dorg.gradle.jvmargs="-Xms512m -Xmx512m" -Dorg.gradle.daemon=false
 
 deployment:
   develop:
     branch: develop
     commands:
-      - cp -r app/build/reports/tests/mockDebug $CIRCLE_ARTIFACTS
-      - mkdir -p $CIRCLE_TEST_REPORTS/spoon && cp -r app/build/spoon/real/debug/* $CIRCLE_TEST_REPORTS/spoon
-
-  production:
-    branch: master
-    commands:
-      - echo "apiSecret=$FABRIC_API_SECRET" > app/fabric.properties
       - TERM=dumb ./gradlew assembleProdRelease crashlyticsUploadDistributionProdRelease -PdisablePreDex
