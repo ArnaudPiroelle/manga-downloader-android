@@ -16,7 +16,6 @@ import com.arnaudpiroelle.manga.provider.japscan.api.JapScanApiService
 import com.arnaudpiroelle.manga.provider.japscan.api.JapScanDataApiService
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 import java.io.InputStream
 import java.net.URLDecoder
 import java.util.*
@@ -67,7 +66,7 @@ class JapScanDownloader(private val japScanApiService: JapScanApiService,
     @VisibleForTesting fun parseMangaList(body: String): List<Manga> {
         val mangas = ArrayList<Manga>()
 
-        val pattern = Pattern.compile("<div class=\"row\"><div class=\"cell\"><a href=\"\\/mangas\\/([^\"]+)\\/\">([^<]+)<\\/a><\\/div><div class=\"cell\">([^<]+)<\\/div><div class=\"cell\">([^<]+)<\\/div><div class=\"cell\"><a href=\"([^\"]+)\">([^<]+)<\\/a><\\/div><\\/div>")
+        val pattern = Pattern.compile("<div class=\"cell\"><a href=\"\\/mangas\\/([^\"]+)\\/\">([^<]+)<\\/a><\\/div>")
         val matcher = pattern.matcher(body)
         while (matcher.find()) {
             val url = URLDecoder.decode(matcher.group(1))
@@ -90,7 +89,7 @@ class JapScanDownloader(private val japScanApiService: JapScanApiService,
     @VisibleForTesting fun parseMangaChapters(body: String): List<Chapter> {
         val chapters = ArrayList<Chapter>()
 
-        val pattern = Pattern.compile("<li><a href=\"\\/\\/www.japscan.com\\/lecture-en-ligne\\/([^\"]+)\\/([^\"]*)\\/\">([^<]*)<\\/a><\\/li>")
+        val pattern = Pattern.compile("<a href=\"\\/\\/www.japscan.com\\/lecture-en-ligne\\/([^\"]+)\\/([^\"]*)\\/\">([^<]*)<\\/a>")
         val matcher = pattern.matcher(body)
         while (matcher.find()) {
             val url = URLDecoder.decode(matcher.group(1))
@@ -112,8 +111,8 @@ class JapScanDownloader(private val japScanApiService: JapScanApiService,
         val pages = ArrayList<Page>()
 
         val mangaPattern = Pattern.compile("<select name=\"mangas\" id=\"mangas\" data-nom=\"([^\"]+)\" data-uri=\"([^\"]+)\"><\\/select>")
-        val chapterPattern = Pattern.compile("<select name=\"chapitres\" id=\"chapitres\" data-uri=\"([^\"]+)\"( data-nom=\"([^\"]+)\")?><\\/select>")
-        val pagesPattern = Pattern.compile("<option( selected=\"selected\")? data-img=\"([^\"]+)\" value=\"\\/lecture-en-ligne\\/([^\"]+)\\/([^\"]+)\\/([^\"]+).html\">Page ([0-9]+)<\\/option>")
+        val chapterPattern = Pattern.compile("<select name=\"chapitres\" id=\"chapitres\" data-uri=\"([^\"]+)\" ( data-nom=\"([^\"]+)\" )?><\\/select>")
+        val pagesPattern = Pattern.compile("<option (selected=\"selected\")? data-img=\"([^\"]+)\" value=\"\\/lecture-en-ligne\\/([^\"]+)\\/([^\"]+)\\/([^\"]+).html\">Page ([0-9]+)<\\/option>")
 
         val mangaMatcher = mangaPattern.matcher(body)
         if (mangaMatcher.find()) {
@@ -150,6 +149,8 @@ class JapScanDownloader(private val japScanApiService: JapScanApiService,
     }
 
     override fun postProcess(file: File) {
+        return
+
         val source = BitmapFactory.decodeFile(file.absolutePath)
 
         val newBitmap = Bitmap.createBitmap(source.width, source.height, source.config)
