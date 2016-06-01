@@ -9,11 +9,12 @@ dependencies:
 
 test:
   override:
-    - ./gradlew testProdDebugUnitTest
+    - ./gradlew assembleProdDebug
 
 deployment:
   develop:
     branch: develop
     commands:
-      - ./gradlew assembleProdRelease crashlyticsUploadDistributionProdRelease -PdisablePreDex
+      - ./gradlew assembleProdRelease -PdisablePreDex
       - cp -r app/build/outputs/apk/app-prod-release.apk $CIRCLE_ARTIFACTS
+      - curl -F "file=@app/build/outputs/apk/app-prod-release.apk" -F "token=$DEPLOYGATE_API_KEY" https://deploygate.com/api/users/ArnaudPiroelle/apps
