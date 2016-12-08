@@ -89,7 +89,7 @@ class JapScanDownloader(private val japScanApiService: JapScanApiService,
     @VisibleForTesting fun parseMangaChapters(body: String): List<Chapter> {
         val chapters = ArrayList<Chapter>()
 
-        val pattern = Pattern.compile("<a href=\"\\/\\/www.japscan.com\\/lecture-en-ligne\\/([^\"]+)\\/([^\"]*)\\/\">([^<]*)<\\/a>")
+        val pattern = Pattern.compile("<li>[\\s]*<a href=\"//www.japscan.com/lecture-en-ligne/([^\"]+)/([^\"]*)/\">([^<]*)</a>[\\s]*</li>")
         val matcher = pattern.matcher(body)
         while (matcher.find()) {
             val url = URLDecoder.decode(matcher.group(1))
