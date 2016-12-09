@@ -59,10 +59,10 @@ class JapScanDownloaderTest {
     fun should_extract_pages_from_html() {
         // Given
         val html = ("<select name=\"mangas\" id=\"mangas\" data-nom=\"Toriko\" data-uri=\"toriko\"></select>" +
-                "<select name=\"chapitres\" id=\"chapitres\" data-uri=\"351\" ></select>" +
-                "<select id=\"pages\" name=\"pages\">" +
-                "<option selected=\"selected\" data-img=\"01.jpg\" value=\"/lecture-en-ligne/toriko/351/01.html\">Page 01</option>" +
-                "<option  data-img=\"02.jpg\" value=\"/lecture-en-ligne/toriko/351/02.html\">Page 02</option>").replace("\n".toRegex(), "").replace("\\t".toRegex(), "").replace("\\r".toRegex(), "")
+                "<select name=\"chapitres\" id=\"chapitres\" data-uri=\"396\"></select>" +
+        "<select id=\"pages\" name=\"pages\">" +
+        "<option selected=\"selected\" data-img=\"02.jpg\" value=\"/lecture-en-ligne/toriko/396/01.html\">Page 01</option>" +
+        "<option data-img=\"04.jpg\" value=\"/lecture-en-ligne/toriko/396/02.html\">Page 02</option>").replace("\n".toRegex(), "").replace("\\t".toRegex(), "").replace("\\r".toRegex(), "")
 
         // When
         val pages = japScanDownloader.parseMangaChapterPages(html)
@@ -73,8 +73,8 @@ class JapScanDownloaderTest {
 
         val page = pages.get(0)
         assertThat(page.mangaAlias).isEqualTo("Toriko")
-        assertThat(page.chapterNumber).isEqualTo("351")
-        assertThat(page.pageNumber).isEqualTo("01")
+        assertThat(page.chapterNumber).isEqualTo("396")
+        assertThat(page.pageNumber).isEqualTo("02")
 
     }
 
