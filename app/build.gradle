@@ -20,7 +20,7 @@ buildscript {
 }
 
 def getBuildNumber() {
-    return System.getenv("CIRCLE_BUILD_NUM") as Integer ?: 0
+    return System.getenv("TRAVIS_BUILD_NUMBER") as Integer ?: 0
 }
 
 def getKeystorePassword() {
