@@ -7,7 +7,7 @@ apply plugin: 'spoon'
 
 buildscript {
     ext {
-        kotlin_version = '1.0.0'
+        kotlin_version = '1.0.5-2'
     }
 
     repositories {
