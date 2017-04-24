@@ -132,15 +132,19 @@ class JapScanDownloader(private val japScanApiService: JapScanApiService,
 
                     val pageNumber = if (pagesMatcher.groupCount() == 5) URLDecoder.decode(pagesMatcher.group(1)) else URLDecoder.decode(pagesMatcher.group(2))
 
-                    val lastIndex = pageNumber.lastIndexOf(".")
+                    if(!pageNumber.startsWith("__sy") && !pageNumber.startsWith("__Add") && pageNumber.contains(".")) {
+                        val lastIndex = pageNumber.lastIndexOf(".")
 
-                    var page: Page = Page()
-                    page.pageNumber = pageNumber.substring(0, lastIndex)
-                    page.mangaAlias = mangaNom
-                    page.chapterNumber = if (chapterNom != null) chapterNom else chapterUri
-                    page.extension = pageNumber.substring(lastIndex + 1)
+                        println(pageNumber)
 
-                    pages.add(page)
+                        var page: Page = Page()
+                        page.pageNumber = pageNumber.substring(0, lastIndex)
+                        page.mangaAlias = mangaNom
+                        page.chapterNumber = if (chapterNom != null) chapterNom else chapterUri
+                        page.extension = pageNumber.substring(lastIndex + 1)
+
+                        pages.add(page)
+                    }
                 }
             }
         }
