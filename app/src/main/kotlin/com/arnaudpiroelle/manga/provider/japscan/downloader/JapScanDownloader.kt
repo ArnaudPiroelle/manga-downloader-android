@@ -111,7 +111,7 @@ class JapScanDownloader(private val japScanApiService: JapScanApiService,
         val pages = ArrayList<Page>()
 
         val mangaPattern = Pattern.compile("<select name=\"mangas\" id=\"mangas\" data-nom=\"([^\"]+)\" data-uri=\"([^\"]+)\"><\\/select>")
-        val chapterPattern = Pattern.compile("<select name=\"chapitres\" id=\"chapitres\" data-uri=\"([^\"]+)\"( data-nom=\"([^\"]+)\")?><\\/select>")
+        val chapterPattern = Pattern.compile("<select name=\"chapitres\" id=\"chapitres\" data-uri=\"([^\"]+)\"( data-nom=\"([^\"]+)\")?></select>")
         val pagesPattern = Pattern.compile("<option( selected=\"selected\")? data-img=\"([^\"]+)\" value=\"\\/lecture-en-ligne\\/([^\"]+)\\/([^\"]+)\\/([^\"]+).html\">Page ([0-9]+)<\\/option>")
 
         val mangaMatcher = mangaPattern.matcher(body)

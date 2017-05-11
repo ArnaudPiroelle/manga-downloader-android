@@ -11,6 +11,7 @@ import com.arnaudpiroelle.manga.model.Manga
 import com.arnaudpiroelle.manga.model.Page
 import rx.Observable
 import rx.Observable.from
+import rx.Subscription
 import rx.schedulers.Schedulers
 import java.io.*
 import java.util.zip.ZipEntry
@@ -18,10 +19,10 @@ import java.util.zip.ZipOutputStream
 
 class MangaDownloadManager(private val callback: MangaDownloadManager.MangaDownloaderCallback, private val providerRegistry: ProviderRegistry, private val fileHelper: FileHelper) {
 
-    fun startDownload(provider: MangaProvider, mangas: List<Manga>) {
-        from(mangas)
+    fun startDownload(provider: MangaProvider, mangas: List<Manga>): Subscription {
+        return from(mangas)
                 .subscribeOn(Schedulers.io())
-                .forEach(
+                .subscribe(
                         {
                             onMangaDownload(it)
                             downloadManga(provider, it)
@@ -34,7 +35,7 @@ class MangaDownloadManager(private val callback: MangaDownloadManager.MangaDownl
     private fun downloadManga(provider: MangaProvider, manga: Manga) {
         getChapters(provider, manga)
                 .doOnCompleted { onAllChaptersDownloaded(manga) }
-                .forEach ({
+                .forEach({
                     onChapterDownload(it)
                     downloadChapter(provider, manga, it)
                 }, {

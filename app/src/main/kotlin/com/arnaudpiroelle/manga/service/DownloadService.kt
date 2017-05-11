@@ -11,6 +11,8 @@ import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Environment
 import android.os.IBinder
+import android.os.PowerManager
+import android.os.PowerManager.WakeLock
 import android.support.v7.app.NotificationCompat
 import android.text.TextUtils
 import android.util.Log
@@ -27,9 +29,12 @@ import com.arnaudpiroelle.manga.model.Page
 import com.arnaudpiroelle.manga.service.MangaDownloadManager.MangaDownloaderCallback
 import com.arnaudpiroelle.manga.ui.manga.NavigationActivity
 import com.arnaudpiroelle.manga.ui.manga.list.MangaListingFragment
+import rx.Subscription
+import rx.subscriptions.Subscriptions
 import se.emilsjolander.sprinkles.Query
 import java.util.*
 import javax.inject.Inject
+
 
 class DownloadService : Service(), MangaDownloaderCallback {
 
@@ -50,6 +55,7 @@ class DownloadService : Service(), MangaDownloaderCallback {
     private var pageIndex = 0
 
     private var running = false
+    private var subscription: Subscription = Subscriptions.empty()
 
     override fun onCreate() {
         super.onCreate()
@@ -71,7 +77,14 @@ class DownloadService : Service(), MangaDownloaderCallback {
         return null
     }
 
+    private var wakeLock: WakeLock? = null
+
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+
+        val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                "MyWakelockTag")
+        wakeLock?.acquire()
 
         if (UPDATE_SCHEDULING == intent.action) {
             updateScheduling()
@@ -112,16 +125,13 @@ class DownloadService : Service(), MangaDownloaderCallback {
 
         providerRegistry.list().forEach {
             val mangas = Query.many(Manga::class.java, "select * from Mangas where provider=?", it.name).get().asList()
-            mangaDownloadManager.startDownload(it, mangas)
+            subscription = mangaDownloadManager.startDownload(it, mangas)
         }
     }
 
     override fun onDownloadError(throwable: Throwable) {
         Log.e("DownloadService", "Error on download", throwable)
-
-        //mNotifyManager.cancel(PROGRESS_NOTIFICATION_ID)
-
-        //stopSelf()
+        wakeLock?.release()
     }
 
     override fun onDownloadCompleted() {
