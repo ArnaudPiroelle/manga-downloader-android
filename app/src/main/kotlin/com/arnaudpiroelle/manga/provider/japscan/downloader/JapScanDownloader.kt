@@ -132,7 +132,7 @@ class JapScanDownloader(private val japScanApiService: JapScanApiService,
 
                     val pageNumber = if (pagesMatcher.groupCount() == 5) URLDecoder.decode(pagesMatcher.group(1)) else URLDecoder.decode(pagesMatcher.group(2))
 
-                    if(!pageNumber.startsWith("__sy") && !pageNumber.startsWith("__Add") && pageNumber.contains(".")) {
+                    if(!pageNumber.startsWith("__sy") && !pageNumber.startsWith("__Add") && !pageNumber.startsWith("IMG__") && pageNumber.contains(".")) {
                         val lastIndex = pageNumber.lastIndexOf(".")
 
                         println(pageNumber)
