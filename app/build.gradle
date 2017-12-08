@@ -18,14 +18,6 @@ buildscript {
     }
 }
 
-def getBuildNumber() {
-    return System.getenv("TRAVIS_BUILD_NUMBER") as Integer ?: 0
-}
-
-def getKeystorePassword() {
-    return System.getenv("APP_KEYSTORE_PASSWORD") as String ?: "PASSWORD"
-}
-
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.3"
@@ -34,7 +26,7 @@ android {
         applicationId "com.arnaudpiroelle.manga"
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode getBuildNumber()
+        versionCode 10
         versionName "1.2.0"
 
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
@@ -52,9 +44,9 @@ android {
     signingConfigs {
         release {
             storeFile file('manga-downloader.keystore')
-            storePassword "${getKeystorePassword()}"
+            storePassword propOrDef("APP_KEYSTORE_PASSWORD", "manga-downloader")
             keyAlias 'manga-downloader'
-            keyPassword "${getKeystorePassword()}"
+            keyPassword propOrDef("APP_KEYSTORE_PASSWORD", "manga-downloader")
         }
     }
 
@@ -69,7 +61,7 @@ android {
 
         prod {
             buildConfigField 'String', 'JAPSCAN_BASE_URL', '"http://www.japscan.com"'
-            buildConfigField 'String', 'JAPSCAN_CDN_BASE_URL', '"http://cdn.japscan.com"'
+            buildConfigField 'String', 'JAPSCAN_CDN_BASE_URL', '"http://ww1.japscan.com"'
 
             buildConfigField 'String', 'MANGAPANDA_BASE_URL', '"http://www.mangapanda.com"'
             buildConfigField 'String', 'MANGAPANDA_CDN_BASE_URL', '"http://i10.mangacdn.com"'
@@ -80,6 +72,8 @@ android {
         debug {
             minifyEnabled false
             testCoverageEnabled = true
+
+            signingConfig signingConfigs.release
         }
 
         release {
@@ -199,4 +193,8 @@ configurations.compile.dependencies.each { compileDependency ->
     configurations.androidTestCompile.dependencies.each { androidTestCompileDependency ->
         configurations.androidTestCompile.exclude module: "${compileDependency.getName()}"
     }
+}
+
+String propOrDef(String propertyName, String defaultValue) {
+    return hasProperty(propertyName) ? property(propertyName) : defaultValue
 }

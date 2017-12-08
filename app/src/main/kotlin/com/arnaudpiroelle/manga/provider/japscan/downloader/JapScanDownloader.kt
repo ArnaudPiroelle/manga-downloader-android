@@ -63,7 +63,8 @@ class JapScanDownloader(private val japScanApiService: JapScanApiService,
     override val name: String
         get() = "JapScan"
 
-    @VisibleForTesting fun parseMangaList(body: String): List<Manga> {
+    @VisibleForTesting
+    fun parseMangaList(body: String): List<Manga> {
         val mangas = ArrayList<Manga>()
 
         val pattern = Pattern.compile("<div class=\"cell\"><a href=\"\\/mangas\\/([^\"]+)\\/\">([^<]+)<\\/a><\\/div>")
@@ -86,7 +87,8 @@ class JapScanDownloader(private val japScanApiService: JapScanApiService,
         return mangas
     }
 
-    @VisibleForTesting fun parseMangaChapters(body: String): List<Chapter> {
+    @VisibleForTesting
+    fun parseMangaChapters(body: String): List<Chapter> {
         val chapters = ArrayList<Chapter>()
 
         val pattern = Pattern.compile("<li>[\\s]*<a href=\"//www.japscan.com/lecture-en-ligne/([^\"]+)/([^\"]*)/\">([^<]*)</a>[\\s]*</li>")
@@ -107,46 +109,42 @@ class JapScanDownloader(private val japScanApiService: JapScanApiService,
         return chapters
     }
 
-    @VisibleForTesting fun parseMangaChapterPages(body: String): List<Page> {
+    @VisibleForTesting
+    fun parseMangaChapterPages(body: String): List<Page> {
         val pages = ArrayList<Page>()
 
-        val mangaPattern = Pattern.compile("<select name=\"mangas\" id=\"mangas\" data-nom=\"([^\"]+)\" data-uri=\"([^\"]+)\"><\\/select>")
-        val chapterPattern = Pattern.compile("<select name=\"chapitres\" id=\"chapitres\" data-uri=\"([^\"]+)\"( data-nom=\"([^\"]+)\")?></select>")
-        val pagesPattern = Pattern.compile("<option( selected=\"selected\")? data-img=\"([^\"]+)\" value=\"\\/lecture-en-ligne\\/([^\"]+)\\/([^\"]+)\\/([^\"]+).html\">Page ([0-9]+)<\\/option>")
+        val pagesPattern = Pattern.compile("<option [\\s]?(selected=\"selected\")? data-img=\"([^\"]+)\" value=\"\\/lecture-en-ligne\\/([^\"]+)\\/([^\"]+)\\/([^\"]+).html\">Page ([0-9]+)<\\/option>")
+        val urlPattern = Pattern.compile("<img data-img=\"[^\"]*\" itemprop=\"image\" id=\"image\" alt=\"[^\"]*\" src=\"([^\"]*)\" \\/>")
 
-        val mangaMatcher = mangaPattern.matcher(body)
-        if (mangaMatcher.find()) {
-            val mangaNom = URLDecoder.decode(mangaMatcher.group(1))
+        val pagesMatcher = pagesPattern.matcher(body)
+        val urlMatcher = urlPattern.matcher(body)
 
-            val chapterMatcher = chapterPattern.matcher(body)
-            if (chapterMatcher.find()) {
-                val chapterUri = URLDecoder.decode(chapterMatcher.group(1))
+        while (urlMatcher.find()) {
+            val url = urlMatcher.group(1)
+            val items = url.split("/").takeLast(3).dropLast(1)
 
-                var chapterNom: String? = null
-                if (chapterMatcher.groupCount() > 2) {
-                    chapterNom = chapterMatcher.group(3)
-                }
+            val mangaNom = items[0]
+            val chapterNumber = items[1]
 
-                val pagesMatcher = pagesPattern.matcher(body)
-                while (pagesMatcher.find()) {
+            while (pagesMatcher.find()) {
 
-                    val pageNumber = if (pagesMatcher.groupCount() == 5) URLDecoder.decode(pagesMatcher.group(1)) else URLDecoder.decode(pagesMatcher.group(2))
+                val pageNumber = if (pagesMatcher.groupCount() == 5) URLDecoder.decode(pagesMatcher.group(1)) else URLDecoder.decode(pagesMatcher.group(2))
 
-                    if(!pageNumber.startsWith("__sy") && !pageNumber.startsWith("__Add") && !pageNumber.startsWith("IMG__") && pageNumber.contains(".")) {
-                        val lastIndex = pageNumber.lastIndexOf(".")
+                if (!pageNumber.startsWith("__sy") && !pageNumber.startsWith("__Add") && !pageNumber.startsWith("IMG__") && pageNumber.contains(".")) {
+                    val lastIndex = pageNumber.lastIndexOf(".")
 
-                        println(pageNumber)
+                    println(pageNumber)
 
-                        var page: Page = Page()
-                        page.pageNumber = pageNumber.substring(0, lastIndex)
-                        page.mangaAlias = mangaNom
-                        page.chapterNumber = if (chapterNom != null) chapterNom else chapterUri
-                        page.extension = pageNumber.substring(lastIndex + 1)
+                    val page = Page()
+                    page.pageNumber = pageNumber.substring(0, lastIndex)
+                    page.mangaAlias = mangaNom
+                    page.chapterNumber = chapterNumber
+                    page.extension = pageNumber.substring(lastIndex + 1)
 
-                        pages.add(page)
-                    }
+                    pages.add(page)
                 }
             }
+
         }
 
         return pages
