@@ -61,7 +61,7 @@ android {
 
         prod {
             buildConfigField 'String', 'JAPSCAN_BASE_URL', '"http://www.japscan.com"'
-            buildConfigField 'String', 'JAPSCAN_CDN_BASE_URL', '"http://ww1.japscan.com"'
+            buildConfigField 'String', 'JAPSCAN_CDN_BASE_URL', '"http://cd151.d836pbl.club/"'
 
             buildConfigField 'String', 'MANGAPANDA_BASE_URL', '"http://www.mangapanda.com"'
             buildConfigField 'String', 'MANGAPANDA_CDN_BASE_URL', '"http://i10.mangacdn.com"'
