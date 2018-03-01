@@ -17,7 +17,6 @@ import com.arnaudpiroelle.manga.core.permission.PermissionHelper
 import com.arnaudpiroelle.manga.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.core.ui.presenter.Presenter
 import com.arnaudpiroelle.manga.model.Manga
-import com.arnaudpiroelle.manga.service.DownloadService
 import com.arnaudpiroelle.manga.ui.manga.add.AddMangaActivity
 import com.arnaudpiroelle.manga.ui.manga.list.view.MangaView
 import com.arnaudpiroelle.manga.ui.manga.modify.ModifyMangaDialogFragment
@@ -26,12 +25,13 @@ import javax.inject.Inject
 
 class MangaListingFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, MangaListingPresenter.MangaListingCallback {
 
-    @Inject lateinit var providerRegistry: ProviderRegistry
+    @Inject
+    lateinit var providerRegistry: ProviderRegistry
 
     private val mPresenter: Presenter<Manga> by lazy { MangaListingPresenter(this) }
-    private val mAdapter: BaseAdapter<Manga, MangaView> by lazy { BaseAdapter<Manga, MangaView>(activity, R.layout.item_view_manga) }
+    private val mAdapter: BaseAdapter<Manga, MangaView> by lazy { BaseAdapter<Manga, MangaView>(activity!!, R.layout.item_view_manga) }
     private var mPermissionHelper: PermissionHelper = PermissionHelper(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    private var updateReceiver = object : BroadcastReceiver(){
+    private var updateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             mPresenter.list()
         }
@@ -55,7 +55,7 @@ class MangaListingFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, M
         return inflater.inflate(R.layout.fragment_listing_manga, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         list_manga.adapter = mAdapter
@@ -77,17 +77,17 @@ class MangaListingFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, M
     override fun onResume() {
         super.onResume()
 
-        activity.setTitle(R.string.title_mymangas)
+        activity?.setTitle(R.string.title_mymangas)
 
         mPresenter.list()
 
-        activity.registerReceiver(updateReceiver, IntentFilter(UPDATE_RECEIVER_ACTION))
+        activity?.registerReceiver(updateReceiver, IntentFilter(UPDATE_RECEIVER_ACTION))
     }
 
     override fun onPause() {
         super.onPause()
 
-        activity.unregisterReceiver(updateReceiver)
+        activity?.unregisterReceiver(updateReceiver)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -120,12 +120,12 @@ class MangaListingFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, M
     }
 
     fun addManga() {
-        activity.startActivity(Intent(activity, AddMangaActivity::class.java))
+        activity?.startActivity(Intent(activity, AddMangaActivity::class.java))
     }
 
     fun manualDownload() {
-        mPermissionHelper.checkAndRequest(activity, MY_PERMISSIONS_REQUEST_WRITE_STORAGE) {
-            startDownloadService()
+        mPermissionHelper.checkAndRequest(activity!!, MY_PERMISSIONS_REQUEST_WRITE_STORAGE) {
+            //startDownloadService()
         }
     }
 
@@ -134,23 +134,10 @@ class MangaListingFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, M
 
         when (requestCode) {
             MY_PERMISSIONS_REQUEST_WRITE_STORAGE -> {
-                startDownloadService()
+                //startDownloadService()
             }
         }
     }
-
-    private fun startDownloadService() {
-        val manualDownload = Intent(activity, DownloadService::class.java)
-        manualDownload.setAction(DownloadService.MANUAL_DOWNLOAD)
-
-        activity.startService(manualDownload)
-    }
-
-    /*
-    private fun hideAddButton() {
-        action_add_manga.animate().y(view!!.bottom.toFloat()).start()
-    }
-    */
 
     private fun showAddButton() {
         val lp = action_add_manga.layoutParams as ViewGroup.MarginLayoutParams

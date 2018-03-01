@@ -54,10 +54,8 @@ class JapScanDownloader(private val japScanApiService: JapScanApiService,
     }
 
     override fun findPage(page: Page): InputStream {
-
         val downloadPageResponse = japScanDataApiService.downloadPage(page.mangaAlias!!, page.chapterNumber!!, page.pageNumber!!, page.extension!!)
-
-        return HttpUtils.readFrom(downloadPageResponse)!!
+        return HttpUtils.readFrom(downloadPageResponse)
     }
 
     override val name: String
@@ -132,8 +130,6 @@ class JapScanDownloader(private val japScanApiService: JapScanApiService,
 
                 if (!pageNumber.startsWith("__sy") && !pageNumber.startsWith("__Add") && !pageNumber.startsWith("IMG__") && pageNumber.contains(".")) {
                     val lastIndex = pageNumber.lastIndexOf(".")
-
-                    println(pageNumber)
 
                     val page = Page()
                     page.pageNumber = pageNumber.substring(0, lastIndex)

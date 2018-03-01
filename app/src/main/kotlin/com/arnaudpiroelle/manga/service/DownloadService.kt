@@ -1,255 +1,242 @@
 package com.arnaudpiroelle.manga.service
 
-import android.Manifest
-import android.app.AlarmManager
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.Service
+import android.app.job.JobInfo
+import android.app.job.JobInfo.NETWORK_TYPE_ANY
+import android.app.job.JobInfo.NETWORK_TYPE_UNMETERED
+import android.app.job.JobParameters
+import android.app.job.JobScheduler
+import android.app.job.JobService
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.net.ConnectivityManager
-import android.net.Uri
-import android.os.Environment
-import android.os.IBinder
-import android.os.PowerManager
-import android.os.PowerManager.WakeLock
-import android.support.v7.app.NotificationCompat
-import android.text.TextUtils
-import android.util.Log
+import android.os.Build
 import com.arnaudpiroelle.manga.MangaApplication.Companion.GRAPH
-import com.arnaudpiroelle.manga.R
-import com.arnaudpiroelle.manga.core.permission.PermissionHelper
+import com.arnaudpiroelle.manga.core.provider.MangaProvider
 import com.arnaudpiroelle.manga.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.core.utils.FileHelper
-import com.arnaudpiroelle.manga.core.utils.PreferencesHelper
+import com.arnaudpiroelle.manga.core.utils.HttpUtils
 import com.arnaudpiroelle.manga.model.Chapter
-import com.arnaudpiroelle.manga.model.History
 import com.arnaudpiroelle.manga.model.Manga
 import com.arnaudpiroelle.manga.model.Page
-import com.arnaudpiroelle.manga.service.MangaDownloadManager.MangaDownloaderCallback
-import com.arnaudpiroelle.manga.ui.manga.NavigationActivity
 import com.arnaudpiroelle.manga.ui.manga.list.MangaListingFragment
-import rx.Subscription
-import rx.subscriptions.Subscriptions
+import io.reactivex.Completable
+import io.reactivex.Observable.fromIterable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import se.emilsjolander.sprinkles.Query
-import java.util.*
+import java.io.*
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
 
-class DownloadService : Service(), MangaDownloaderCallback {
+class DownloadService : JobService() {
 
-    @Inject lateinit var providerRegistry: ProviderRegistry
-    @Inject lateinit var mNotifyManager: NotificationManager
-    @Inject lateinit var mConnectivityManager: ConnectivityManager
-    @Inject lateinit var alarmManager: AlarmManager
-    @Inject lateinit var preferencesHelper: PreferencesHelper
-    @Inject lateinit var fileHelper: FileHelper
-
-    lateinit private var mangaDownloadManager: MangaDownloadManager
-    lateinit private var permissionHelper: PermissionHelper
-
-    private var mProgressNotificationBuilder: NotificationCompat.Builder? = null
-
-    private var mDownloadNotificationBuilder: NotificationCompat.Builder? = null
-    private var downloadCounter: MutableMap<String, MutableList<Chapter>>? = null
-    private var pageIndex = 0
-
-    private var running = false
-    private var subscription: Subscription = Subscriptions.empty()
+    @Inject
+    lateinit var providerRegistry: ProviderRegistry
+    @Inject
+    lateinit var fileHelper: FileHelper
+    private var subscription = CompositeDisposable()
+    private var notificationManager by Delegates.notNull<NotificationManager>()
 
     override fun onCreate() {
         super.onCreate()
 
-        GRAPH.inject(this);
-
-        mangaDownloadManager = MangaDownloadManager(this, providerRegistry, fileHelper)
-        permissionHelper = PermissionHelper(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        GRAPH.inject(this)
+        notificationManager = NotificationManager(this)
     }
 
-    override fun onTaskRemoved(rootIntent: Intent) {
-        super.onTaskRemoved(rootIntent)
+    override fun onStartJob(parameters: JobParameters?): Boolean {
 
-        mNotifyManager.cancel(PROGRESS_NOTIFICATION_ID)
-        stopSelf()
+        notificationManager.startDownloadNotification()
+
+        val subscribe = fromIterable(providerRegistry.list())
+                .flatMapCompletable(this::process)
+                .subscribe({
+                    println("Ended")
+                    notificationManager.hideNotification()
+                    jobFinished(parameters, false)
+                }, {
+                    notificationManager.hideNotification()
+                    jobFinished(parameters, false)
+                })
+
+        subscription.add(subscribe)
+
+        return true
     }
 
-    override fun onBind(intent: Intent): IBinder? {
-        return null
+    private fun process(provider: MangaProvider): Completable {
+        return fromIterable(Query.many(Manga::class.java, "select * from Mangas where provider=?", provider.name).get().asList())
+                .subscribeOn(Schedulers.io())
+                .doOnNext { println(it) }
+                .flatMapCompletable { downloadManga(provider, it) }
     }
 
-    private var wakeLock: WakeLock? = null
+    private fun downloadManga(provider: MangaProvider, manga: Manga): Completable {
+        val chapters = provider.findChapters(manga)
+        manga.chapters = chapters
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+        return fromIterable(chapters)
+                .skip(alreadyDownloadedChapters(manga))
+                .map { ChapterInfo(manga, it) }
+                .flatMapCompletable { chapterInfo ->
+                    downloadChapter(provider, chapterInfo)
+                            .andThen {
+                                manga.lastChapter = chapterInfo.chapter.chapterNumber
+                                manga.save()
 
-        val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
-        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
-                "MyWakelockTag")
-        wakeLock?.acquire()
+                                sendBroadcast(Intent(MangaListingFragment.UPDATE_RECEIVER_ACTION))
+                                it.onComplete()
+                            }
+                }
+                .doOnError { it.printStackTrace() }
+                .onErrorComplete()
+    }
 
-        if (UPDATE_SCHEDULING == intent.action) {
-            updateScheduling()
+    private fun alreadyDownloadedChapters(manga: Manga): Long {
+        if (manga.lastChapter == null || manga.lastChapter?.isEmpty()!!) {
+            return (manga.chapters?.size!! - 1).toLong()
         } else {
-            if (permissionHelper.permissionGranted(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                startDownload(MANUAL_DOWNLOAD == intent.action)
+            if ("all" == manga.lastChapter) {
+                return 0
+            } else {
+                for (i in 0 until manga.chapters?.size!!) {
+                    if (manga.chapters!![i].chapterNumber == manga.lastChapter) {
+                        return (i + 1).toLong()
+                    }
+                }
             }
         }
 
-        return Service.START_NOT_STICKY
+        return 0
     }
 
-    private fun startDownload(manualDownload: Boolean) {
-        val updateOnWifiOnly = preferencesHelper.isUpdateOnWifiOnly
+    private fun downloadChapter(provider: MangaProvider, chapterInfo: ChapterInfo): Completable {
+        val pages = provider.findPages(chapterInfo.chapter)
+        chapterInfo.chapter.pages = pages
 
-        val mWifi = mConnectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
-        if (running || !manualDownload && !mWifi.isConnected && updateOnWifiOnly) {
-            return
+        val count = AtomicInteger(0)
+
+
+        return fromIterable(pages)
+                .map { PageInfo(chapterInfo.manga, chapterInfo.chapter, it) }
+                .doOnNext {
+                    val title = "${chapterInfo.manga.name} (${chapterInfo.chapter.chapterNumber})"
+                    notificationManager.updateProgressNotification(title, count.getAndIncrement(), pages.size)
+                }
+                .flatMapCompletable { downloadPage(provider, it).retry(3) }
+                .andThen(compressChapter(chapterInfo))
+                .andThen {
+                    notificationManager.addToSummary(chapterInfo.manga)
+                    it.onComplete()
+                }
+
+    }
+
+    private fun compressChapter(chapterInfo: ChapterInfo): Completable {
+
+        return Completable.create {
+            val manga = chapterInfo.manga
+            val chapter = chapterInfo.chapter
+            val mangaFolder = fileHelper.getMangaFolder(manga)
+
+            val zipFile = File("%s/%s - %s.cbz".format(mangaFolder.absoluteFile, manga.name, chapter.chapterNumber))
+
+            try {
+                FileOutputStream(zipFile).use { dest ->
+                    ZipOutputStream(BufferedOutputStream(dest)).use { out ->
+
+                        zipFile.createNewFile()
+                        val chapterFolder = fileHelper.getChapterFolder(manga, chapter)
+
+                        val buffer = 1024
+                        val data = ByteArray(buffer)
+
+                        for (file in chapterFolder.listFiles()) {
+                            FileInputStream(file).use { fi ->
+                                BufferedInputStream(fi, buffer).use { origin ->
+
+                                    val entry = ZipEntry(file.name)
+                                    out.putNextEntry(entry)
+
+                                    var count = origin.read(data, 0, buffer)
+                                    while (count != -1) {
+                                        out.write(data, 0, count)
+                                        count = origin.read(data, 0, buffer)
+                                    }
+                                }
+                            }
+                        }
+
+                        for (file in chapterFolder.listFiles()) {
+                            file.delete()
+                        }
+
+                        chapterFolder.delete()
+
+                    }
+                }
+
+                it.onComplete()
+            } catch (e: IOException) {
+                if (zipFile.exists()) {
+                    zipFile.delete()
+                }
+
+                it.onError(e)
+            }
         }
+    }
 
-        var history: History = History()
-        history.date = Date().time
-        history.label = getString(if (manualDownload) R.string.check_manual_manga_availability else R.string.check_manga_availability)
+    private fun downloadPage(provider: MangaProvider, pageInfo: PageInfo): Completable {
+        return Completable.create {
+            try {
+                val inputStream = provider.findPage(pageInfo.page)
+                val pageFile = fileHelper.getPageFile(pageInfo.manga, pageInfo.chapter, pageInfo.page)
 
-        history.save()
+                HttpUtils.writeFile(inputStream, pageFile)
 
-        running = true
-        downloadCounter = HashMap<String, MutableList<Chapter>>()
-
-        mProgressNotificationBuilder = NotificationCompat.Builder(this)
-        mDownloadNotificationBuilder = NotificationCompat.Builder(this)
-
-        mProgressNotificationBuilder!!.setContentTitle("Download started").setContentIntent(pendingIntent).setSmallIcon(R.mipmap.ic_launcher).setOngoing(true)
-
-        mDownloadNotificationBuilder!!.setContentIntent(pendingIntent).setSmallIcon(R.mipmap.ic_launcher)
-
-        mNotifyManager.notify(PROGRESS_NOTIFICATION_ID, mProgressNotificationBuilder!!.build())
-
-        providerRegistry.list().forEach {
-            val mangas = Query.many(Manga::class.java, "select * from Mangas where provider=?", it.name).get().asList()
-            subscription = mangaDownloadManager.startDownload(it, mangas)
+                it.onComplete()
+            } catch (e: IOException) {
+                it.onError(e)
+            }
         }
     }
 
-    override fun onDownloadError(throwable: Throwable) {
-        Log.e("DownloadService", "Error on download", throwable)
-        wakeLock?.release()
-    }
-
-    override fun onDownloadCompleted() {
-        mProgressNotificationBuilder!!.setContentText("Download complete").setProgress(0, 0, false)
-
-        mNotifyManager.notify(PROGRESS_NOTIFICATION_ID, mProgressNotificationBuilder!!.build())
-
-        val refreshIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
-        refreshIntent.setData(Uri.parse("file://" + Environment.getExternalStorageDirectory()))
-        sendBroadcast(refreshIntent)
-
-        mNotifyManager.cancel(PROGRESS_NOTIFICATION_ID)
-
-        stopSelf()
-    }
-
-    override fun onCompleteManga(manga: Manga) {
-
-    }
-
-    override fun onCompleteChapter(manga: Manga, chapter: Chapter) {
-
-        if (preferencesHelper.isCompressChapter) {
-            mangaDownloadManager.zipChapter(manga, chapter)
-        }
-
-        manga.lastChapter = chapter.chapterNumber
-        manga.save()
-
-        var history: History = History()
-        history.date = Date().time
-        history.label = manga.name + " " + chapter.chapterNumber + " downloaded"
-
-        history.save()
-
-        //eventBus.post(ChapterDownloadedEvent())
-        sendBroadcast(Intent(MangaListingFragment.UPDATE_RECEIVER_ACTION))
-        addToCounter(manga, chapter)
-
-        var hasMultiChapter = false
-        val issues = ArrayList<String>()
-        for (key in downloadCounter!!.keys) {
-            val size = downloadCounter!![key]!!.size
-            val multiChapter = size > 1
-            issues.add((if (multiChapter) ("$size ") else "") + key)
-
-            hasMultiChapter = hasMultiChapter || multiChapter
-        }
-
-        hasMultiChapter = hasMultiChapter || downloadCounter!!.keys.size > 1
-
-        val title = "New chapter${if (hasMultiChapter) "s" else ""} downloaded"
-        mDownloadNotificationBuilder!!.setContentTitle(title).setContentText(TextUtils.join(", ", issues)).setSmallIcon(R.mipmap.ic_launcher)
-
-        mNotifyManager.notify(DOWNLOAD_NOTIFICATION_ID, mDownloadNotificationBuilder!!.build())
-
-
-        pageIndex = 0
-    }
-
-    override fun onCompletePage(manga: Manga, chapter: Chapter, page: Page) {
-
-        mProgressNotificationBuilder!!.setContentTitle(manga.name + " (" + chapter.chapterNumber + ")").setContentText("Download in progress").setProgress(chapter.pages?.size!!, ++pageIndex, false)
-        mNotifyManager.notify(PROGRESS_NOTIFICATION_ID, mProgressNotificationBuilder!!.build())
-
-    }
-
-    private fun addToCounter(manga: Manga, chapter: Chapter) {
-        var chapters: MutableList<Chapter>? = downloadCounter!![manga.name]
-
-        if (chapters == null) {
-            chapters = ArrayList<Chapter>()
-        }
-
-        chapters.add(chapter)
-
-        downloadCounter!!.put(manga.name!!, chapters)
-    }
-
-    private val pendingIntent: PendingIntent
-        get() = PendingIntent.getActivity(
-                this,
-                0,
-                Intent(this, NavigationActivity::class.java),
-                PendingIntent.FLAG_UPDATE_CURRENT)
-
-    fun updateScheduling() {
-        val service = Intent(this, DownloadService::class.java)
-        val pendingIntent = PendingIntent.getService(this, 0, service, 0)
-
-        val existingPendingIntent = PendingIntent.getService(this, 0, service, PendingIntent.FLAG_NO_CREATE)
-        if (existingPendingIntent != null) {
-            alarmManager.cancel(pendingIntent)
-        }
-
-        if (preferencesHelper.isAutoUpdate) {
-            val interval = java.lang.Long.parseLong(preferencesHelper.updateInterval) * 60 * 1000
-
-            alarmManager.setRepeating(
-                    AlarmManager.RTC,
-                    Calendar.getInstance().timeInMillis + interval,
-                    interval,
-                    pendingIntent)
-        }
+    override fun onStopJob(parameters: JobParameters?): Boolean {
+        subscription.clear()
+        return true
     }
 
     companion object {
+        private const val JOB_ID = 1
 
-        val UPDATE_SCHEDULING = "UPDATE_SCHEDULING"
-        val MANUAL_DOWNLOAD = "MANUAL_DOWNLOAD"
-        private val PROGRESS_NOTIFICATION_ID = 1234567890
-        private val DOWNLOAD_NOTIFICATION_ID = 987654321
+        fun updateScheduling(context: Context, period: Long = 60 * 1000, updateOnWifiOnly: Boolean = false) {
+            val serviceComponent = ComponentName(context, DownloadService::class.java)
+            val builder = JobInfo.Builder(JOB_ID, serviceComponent)
+                    .setRequiredNetworkType(if (updateOnWifiOnly) NETWORK_TYPE_UNMETERED else NETWORK_TYPE_ANY)
+                    .setPeriodic(period)
+                    .setPersisted(true)
 
-        fun updateScheduling(context: Context) {
-            val serviceIntent = Intent(context, DownloadService::class.java)
-            serviceIntent.setAction(DownloadService.UPDATE_SCHEDULING)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                builder.setRequiresBatteryNotLow(true)
+                        .setRequiresStorageNotLow(true)
+            }
 
-            context.startService(serviceIntent)
+
+            val jobScheduler = context.getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler?
+            jobScheduler?.schedule(builder.build())
+        }
+
+        fun cancelScheduling(context: Context) {
+            val jobScheduler = context.getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler?
+            jobScheduler?.cancel(JOB_ID)
         }
     }
 }
+
+data class ChapterInfo(val manga: Manga, val chapter: Chapter)
+data class PageInfo(val manga: Manga, val chapter: Chapter, val page: Page)

@@ -3,18 +3,24 @@ package com.arnaudpiroelle.manga.ui.settings
 import android.os.Bundle
 import android.preference.Preference
 import android.preference.PreferenceFragment
-
+import com.arnaudpiroelle.manga.MangaApplication.Companion.GRAPH
 import com.arnaudpiroelle.manga.R
+import com.arnaudpiroelle.manga.core.utils.PreferencesHelper
 import com.arnaudpiroelle.manga.service.DownloadService
+import javax.inject.Inject
 
 class SettingsFragment : PreferenceFragment() {
 
-    private var autoUpdate: Preference? = null
+    @Inject
+    lateinit var preferencesHelper: PreferencesHelper
 
+    private var autoUpdate: Preference? = null
     private var intervalUpdate: Preference? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        GRAPH.inject(this)
 
         addPreferencesFromResource(R.xml.preferences)
 
@@ -30,7 +36,15 @@ class SettingsFragment : PreferenceFragment() {
     }
 
     private fun onSchedulerPreferenceChangeListener(preference: Preference, newValue: Any): Boolean {
-        DownloadService.updateScheduling(activity)
+        val updateInterval = preferencesHelper.updateInterval
+        val isAutoUpdate = preferencesHelper.isAutoUpdate
+        val updateOnWifiOnly = preferencesHelper.isUpdateOnWifiOnly
+
+        if (isAutoUpdate) {
+            DownloadService.updateScheduling(activity, updateInterval.toLong() * 60 * 1000, updateOnWifiOnly)
+        } else {
+            DownloadService.cancelScheduling(activity)
+        }
         return true
     }
 

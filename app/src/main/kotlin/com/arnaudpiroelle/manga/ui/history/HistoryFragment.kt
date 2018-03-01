@@ -23,14 +23,14 @@ class HistoryFragment : Fragment(), HistoryPresenter.HistoryListingCallback, Swi
         setHasOptionsMenu(true)
 
         presenter = HistoryPresenter(this)
-        adapter = BaseAdapter<History, HistoryView>(activity, R.layout.item_view_history)
+        adapter = BaseAdapter(activity!!, R.layout.item_view_history)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_listing_history, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         list_history.emptyView = history_empty
@@ -42,7 +42,7 @@ class HistoryFragment : Fragment(), HistoryPresenter.HistoryListingCallback, Swi
     override fun onResume() {
         super.onResume()
 
-        activity.setTitle(R.string.title_history)
+        activity?.setTitle(R.string.title_history)
 
         presenter.list()
     }

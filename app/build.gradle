@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'spoon'
 
 buildscript {
     ext {
-        kotlin_version = '1.1.1'
+        kotlin_version = '1.2.30'
     }
 
     repositories {
@@ -19,17 +19,23 @@ buildscript {
 }
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 27
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "com.arnaudpiroelle.manga"
         minSdkVersion 21
-        targetSdkVersion 25
+        targetSdkVersion 27
         versionCode 10
         versionName "1.2.0"
 
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+
+        buildConfigField 'String', 'JAPSCAN_BASE_URL', '"http://www.japscan.com"'
+        buildConfigField 'String', 'JAPSCAN_CDN_BASE_URL', '"http://cd151.d836pbl.club/"'
+
+        buildConfigField 'String', 'MANGAPANDA_BASE_URL', '"http://www.mangapanda.com"'
+        buildConfigField 'String', 'MANGAPANDA_CDN_BASE_URL', '"http://i10.mangacdn.com"'
     }
 
     packagingOptions {
@@ -47,24 +53,6 @@ android {
             storePassword propOrDef("APP_KEYSTORE_PASSWORD", "manga-downloader")
             keyAlias 'manga-downloader'
             keyPassword propOrDef("APP_KEYSTORE_PASSWORD", "manga-downloader")
-        }
-    }
-
-    productFlavors {
-        local {
-            buildConfigField 'String', 'JAPSCAN_BASE_URL', '"http://192.168.60.1:8989/japscan"'
-            buildConfigField 'String', 'JAPSCAN_CDN_BASE_URL', '"http://192.168.60.1:8989/japscan"'
-
-            buildConfigField 'String', 'MANGAPANDA_BASE_URL', '"http://192.168.60.1:8989/mangapanda"'
-            buildConfigField 'String', 'MANGAPANDA_CDN_BASE_URL', '"http://192.168.60.1:8989/mangapanda"'
-        }
-
-        prod {
-            buildConfigField 'String', 'JAPSCAN_BASE_URL', '"http://www.japscan.com"'
-            buildConfigField 'String', 'JAPSCAN_CDN_BASE_URL', '"http://cd151.d836pbl.club/"'
-
-            buildConfigField 'String', 'MANGAPANDA_BASE_URL', '"http://www.mangapanda.com"'
-            buildConfigField 'String', 'MANGAPANDA_CDN_BASE_URL', '"http://i10.mangacdn.com"'
         }
     }
 
@@ -104,14 +92,6 @@ android {
         abortOnError false
     }
 
-    // Remove mockRelease as it's not needed.
-    android.variantFilter { variant ->
-        if (variant.buildType.name == 'release'
-                && variant.getFlavors().get(0).name == 'mock') {
-            variant.setIgnore(true);
-        }
-    }
-
     // Always show the result of every unit test, even if it passes.
     testOptions.unitTests.all {
         testLogging {
@@ -125,9 +105,9 @@ kapt {
 }
 
 dependencies {
-    compile 'com.android.support:support-annotations:25.3.1'
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support:support-annotations:27.0.2'
+    compile 'com.android.support:appcompat-v7:27.0.2'
+    compile 'com.android.support:design:27.0.2'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.2.0'
@@ -135,6 +115,10 @@ dependencies {
     compile 'com.google.dagger:dagger:2.0'
     compile 'se.emilsjolander:sprinkles:1.3.1'
     compile 'io.reactivex:rxandroid:0.25.0'
+
+    implementation "io.reactivex.rxjava2:rxjava:2.1.9"
+    implementation "io.reactivex.rxjava2:rxandroid:2.0.2"
+
     compile 'com.daimajia.swipelayout:library:1.2.0@aar'
     compile('com.crashlytics.sdk.android:crashlytics:2.4.0@aar') {
         transitive = true;
@@ -146,53 +130,6 @@ dependencies {
     kapt 'com.google.dagger:dagger-compiler:2.0'
     provided 'org.glassfish:javax.annotation:10.0-b28'
 
-    testCompile 'com.squareup.assertj:assertj-android:1.0.0'
-    testCompile 'org.assertj:assertj-core:1.7.0'
-    testCompile('org.robolectric:robolectric:3.0') {
-        exclude group: 'commons-logging'
-        exclude group: 'org.apache.httpcomponents'
-    }
-
-    // Dependencies for local unit tests
-    testCompile "org.mockito:mockito-all:1.10.19"
-    testCompile "org.hamcrest:hamcrest-all:1.3"
-    testCompile "org.powermock:powermock-module-junit4:1.6.2"
-    testCompile "org.powermock:powermock-api-mockito:1.6.2"
-
-    // Android Testing Support Library's runner and rules
-    androidTestCompile "com.android.support.test:runner:0.4.1"
-    androidTestCompile "com.android.support.test:rules:0.4.1"
-
-    // Espresso UI Testing dependencies.
-    androidTestCompile "com.android.support.test.espresso:espresso-core:2.2.1"
-    androidTestCompile "com.android.support.test.espresso:espresso-intents:2.2.1"
-    androidTestCompile("com.android.support.test.espresso:espresso-contrib:2.2.1") {
-        exclude module: 'support-annotations'
-        exclude module: 'support-v4'
-        exclude module: 'support-v13'
-        exclude module: 'recyclerview-v7'
-    }
-}
-
-/*
-Resolves dependency versions across test and production APKs, specifically, transitive
-dependencies. This is required since Espresso internally has a dependency on support-annotations.
-*/
-configurations.all {
-    resolutionStrategy.force "com.android.support:support-annotations:25.3.1"
-}
-
-/*
-All direct/transitive dependencies shared between your test and production APKs need to be
-excluded from the test APK! This is necessary because both APKs will contain the same classes. Not
-excluding these dependencies from your test configuration will result in an dex pre-verifier error
-at runtime. More info in this tools bug: (https://code.google.com/p/android/issues/detail?id=192497)
-*/
-configurations.compile.dependencies.each { compileDependency ->
-    println "Excluding compile dependency: ${compileDependency.getName()}"
-    configurations.androidTestCompile.dependencies.each { androidTestCompileDependency ->
-        configurations.androidTestCompile.exclude module: "${compileDependency.getName()}"
-    }
 }
 
 String propOrDef(String propertyName, String defaultValue) {

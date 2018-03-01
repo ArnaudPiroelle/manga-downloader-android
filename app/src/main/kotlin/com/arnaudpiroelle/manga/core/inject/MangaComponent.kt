@@ -11,6 +11,7 @@ import com.arnaudpiroelle.manga.ui.manga.add.AddMangaFragment
 import com.arnaudpiroelle.manga.ui.manga.list.MangaListingFragment
 import com.arnaudpiroelle.manga.ui.manga.list.view.MangaView
 import com.arnaudpiroelle.manga.ui.manga.modify.ModifyMangaDialogFragment
+import com.arnaudpiroelle.manga.ui.settings.SettingsFragment
 import dagger.Component
 import javax.inject.Singleton
 
@@ -29,4 +30,5 @@ interface MangaComponent {
     fun inject(mangaView: MangaView)
 
     fun inject(downloadService: DownloadService)
+    fun inject(settingsFragment: SettingsFragment)
 }

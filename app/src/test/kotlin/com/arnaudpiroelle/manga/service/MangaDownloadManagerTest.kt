@@ -28,7 +28,6 @@ class MangaDownloadManagerTest {
         providerRegistry = ProviderRegistryBuilder.createProviderRegister().withProvider(provider).build()
         mangaDownloadManager = MangaDownloadManager(
                 Mockito.mock(MangaDownloadManager.MangaDownloaderCallback::class.java),
-                providerRegistry,
                 Mockito.mock(FileHelper::class.java)
         )
     }

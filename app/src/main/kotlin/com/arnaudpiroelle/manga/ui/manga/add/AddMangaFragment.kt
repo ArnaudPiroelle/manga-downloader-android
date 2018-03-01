@@ -1,10 +1,7 @@
 package com.arnaudpiroelle.manga.ui.manga.add
 
 import android.app.SearchManager
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -21,7 +18,6 @@ import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.core.provider.MangaProvider
 import com.arnaudpiroelle.manga.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.model.Manga
-import com.arnaudpiroelle.manga.service.DownloadService
 import com.arnaudpiroelle.manga.ui.manga.modify.ModifyMangaDialogFragment
 import kotlinx.android.synthetic.main.fragment_add_manga.*
 import rx.Observable
@@ -33,10 +29,11 @@ import javax.inject.Inject
 
 class AddMangaFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
 
-    @Inject lateinit var providerRegistry: ProviderRegistry
+    @Inject
+    lateinit var providerRegistry: ProviderRegistry
 
-    private val mAdapter: ProviderMangaListingAdapter by lazy { ProviderMangaListingAdapter(activity, R.layout.item_view_manga) }
-    private val spinnerAdapter: ProviderSpinnerAdapter by lazy { ProviderSpinnerAdapter(activity) }
+    private val mAdapter: ProviderMangaListingAdapter by lazy { ProviderMangaListingAdapter(activity!!, R.layout.item_view_manga) }
+    private val spinnerAdapter: ProviderSpinnerAdapter by lazy { ProviderSpinnerAdapter(activity!!) }
     private var mPosition = 0
     private var mangas: List<Manga> = ArrayList()
 
@@ -52,7 +49,7 @@ class AddMangaFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, Searc
         return inflater.inflate(R.layout.fragment_add_manga, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         computeProviders()
@@ -70,7 +67,7 @@ class AddMangaFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, Searc
                 manga.lastChapter = it.chapterNumber
                 manga.save()
 
-                activity.finish()
+                activity?.finish()
             }
 
             modifyMangaDialogFragment.show(childFragmentManager, null)
@@ -85,9 +82,9 @@ class AddMangaFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, Searc
 
         val supportActionBar = (activity as AppCompatActivity).supportActionBar
 
-        val searchManager = activity.getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager
         var searchView = MenuItemCompat.getActionView(menu.findItem(R.id.action_search)) as SearchView
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(activity.componentName))
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(activity?.componentName))
         searchView.queryHint = resources.getString(R.string.search_title)
         searchView.setOnCloseListener {
             searchView.onActionViewCollapsed()

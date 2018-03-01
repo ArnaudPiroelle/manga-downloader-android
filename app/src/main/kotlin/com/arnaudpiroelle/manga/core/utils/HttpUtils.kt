@@ -27,14 +27,8 @@ object HttpUtils {
         return sb.toString()
     }
 
-    fun readFrom(response: Response): InputStream? {
-        try {
-            return response.body.`in`()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-
-        return null
+    fun readFrom(response: Response): InputStream {
+        return response.body.`in`()
     }
 
     @Throws(IOException::class)
