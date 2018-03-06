@@ -1,46 +1,37 @@
 package com.arnaudpiroelle.manga.ui.manga.list
 
-import android.Manifest
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.widget.SwipeRefreshLayout
-import android.view.*
-import android.widget.AdapterView
+import android.support.v7.app.AlertDialog
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.helper.ItemTouchHelper
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.arnaudpiroelle.manga.MangaApplication.Companion.GRAPH
 import com.arnaudpiroelle.manga.R
-import com.arnaudpiroelle.manga.core.adapter.BaseAdapter
-import com.arnaudpiroelle.manga.core.permission.PermissionHelper
-import com.arnaudpiroelle.manga.core.provider.ProviderRegistry
-import com.arnaudpiroelle.manga.core.ui.presenter.Presenter
-import com.arnaudpiroelle.manga.model.Manga
+import com.arnaudpiroelle.manga.core.db.MangaDao
+import com.arnaudpiroelle.manga.core.utils.PreferencesHelper
+import com.arnaudpiroelle.manga.model.db.Manga
+import com.arnaudpiroelle.manga.service.DownloadService.Companion.updateScheduling
 import com.arnaudpiroelle.manga.ui.manga.add.AddMangaActivity
-import com.arnaudpiroelle.manga.ui.manga.list.view.MangaView
 import com.arnaudpiroelle.manga.ui.manga.modify.ModifyMangaDialogFragment
 import kotlinx.android.synthetic.main.fragment_listing_manga.*
 import javax.inject.Inject
 
-class MangaListingFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, MangaListingPresenter.MangaListingCallback {
+
+class MangaListingFragment : Fragment(), MangaListingContract.View {
 
     @Inject
-    lateinit var providerRegistry: ProviderRegistry
+    lateinit var mangaDao: MangaDao
 
-    private val mPresenter: Presenter<Manga> by lazy { MangaListingPresenter(this) }
-    private val mAdapter: BaseAdapter<Manga, MangaView> by lazy { BaseAdapter<Manga, MangaView>(activity!!, R.layout.item_view_manga) }
-    private var mPermissionHelper: PermissionHelper = PermissionHelper(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    private var updateReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            mPresenter.list()
-        }
-    }
+    @Inject
+    lateinit var preferencesHelper: PreferencesHelper
 
-    companion object {
-        val MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 1
-        public var UPDATE_RECEIVER_ACTION: String = "UPDATE_RECEIVER_ACTION"
-    }
+    private val userActionsListener: MangaListingContract.UserActionsListener  by lazy { MangaListingPresenter(this, mangaDao) }
+    private val adapter by lazy { MangaListingAdapter(activity) }
+    private val touchHelper by lazy { ItemTouchHelper(MangaTouchHelperCallback(adapter, userActionsListener)) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,109 +49,63 @@ class MangaListingFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, M
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        list_manga.adapter = mAdapter
-        list_manga.emptyView = manga_empty
-        list_manga.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
-            modifyManga(mAdapter.getItem(position))
+        list_manga.layoutManager = LinearLayoutManager(activity)
+        list_manga.adapter = adapter
+
+        toolbar.setTitle(R.string.title_mymangas)
+        toolbar.inflateMenu(R.menu.menu_manga_listing)
+        toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.action_download -> {
+                    updateScheduling(requireContext(), preferencesHelper)
+                    true
+                }
+                else -> false
+            }
         }
 
-        list_manga.onItemLongClickListener = AdapterView.OnItemLongClickListener { parent, view, position, id ->
-            removeManga(mAdapter.getItem(position))
-            true
-        }
+        touchHelper.attachToRecyclerView(list_manga)
 
-        swipe_refresh.setOnRefreshListener(this)
-        action_add_manga.setOnClickListener { addManga() }
+        action_add_manga.setOnClickListener { userActionsListener.addManga() }
 
     }
 
     override fun onResume() {
         super.onResume()
 
-        activity?.setTitle(R.string.title_mymangas)
-
-        mPresenter.list()
-
-        activity?.registerReceiver(updateReceiver, IntentFilter(UPDATE_RECEIVER_ACTION))
+        userActionsListener.register()
     }
 
     override fun onPause() {
+        userActionsListener.unregister()
+
         super.onPause()
-
-        activity?.unregisterReceiver(updateReceiver)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        super.onCreateOptionsMenu(menu, inflater)
-
-        inflater!!.inflate(R.menu.menu_main, menu)
+    override fun displayMangas(mangas: List<Manga>) {
+        adapter.update(mangas)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
-            R.id.action_download -> {
-                manualDownload()
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
+    override fun openNewMangaWizard() {
+        startActivity(Intent(activity, AddMangaActivity::class.java))
     }
 
-    override fun onListingLoading() {
-        swipe_refresh.isRefreshing = true
-    }
-
-    override fun onListingLoaded(mangas: List<Manga>) {
-        swipe_refresh.isRefreshing = false
-        mAdapter.setData(mangas)
-    }
-
-    override fun onRefresh() {
-        mPresenter.list()
-    }
-
-    fun addManga() {
-        activity?.startActivity(Intent(activity, AddMangaActivity::class.java))
-    }
-
-    fun manualDownload() {
-        mPermissionHelper.checkAndRequest(activity!!, MY_PERMISSIONS_REQUEST_WRITE_STORAGE) {
-            //startDownloadService()
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        when (requestCode) {
-            MY_PERMISSIONS_REQUEST_WRITE_STORAGE -> {
-                //startDownloadService()
-            }
-        }
-    }
-
-    private fun showAddButton() {
-        val lp = action_add_manga.layoutParams as ViewGroup.MarginLayoutParams
-        action_add_manga.animate().y(view!!.bottom - lp.bottomMargin - action_add_manga.height.toFloat()).start()
-    }
-
-    private fun modifyManga(manga: Manga) {
-        val modifyMangaDialogFragment = ModifyMangaDialogFragment()
-        modifyMangaDialogFragment.manga = manga
-        modifyMangaDialogFragment.onChapterChoosenListener = {
-            manga.lastChapter = it.chapterNumber
-            manga.save()
-
-            mPresenter.list()
-        }
-
+    override fun displayModificationDialog(manga: Manga) {
+        val modifyMangaDialogFragment = ModifyMangaDialogFragment.newInstance(manga)
         modifyMangaDialogFragment.show(childFragmentManager, null)
     }
 
-    private fun removeManga(manga: Manga) {
-        manga.delete()
-        mPresenter.list()
-        showAddButton()
-    }
+    override fun displayRemoveConfirmation(manga: Manga) {
+        AlertDialog.Builder(requireContext())
+                .setTitle("Remove ${manga.name} ?")
+                .setMessage("Do you really want to remove this manga?")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(android.R.string.yes) { _, _ ->
+                    userActionsListener.remove(manga)
+                }
+                .setNegativeButton(android.R.string.no, null)
+                .show()
 
+
+    }
 }

@@ -7,6 +7,15 @@
         <item name="colorAccent">@color/accentColor</item>
 
         <item name="android:windowBackground">@color/window_background</item>
+        <item name="preferenceTheme">@style/AppTheme.Preferences</item>
+    </style>
+
+    <style name="AppTheme.Preferences" parent="@style/PreferenceThemeOverlay">
+        <item name="preferenceFragmentCompatStyle">@style/AppTheme.PreferenceFragment</item>
+    </style>
+
+    <style name="AppTheme.PreferenceFragment" parent="@style/PreferenceFragment.Material">
+        <item name="android:layout">@layout/fragment_preferences</item>
     </style>
 
     <style name="AppTheme.NavActivity" parent="AppTheme">

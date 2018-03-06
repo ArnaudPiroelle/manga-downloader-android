@@ -1,45 +1,33 @@
 package com.arnaudpiroelle.manga.ui.history
 
-import com.arnaudpiroelle.manga.core.ui.presenter.Presenter
-import com.arnaudpiroelle.manga.model.History
-import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
-import se.emilsjolander.sprinkles.Query
-import java.util.*
+import com.arnaudpiroelle.manga.core.db.HistoryDao
+import com.arnaudpiroelle.manga.core.rx.plusAssign
+import io.reactivex.Completable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 
-class HistoryPresenter(internal var callback:
+class HistoryPresenter(
+        private val view: HistoryContract.View,
+        private val historyDao: HistoryDao) : HistoryContract.UserActionsListener {
 
-                       HistoryPresenter.HistoryListingCallback) : Presenter<History> {
+    private val disposable = CompositeDisposable()
 
-    override fun list() {
-        callback.onListingLoading()
-
-        Observable.create(Observable.OnSubscribe<List<History>> { subscriber ->
-            Query.all(History::class.java).get().use {
-                val histories = it.asList()
-
-                Collections.reverse(histories)
-                subscriber.onNext(histories)
-            }
-
-            subscriber.onCompleted()
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe { callback.onListingLoaded(it) }
-    }
-
-    fun cleanHistory() {
-        Observable.from(Query.all(History::class.java).get().asList())
+    override fun register() {
+        disposable += historyDao.getAll()
                 .subscribeOn(Schedulers.io())
+                .map { it.reversed() }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { it.delete() },
-                        { },
-                        { this.list() })
+                .subscribe(view::displayHistories, {})
     }
 
-    interface HistoryListingCallback {
-        fun onListingLoading()
+    override fun unregister() {
+        disposable.clear()
+    }
 
-        fun onListingLoaded(histories: List<History>)
+    override fun cleanHistory() {
+        disposable += Completable.fromAction { historyDao.deleteAll() }
+                .subscribeOn(Schedulers.io())
+                .subscribe({}, {})
     }
 }

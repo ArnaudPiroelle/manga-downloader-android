@@ -1,21 +1,22 @@
 package com.arnaudpiroelle.manga.core.utils
 
-import android.os.Environment
-
-import com.arnaudpiroelle.manga.model.Chapter
-import com.arnaudpiroelle.manga.model.Manga
-import com.arnaudpiroelle.manga.model.Page
-
+import android.os.Environment.getExternalStorageDirectory
+import com.arnaudpiroelle.manga.model.db.Manga
+import com.arnaudpiroelle.manga.model.network.Chapter
+import com.arnaudpiroelle.manga.model.network.Page
 import java.io.File
-
 import javax.inject.Inject
 
-open class FileHelper {
+open class FileHelper @Inject constructor(val preferencesHelper: PreferencesHelper) {
 
-    @Inject constructor() {}
+    private fun getEbooksFolder(): File {
+        val outputFolder = preferencesHelper.getOutputFolder()
 
-    fun getEbooksFolder(): File {
-        return File(Environment.getExternalStorageDirectory(), "eBooks")
+        return if (outputFolder != null) {
+            File(outputFolder)
+        } else {
+            File(getExternalStorageDirectory(), "eBooks")
+        }
     }
 
     fun getMangaFolder(manga: Manga): File {
@@ -26,12 +27,12 @@ open class FileHelper {
         return File(getMangaFolder(manga), chapter.chapterNumber)
     }
 
-    fun getPageFile(manga: Manga, chapter: Chapter, page: Page): File {
-        val pageFormated = "%03d.%s".format((chapter.pages!!.indexOf(page) + 1), page.extension)
+    fun getPageFile(manga: Manga, chapter: Chapter, page: Page, pagePosition: Int): File {
+        val pageFormated = "%03d.%s".format((pagePosition + 1), page.getExtension())
 
         val chapterFolder = getChapterFolder(manga, chapter)
         chapterFolder.mkdirs()
 
-        return File(chapterFolder, "/" + pageFormated)
+        return File(chapterFolder, pageFormated)
     }
 }

@@ -1,23 +1,17 @@
 package com.arnaudpiroelle.manga.core.provider
 
-import com.arnaudpiroelle.manga.model.Chapter
-import com.arnaudpiroelle.manga.model.Manga
-import com.arnaudpiroelle.manga.model.Page
-import java.io.File
-
-import java.io.InputStream
+import com.arnaudpiroelle.manga.model.db.Manga
+import com.arnaudpiroelle.manga.model.network.Chapter
+import com.arnaudpiroelle.manga.model.network.Page
+import io.reactivex.Single
+import okhttp3.Response
 
 interface MangaProvider {
+    fun findMangas(): Single<List<Manga>>
 
-    val name: String
+    fun findChapters(manga: Manga): Single<List<Chapter>>
 
-    fun findMangas(): List<Manga>
+    fun findPages(manga: Manga, chapter: Chapter): Single<List<Page>>
 
-    fun findChapters(manga: Manga): List<Chapter>
-
-    fun findPages(chapter: Chapter): List<Page>
-
-    fun findPage(page: Page): InputStream
-
-    fun postProcess(file: File): Unit
+    fun findPage(page: Page): Single<Response>
 }

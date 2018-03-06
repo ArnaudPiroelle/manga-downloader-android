@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -16,39 +17,23 @@
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="false"
         android:theme="@style/AppTheme">
 
-        <activity
-            android:name=".ui.manga.list.MangaListingActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NavActivity">
+        <activity android:name=".ui.manga.add.AddMangaActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.explorer.ExplorerActivity" />
+        </activity>
 
+        <activity
+            android:name=".ui.explorer.ExplorerActivity"
+            android:label="MangaV2">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".ui.history.HistoryActivity"
-            android:theme="@style/AppTheme.NavActivity" />
-
-        <activity
-            android:name=".ui.manga.add.AddMangaActivity"
-            android:parentActivityName=".ui.manga.list.MangaListingActivity">
-
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.manga.list.MangaListingActivity" />
-        </activity>
-
-        <activity
-            android:name=".ui.settings.SettingsActivity"
-            android:parentActivityName=".ui.manga.list.MangaListingActivity">
-
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.manga.list.MangaListingActivity" />
         </activity>
 
         <service

@@ -9,13 +9,10 @@ import android.preference.PreferenceManager
 import com.arnaudpiroelle.manga.core.provider.MangaProvider
 import com.arnaudpiroelle.manga.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.core.provider.ProviderRegistryBuilder.Companion.createProviderRegister
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.squareup.okhttp.OkHttpClient
 import dagger.Module
 import dagger.Provides
-import retrofit.client.OkClient
-import java.util.concurrent.TimeUnit
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -31,25 +28,21 @@ class ApplicationModule(private val mContext: Context) {
 
     @Provides
     @Singleton
-    fun providesHttpClient(): OkClient {
-        val client = OkHttpClient()
-        client.setReadTimeout(60, TimeUnit.SECONDS)
-        client.setConnectTimeout(60, TimeUnit.SECONDS)
+    fun providesHttpClient(): OkHttpClient {
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.level = HttpLoggingInterceptor.Level.BASIC
 
-        return OkClient(client)
+        return OkHttpClient.Builder()
+                .addInterceptor(interceptor)
+                .build()
     }
 
     @Provides
     @Singleton
-    fun providesProviderRegistry(@Named("JapScanDownloader") japScanDownloader: MangaProvider,
-                                 @Named("MangaPandaDownloader") mangaPandaDownloader: MangaProvider): ProviderRegistry {
-        return createProviderRegister().withProvider(japScanDownloader, mangaPandaDownloader).build()
-    }
-
-    @Provides
-    @Singleton
-    fun providesGson(): Gson {
-        return GsonBuilder().setPrettyPrinting().create()
+    fun providesProviderRegistry(@Named("JapScanDownloader") japScanDownloader: MangaProvider): ProviderRegistry {
+        return createProviderRegister()
+                .withProvider("JapScan", japScanDownloader)
+                .build()
     }
 
     @Provides

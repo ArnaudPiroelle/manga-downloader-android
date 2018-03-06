@@ -4,18 +4,18 @@ import java.util.*
 
 open class ProviderRegistry {
 
-    var registry: MutableMap<String, MangaProvider> = HashMap()
+    private var registry: MutableMap<String, MangaProvider> = HashMap()
 
-    fun register(mangaProvider: MangaProvider) {
-        registry.put(mangaProvider.name, mangaProvider)
+    fun register(name: String, mangaProvider: MangaProvider) {
+        registry[name] = mangaProvider
     }
 
-    fun find(providerName: String): MangaProvider? {
-        return registry[providerName]
+    fun find(providerName: String): MangaProvider {
+        return registry[providerName]!!
     }
 
-    fun list(): List<MangaProvider> {
-        return ArrayList(registry.values.sortedBy { it.name })
+    fun list(): Map<String, MangaProvider> {
+        return registry
     }
 
 
@@ -23,16 +23,10 @@ open class ProviderRegistry {
 
 class ProviderRegistryBuilder {
 
-    private val providerRegistry: ProviderRegistry
+    private val providerRegistry: ProviderRegistry = ProviderRegistry()
 
-    init {
-        providerRegistry = ProviderRegistry()
-    }
-
-    fun withProvider(vararg mangaProviders: MangaProvider): ProviderRegistryBuilder {
-        for (mangaProvider in mangaProviders) {
-            providerRegistry.register(mangaProvider)
-        }
+    fun withProvider(name: String, mangaProvider: MangaProvider): ProviderRegistryBuilder {
+        providerRegistry.register(name, mangaProvider)
 
         return this
     }

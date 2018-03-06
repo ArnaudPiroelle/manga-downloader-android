@@ -5,199 +5,172 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Rect
-import android.support.annotation.VisibleForTesting
-import android.util.Log
+import com.arnaudpiroelle.manga.BuildConfig
 import com.arnaudpiroelle.manga.core.provider.MangaProvider
-import com.arnaudpiroelle.manga.core.utils.HttpUtils
-import com.arnaudpiroelle.manga.model.Chapter
-import com.arnaudpiroelle.manga.model.Manga
-import com.arnaudpiroelle.manga.model.Page
-import com.arnaudpiroelle.manga.provider.japscan.api.JapScanApiService
-import com.arnaudpiroelle.manga.provider.japscan.api.JapScanDataApiService
+import com.arnaudpiroelle.manga.core.rx.RxRequest
+import com.arnaudpiroelle.manga.model.db.Manga
+import com.arnaudpiroelle.manga.model.network.Chapter
+import com.arnaudpiroelle.manga.model.network.Page
+import com.arnaudpiroelle.manga.model.network.PostProcess
+import io.reactivex.Single
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import org.jsoup.Jsoup
 import java.io.File
 import java.io.FileOutputStream
-import java.io.InputStream
 import java.net.URLDecoder
-import java.util.*
-import java.util.regex.Pattern
 
-class JapScanDownloader(private val japScanApiService: JapScanApiService,
-                        private val japScanDataApiService: JapScanDataApiService) : MangaProvider {
 
-    override fun findMangas(): List<Manga> {
-        val mangaListResponse = japScanApiService.getMangaList()
+class JapScanDownloader(private val okHttpClient: OkHttpClient) : MangaProvider {
+    override fun findMangas(): Single<List<Manga>> {
+        val request = Request.Builder()
+                .url("${BuildConfig.JAPSCAN_BASE_URL}/mangas/")
+                .build()
 
-        val body = HttpUtils.convertFrom(mangaListResponse)
-
-        return parseMangaList(body)
+        return RxRequest(okHttpClient, request)
+                .map(this::parseMangas)
+                .onErrorReturn { listOf() }
     }
 
-    override fun findChapters(manga: Manga): List<Chapter> {
-        val mangaResponse = japScanApiService.getManga(manga.mangaAlias!!)
+    override fun findChapters(manga: Manga): Single<List<Chapter>> {
+        val request = Request.Builder()
+                .url("${BuildConfig.JAPSCAN_BASE_URL}/mangas/${manga.mangaAlias}")
+                .build()
 
-        val body = HttpUtils.convertFrom(mangaResponse)
+        return RxRequest(okHttpClient, request)
+                .map(this::parseChapters)
+                .map { it.reversed() }
+                .onErrorReturn { listOf() }
 
-        val list = parseMangaChapters(body)
-        Collections.reverse(list)
-
-        return list
     }
 
-    override fun findPages(chapter: Chapter): List<Page> {
-        val pageResponse = japScanApiService.getReader(chapter.mangaAlias!!, chapter.chapterNumber!!)
+    override fun findPages(manga: Manga, chapter: Chapter): Single<List<Page>> {
+        val request = Request.Builder()
+                .url("${BuildConfig.JAPSCAN_BASE_URL}/lecture-en-ligne/${manga.mangaAlias}/${chapter.chapterNumber}")
+                .build()
 
-        val body = HttpUtils.convertFrom(pageResponse)
-
-        val pages = parseMangaChapterPages(body)
-
-        return pages
+        return RxRequest(okHttpClient, request)
+                .map(this::parsePages)
+                .onErrorReturn { listOf() }
     }
 
-    override fun findPage(page: Page): InputStream {
-        val downloadPageResponse = japScanDataApiService.downloadPage(page.mangaAlias!!, page.chapterNumber!!, page.pageNumber!!, page.extension!!)
-        return HttpUtils.readFrom(downloadPageResponse)
+    override fun findPage(page: Page): Single<Response> {
+        val request = Request.Builder()
+                .url(page.url)
+                .build()
+
+        return RxRequest(okHttpClient, request)
     }
 
-    override val name: String
-        get() = "JapScan"
+    private fun parseMangas(response: Response): List<Manga> {
+        val doc = Jsoup.parse(response.body()?.string())
+        val mangaElements = doc.select("div.cell>a[href*=/mangas/]")
 
-    @VisibleForTesting
-    fun parseMangaList(body: String): List<Manga> {
-        val mangas = ArrayList<Manga>()
+        return mangaElements.map {
+            val url = it.attr("href")
+            val name = it.text()
 
-        val pattern = Pattern.compile("<div class=\"cell\"><a href=\"\\/mangas\\/([^\"]+)\\/\">([^<]+)<\\/a><\\/div>")
-        val matcher = pattern.matcher(body)
-        while (matcher.find()) {
-            val url = URLDecoder.decode(matcher.group(1))
-            val name = matcher.group(2)
+            Manga(name, url.substringAfter("/mangas/"), "JapScan")
+        }
+    }
 
+    private fun parseChapters(response: Response): List<Chapter> {
+        val doc = Jsoup.parse(response.body()?.string())
 
-            var manga: Manga = Manga();
-            manga.name = name
-            manga.mangaAlias = url
-            manga.provider = this.name
-            manga.lastChapter = ""
+        val chapters = doc.select("#liste_chapitres > ul > li:not(:has(span)) > a")
+        return chapters.map {
 
-            mangas.add(manga)
+            val url = it.attr("href")
+            val name = it.text()
 
+            val parts = url.split("/")
+            val chapterNumber = URLDecoder.decode(parts[parts.lastIndex - 1], "UTF-8")
+            val mangaAlias = URLDecoder.decode(parts[parts.lastIndex - 2], "UTF-8")
+
+            Chapter(name, mangaAlias, chapterNumber)
         }
 
-        return mangas
     }
 
-    @VisibleForTesting
-    fun parseMangaChapters(body: String): List<Chapter> {
-        val chapters = ArrayList<Chapter>()
+    private fun parsePages(response: Response): List<Page> {
+        val doc = Jsoup.parse(response.body()?.string())
 
-        val pattern = Pattern.compile("<li>[\\s]*<a href=\"//www.japscan.com/lecture-en-ligne/([^\"]+)/([^\"]*)/\">([^<]*)</a>[\\s]*</li>")
-        val matcher = pattern.matcher(body)
-        while (matcher.find()) {
-            val url = URLDecoder.decode(matcher.group(1))
-            val chapterNumber = URLDecoder.decode(matcher.group(2))
-            val name = matcher.group(3)
+        val playerJs = doc.select("script[src~=(lecteur.js|lecteur_cr.js).*]")
 
-            var chapter: Chapter = Chapter()
-            chapter.name = name
-            chapter.mangaAlias = url
-            chapter.chapterNumber = chapterNumber
+        val oldPlayer = playerJs.attr("src").contains("lecteur.js")
+        val mangas = doc.getElementById("mangas")
+        val chapitres = doc.getElementById("chapitres")
+        val pages = doc.select("#pages > option:not([data-img~=(IMG__|__sy|__Add).*\\.(png|jpe?g)])")
+        val image = doc.getElementById("image")
 
-            chapters.add(chapter)
-        }
+        val mangaName = mangas.dataset()["nom"]
+        val chapterName = chapitres.dataset()["nom"]
+        val chapterUri = chapitres.dataset()["uri"]
 
-        return chapters
-    }
-
-    @VisibleForTesting
-    fun parseMangaChapterPages(body: String): List<Page> {
-        val pages = ArrayList<Page>()
-
-        val pagesPattern = Pattern.compile("<option [\\s]?(selected=\"selected\")? data-img=\"([^\"]+)\" value=\"\\/lecture-en-ligne\\/([^\"]+)\\/([^\"]+)\\/([^\"]+).html\">Page ([0-9]+)<\\/option>")
-        val urlPattern = Pattern.compile("<img data-img=\"[^\"]*\" itemprop=\"image\" id=\"image\" alt=\"[^\"]*\" src=\"([^\"]*)\" \\/>")
-
-        val pagesMatcher = pagesPattern.matcher(body)
-        val urlMatcher = urlPattern.matcher(body)
-
-        while (urlMatcher.find()) {
-            val url = urlMatcher.group(1)
-            val items = url.split("/").takeLast(3).dropLast(1)
-
-            val mangaNom = items[0]
-            val chapterNumber = items[1]
-
-            while (pagesMatcher.find()) {
-
-                val pageNumber = if (pagesMatcher.groupCount() == 5) URLDecoder.decode(pagesMatcher.group(1)) else URLDecoder.decode(pagesMatcher.group(2))
-
-                if (!pageNumber.startsWith("__sy") && !pageNumber.startsWith("__Add") && !pageNumber.startsWith("IMG__") && pageNumber.contains(".")) {
-                    val lastIndex = pageNumber.lastIndexOf(".")
-
-                    val page = Page()
-                    page.pageNumber = pageNumber.substring(0, lastIndex)
-                    page.mangaAlias = mangaNom
-                    page.chapterNumber = chapterNumber
-                    page.extension = pageNumber.substring(lastIndex + 1)
-
-                    pages.add(page)
-                }
+        return pages.map { page ->
+            val img = page.dataset()["img"]
+            if (oldPlayer) {
+                val src = image.attr("src")
+                val index = src.lastIndexOf("/")
+                val substring = src.substring(0, index + 1)
+                Page(substring + img)
+            } else {
+                val cleanName = mangaName!!.replace("/", "_").replace("?", "")
+                val chapter = chapterName ?: chapterUri
+                val url = "${BuildConfig.JAPSCAN_CDN_BASE_URL}/cr_images/$cleanName/$chapter/$img"
+                Page(url, MosaicPostProcess)
             }
-
         }
 
-        return pages
     }
 
-    override fun postProcess(file: File) {
-        return
+    object MosaicPostProcess : PostProcess {
+        override fun execute(file: File) {
+            val source = BitmapFactory.decodeFile(file.absolutePath)
+            val newBitmap = Bitmap.createBitmap(source.width, source.height, source.config)
+            val comboImage = Canvas(newBitmap)
 
-        val source = BitmapFactory.decodeFile(file.absolutePath)
+            val width = source.width.toDouble()
+            val height = source.height.toDouble()
 
-        val newBitmap = Bitmap.createBitmap(source.width, source.height, source.config)
-        val comboImage = Canvas(newBitmap)
+            val wp = Math.floor(width / 5)
+            val hp = Math.floor(height / 5)
+            val x = doubleArrayOf(wp * 2, wp * 4, 0.0, wp * 3, wp)
+            val y = doubleArrayOf(hp * 4, hp * 3, hp * 2, hp, 0.0)
 
-        try {
-            val width = source.width
-            val height = source.height
+            var ph: Double?
+            var pw: Double?
 
-            val w_p = Math.floor((width / 5).toDouble())
-            val h_p = Math.floor((height / 5).toDouble())
-            val x = doubleArrayOf(w_p * 2, w_p * 4, 0.0, w_p * 3, w_p)
-            val y = doubleArrayOf(h_p * 4, h_p * 3, h_p * 2, h_p, 0.0)
-
-            var p_h: Double?
-            var p_w: Double?
             for (i in 1..5) {
-                p_h = y[i - 1]
+                ph = y[i - 1]
 
                 for (j in 1..5) {
-                    p_w = x[j - 1]
-                    val leftDst = (j - 1) * w_p
-                    val topDst = (i - 1) * h_p
-                    val rightDst = j * w_p
-                    val bottomDst = i * h_p
+                    pw = x[j - 1]
+                    val leftDst = (j - 1) * wp
+                    val topDst = (i - 1) * hp
+                    val rightDst = j * wp
+                    val bottomDst = i * hp
 
-                    val leftSrc = p_w
-                    val topSrc = p_h
-                    val rightSrc = p_w + w_p
-                    val bottomSrc = p_h + h_p
+                    val leftSrc = pw
+                    val topSrc = ph
+                    val rightSrc = pw + wp
+                    val bottomSrc = ph + hp
 
                     val src = Rect(leftSrc.toInt(), topSrc.toInt(), rightSrc.toInt(), bottomSrc.toInt())
                     val dst = Rect(leftDst.toInt(), topDst.toInt(), rightDst.toInt(), bottomDst.toInt())
 
                     comboImage.drawBitmap(source, src, dst, null)
-
                 }
             }
-
 
             FileOutputStream(file).use { os ->
                 newBitmap.compress(Bitmap.CompressFormat.JPEG, 100, os)
                 os.flush()
                 os.close()
             }
-        } catch (e: Exception) {
-            Log.e("combineImages", "problem combining images", e)
-        }
 
-        source.recycle()
+            source.recycle()
+        }
     }
 }

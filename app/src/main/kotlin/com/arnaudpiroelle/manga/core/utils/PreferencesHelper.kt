@@ -2,9 +2,7 @@ package com.arnaudpiroelle.manga.core.utils
 
 import android.content.Context
 import android.content.SharedPreferences
-
 import com.arnaudpiroelle.manga.R
-
 import javax.inject.Inject
 
 class PreferencesHelper
@@ -16,6 +14,14 @@ constructor(private val context: Context, private val sharedPreferences: SharedP
 
     val isAutoUpdate: Boolean
         get() = sharedPreferences.getBoolean(context.getString(R.string.pref_auto_update_key), true)
+
+    fun setOutputFolder(folder: String) {
+        sharedPreferences.edit().putString(context.getString(R.string.pref_output_folder_key), folder).apply()
+    }
+
+    fun getOutputFolder(): String? {
+        return sharedPreferences.getString(context.getString(R.string.pref_output_folder_key), null)
+    }
 
     val isCompressChapter: Boolean
         get() = sharedPreferences.getBoolean(context.getString(R.string.pref_compress_chapters_key), true)

@@ -11,83 +11,72 @@ import android.widget.BaseAdapter
 import android.widget.CheckedTextView
 import com.arnaudpiroelle.manga.MangaApplication.Companion.GRAPH
 import com.arnaudpiroelle.manga.R
+import com.arnaudpiroelle.manga.core.db.MangaDao
 import com.arnaudpiroelle.manga.core.provider.ProviderRegistry
-import com.arnaudpiroelle.manga.model.Chapter
-import com.arnaudpiroelle.manga.model.Manga
-import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
-import java.util.*
+import com.arnaudpiroelle.manga.model.db.Manga
+import com.arnaudpiroelle.manga.model.network.Chapter
 import javax.inject.Inject
 
-class ModifyMangaDialogFragment : DialogFragment() {
+class ModifyMangaDialogFragment : DialogFragment(), ModifyMangaContract.View {
 
-    @Inject lateinit var providerRegistry: ProviderRegistry;
+    @Inject
+    lateinit var providerRegistry: ProviderRegistry
+    @Inject
+    lateinit var mangaDao: MangaDao
 
-    private val mAdapter = ChaptersAdapter()
-
-    public var manga: Manga? = null
-    public var onChapterChoosenListener: ((Chapter) -> Unit)? = { }
+    private val userActionsListener: ModifyMangaContract.UserActionsListener by lazy { ModifyMangaPresenter(this, providerRegistry, mangaDao) }
+    private val adapter = ChaptersAdapter()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
         GRAPH.inject(this)
 
         val dialogBuilder = AlertDialog.Builder(activity)
-
-        dialogBuilder
                 .setTitle(R.string.dialog_select_chapter)
-                .setPositiveButton(android.R.string.ok, { dialog, which ->
-                    val checkedItemPosition = (dialog as AlertDialog).listView.checkedItemPosition
+                .setSingleChoiceItems(adapter, 0) { _, _ -> }
 
-                    onChapterChoosenListener?.invoke(mAdapter.getItem(checkedItemPosition))
-                })
-
-        dialogBuilder.setSingleChoiceItems(mAdapter, 0, { dialog, which -> })
-        val dialog = dialogBuilder.create()
-
-        Observable.create<List<Chapter>> { subscriber ->
-            subscriber.onNext(providerRegistry.find(manga!!.provider!!)?.findChapters(manga!!))
-            subscriber.onCompleted()
+        val manga: Manga? = arguments?.getParcelable(EXTRA_MANGA) as Manga
+        if (manga == null) {
+            dismiss()
+        } else {
+            dialogBuilder.setPositiveButton(android.R.string.ok) { dialog, _ ->
+                val checkedItemPosition = (dialog as AlertDialog).listView.checkedItemPosition
+                userActionsListener.selectChapter(manga, adapter.getItem(checkedItemPosition))
+            }
+            userActionsListener.findChapters(manga)
         }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { chapters ->
 
-                    val allChapter = Chapter()
-                    allChapter.chapterNumber = "all"
-
-                    var allChapters: List<Chapter> = ArrayList<Chapter>().apply {
-                        add(allChapter)
-                        addAll(chapters)
-                    }
-
-                    mAdapter.datas = allChapters
-                    mAdapter.notifyDataSetChanged()
-
-                    val indexOfRaw = allChapters.indexOf(allChapters.find { it.chapterNumber.equals(manga!!.lastChapter) })
-                    dialog.listView.setSelection(indexOfRaw)
-                    dialog.listView.setItemChecked(indexOfRaw, true)
-                }
-
-
-        return dialog
+        return dialogBuilder.create()
     }
 
-    private inner class ChaptersAdapter() : BaseAdapter() {
+    override fun displayChapters(chapters: List<Chapter>, selection: Int) {
+        adapter.update(chapters)
 
-        var datas: List<Chapter> = arrayListOf()
+        val listView = (dialog as AlertDialog).listView
+        listView.setSelection(selection)
+        listView.setItemChecked(selection, true)
+    }
+
+    override fun closeWizard() {
+        val finishAfter = arguments?.getBoolean(EXTRA_FINISH_AFTER) ?: false
+        if (finishAfter) {
+            activity?.finish()
+        }
+    }
+
+    private inner class ChaptersAdapter : BaseAdapter() {
+
+        private var datas = mutableListOf<Chapter>()
 
         override fun getCount(): Int {
             return datas.size
         }
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
-            val view: CheckedTextView
-            if (convertView == null) {
-                view = LayoutInflater.from(activity).inflate(R.layout.select_dialog_singlechoice_material, parent, false) as CheckedTextView;
+            val view = if (convertView == null) {
+                LayoutInflater.from(activity).inflate(android.R.layout.select_dialog_singlechoice, parent, false) as CheckedTextView
             } else {
-                view = convertView as CheckedTextView
+                convertView as CheckedTextView
             }
 
             view.text = getItem(position).chapterNumber
@@ -103,5 +92,27 @@ class ModifyMangaDialogFragment : DialogFragment() {
             return position.toLong()
         }
 
+        fun update(chapters: List<Chapter>) {
+            datas.clear()
+            datas.addAll(chapters)
+            notifyDataSetChanged()
+        }
+
+    }
+
+    companion object {
+        const val EXTRA_MANGA = "EXTRA_MANGA"
+        const val EXTRA_FINISH_AFTER = "EXTRA_FINISH_AFTER"
+
+        fun newInstance(manga: Manga, finishAfter: Boolean = false): ModifyMangaDialogFragment {
+            val modifyMangaDialogFragment = ModifyMangaDialogFragment()
+
+            val bundle = Bundle()
+            bundle.putParcelable(EXTRA_MANGA, manga)
+            bundle.putBoolean(EXTRA_FINISH_AFTER, finishAfter)
+            modifyMangaDialogFragment.arguments = bundle
+
+            return modifyMangaDialogFragment
+        }
     }
 }

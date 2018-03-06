@@ -10,8 +10,8 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
-        classpath 'io.fabric.tools:gradle:1.22.1'
+        classpath 'com.android.tools.build:gradle:3.1.2'
+        classpath 'io.fabric.tools:gradle:1.25.3'
     }
 }
 
@@ -20,6 +20,7 @@ allprojects {
         jcenter()
         maven { url 'https://maven.fabric.io/public' }
         google()
+        maven { url "https://jitpack.io" }
     }
 }
 

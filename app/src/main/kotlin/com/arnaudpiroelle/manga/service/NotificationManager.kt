@@ -1,16 +1,19 @@
 package com.arnaudpiroelle.manga.service
 
+import android.app.NotificationChannel
 import android.content.Context
+import android.os.Build
+import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
 import com.arnaudpiroelle.manga.R
-import com.arnaudpiroelle.manga.model.Manga
+import com.arnaudpiroelle.manga.model.db.Manga
 
 
 class NotificationManager(val context: Context) {
 
-    val notificationManager = NotificationManagerCompat.from(context)
-    val summary = HashMap<Manga, Int>()
+    private val notificationManager = NotificationManagerCompat.from(context)
+    private val summary = HashMap<Manga, Int>()
 
     fun hideNotification() {
         notificationManager.cancel(PROGESS_NOTIF_ID)
@@ -38,8 +41,8 @@ class NotificationManager(val context: Context) {
     }
 
     fun addToSummary(add: Manga) {
-        val count = summary.getOrElse(add) { 0 }
-        summary[add] = count + 1
+        val currentCount = summary.getOrElse(add) { 0 }
+        summary[add] = currentCount + 1
 
         val inboxStyle = NotificationCompat.InboxStyle()
                 .setBigContentTitle("${summary.count()} manga updated")
@@ -65,6 +68,17 @@ class NotificationManager(val context: Context) {
                 .setGroupSummary(true)
                 .build()
         notificationManager.notify("summary", SUMMARY_NOTIF_ID, summaryNotification)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun initChannel() {
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
+
+        val channelName = "Downloads"
+        val importance = android.app.NotificationManager.IMPORTANCE_LOW
+        val notificationChannel = NotificationChannel(CHANNEL_ID, channelName, importance)
+        notificationManager.createNotificationChannel(notificationChannel)
+
     }
 
     companion object {

@@ -2,18 +2,25 @@ package com.arnaudpiroelle.manga.ui.history
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.widget.SwipeRefreshLayout
-import android.view.*
+import android.support.v7.widget.LinearLayoutManager
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.arnaudpiroelle.manga.MangaApplication.Companion.GRAPH
 import com.arnaudpiroelle.manga.R
-import com.arnaudpiroelle.manga.core.adapter.BaseAdapter
-import com.arnaudpiroelle.manga.model.History
+import com.arnaudpiroelle.manga.core.db.HistoryDao
+import com.arnaudpiroelle.manga.model.db.History
+import com.arnaudpiroelle.manga.ui.history.HistoryContract.UserActionsListener
 import kotlinx.android.synthetic.main.fragment_listing_history.*
+import javax.inject.Inject
 
-class HistoryFragment : Fragment(), HistoryPresenter.HistoryListingCallback, SwipeRefreshLayout.OnRefreshListener {
+class HistoryFragment : Fragment(), HistoryContract.View {
 
-    lateinit var presenter: HistoryPresenter
-    lateinit var adapter: BaseAdapter<History, HistoryView>
+    @Inject
+    lateinit var historyDao: HistoryDao
+
+    private val userActionsListener: UserActionsListener by lazy { HistoryPresenter(this, historyDao) }
+    private val adapter by lazy { HistoryAdapter(activity) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,9 +28,6 @@ class HistoryFragment : Fragment(), HistoryPresenter.HistoryListingCallback, Swi
         GRAPH.inject(this)
 
         setHasOptionsMenu(true)
-
-        presenter = HistoryPresenter(this)
-        adapter = BaseAdapter(activity!!, R.layout.item_view_history)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -33,51 +37,39 @@ class HistoryFragment : Fragment(), HistoryPresenter.HistoryListingCallback, Swi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        list_history.emptyView = history_empty
+        list_history.layoutManager = LinearLayoutManager(activity)
         list_history.adapter = adapter
-        swipe_refresh.setOnRefreshListener(this)
+
+        toolbar.setTitle(R.string.title_history)
+        toolbar.inflateMenu(R.menu.menu_history)
+        toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.action_clean_history -> {
+                    userActionsListener.cleanHistory()
+                    true
+                }
+                else -> false
+            }
+        }
+
     }
 
 
     override fun onResume() {
         super.onResume()
 
-        activity?.setTitle(R.string.title_history)
-
-        presenter.list()
+        userActionsListener.register()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
+    override fun onPause() {
+        userActionsListener.unregister()
 
-        inflater.inflate(R.menu.menu_history, menu)
+        super.onPause()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_clean_history -> {
-                cleanHistory()
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
+    override fun displayHistories(histories: List<History>) {
+        adapter.update(histories)
     }
 
-    private fun cleanHistory() {
-        presenter.cleanHistory()
-    }
 
-    override fun onListingLoading() {
-        swipe_refresh.isRefreshing = true
-    }
-
-    override fun onListingLoaded(histories: List<History>) {
-        swipe_refresh.isRefreshing = false
-
-        adapter.setData(histories)
-    }
-
-    override fun onRefresh() {
-        presenter.list()
-    }
 }

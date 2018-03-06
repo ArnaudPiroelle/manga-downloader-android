@@ -1,22 +1,36 @@
 package com.arnaudpiroelle.manga.ui.manga.add
 
-import android.Manifest
-import android.content.Intent
+import android.app.SearchManager
+import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v4.app.NavUtils
+import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
-import android.view.MenuItem
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.SearchView
+import android.view.*
+import android.widget.AdapterView
+import android.widget.Spinner
 import com.arnaudpiroelle.manga.MangaApplication.Companion.GRAPH
 import com.arnaudpiroelle.manga.R
-import com.arnaudpiroelle.manga.core.permission.PermissionHelper
-import com.arnaudpiroelle.manga.service.DownloadService
-import com.arnaudpiroelle.manga.ui.manga.list.MangaListingFragment
+import com.arnaudpiroelle.manga.core.provider.MangaProvider
+import com.arnaudpiroelle.manga.core.provider.ProviderRegistry
+import com.arnaudpiroelle.manga.model.db.Manga
+import com.arnaudpiroelle.manga.ui.manga.modify.ModifyMangaDialogFragment
 import kotlinx.android.synthetic.main.activity_add_manga.*
+import javax.inject.Inject
+import kotlin.properties.Delegates.notNull
 
-class AddMangaActivity : AppCompatActivity() {
+class AddMangaActivity : AppCompatActivity(), AddMangaContract.View, SearchView.OnQueryTextListener {
 
-    lateinit private var permissionHelper: PermissionHelper
+    @Inject
+    lateinit var providerRegistry: ProviderRegistry
+
+    private val userActionsListener: AddMangaContract.UserActionsListener by lazy { AddMangaPresenter(this, providerRegistry) }
+    private var searchManager by notNull<SearchManager>()
+    private val providerAdapter by lazy { ProviderSpinnerAdapter(this) }
+    private val mangaAdapter by lazy { ProviderMangaAdapter(this, userActionsListener) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,12 +39,72 @@ class AddMangaActivity : AppCompatActivity() {
 
         GRAPH.inject(this)
 
-        permissionHelper = PermissionHelper(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-
         setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        displayProviders()
+        searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+
+        initProvidersUI()
+
+        val linearLayoutManager = LinearLayoutManager(this)
+        list_manga.addItemDecoration(DividerItemDecoration(list_manga.context, linearLayoutManager.orientation))
+
+        list_manga.layoutManager = linearLayoutManager
+        list_manga.adapter = mangaAdapter
+
+
+    }
+
+    private fun initProvidersUI() {
+        supportActionBar?.let {
+            val spinnerContainer: View = LayoutInflater.from(this).inflate(R.layout.toolbar_spinner, null, false)
+            val lp = ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+
+            it.setDisplayShowCustomEnabled(true)
+            it.setCustomView(spinnerContainer, lp)
+            it.setDisplayShowTitleEnabled(false)
+
+            val spinner: Spinner = spinnerContainer.findViewById(R.id.toolbar_spinner) as Spinner
+            spinner.adapter = providerAdapter
+            spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    val provider = providerAdapter.getItem(position)
+                    userActionsListener.findMangas(provider)
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+            }
+        }
+
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        super.onCreateOptionsMenu(menu)
+
+        menuInflater.inflate(R.menu.menu_provider_mangas, menu)
+
+        val searchView = menu?.findItem(R.id.action_search)?.actionView as? SearchView
+        searchView?.let {
+            it.setSearchableInfo(searchManager.getSearchableInfo(componentName))
+            it.queryHint = resources.getString(R.string.search_title)
+            it.setOnCloseListener {
+                searchView.onActionViewCollapsed()
+                supportActionBar?.setDisplayShowCustomEnabled(true)
+                false
+            }
+            it.setOnSearchClickListener {
+                supportActionBar?.setDisplayShowCustomEnabled(false)
+            }
+            it.isIconified = true
+            it.setOnQueryTextListener(this)
+            it.requestFocus()
+        }
+
+        return true
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -44,32 +118,37 @@ class AddMangaActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun replace(contentId: Int, fragment: Fragment, addToBackStack: Boolean) {
-        val fragmentTransaction = supportFragmentManager.beginTransaction().replace(contentId, fragment, fragment.tag)
+    override fun onStart() {
+        super.onStart()
 
-        if (addToBackStack) {
-            fragmentTransaction.addToBackStack(fragment.tag)
-        }
-
-        fragmentTransaction.commit()
+        userActionsListener.fillProviders()
     }
 
-    private fun displayProviders() {
-        replace(R.id.add_content, AddMangaFragment(), false)
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        return false
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        when (requestCode) {
-            MangaListingFragment.MY_PERMISSIONS_REQUEST_WRITE_STORAGE -> {
-                startDownloadService()
-            }
-        }
+    override fun onQueryTextChange(name: String): Boolean {
+        userActionsListener.filterBy(name)
+        return true
     }
 
-    private fun startDownloadService() {
-        startService(Intent(this, DownloadService::class.java))
-        finish()
+    override fun displayProviders(providers: Map<String, MangaProvider>) {
+        providerAdapter.update(providers)
+    }
+
+    override fun displayMangas(mangas: List<Manga>) {
+        list_manga.scrollToPosition(0)
+        mangaAdapter.update(mangas)
+    }
+
+    override fun filterMangasBy(name: String) {
+        list_manga.scrollToPosition(0)
+        mangaAdapter.filter(name)
+    }
+
+    override fun displayChapters(manga: Manga) {
+        val chapterChooser = ModifyMangaDialogFragment.newInstance(manga, true)
+        chapterChooser.show(supportFragmentManager, null)
     }
 }
