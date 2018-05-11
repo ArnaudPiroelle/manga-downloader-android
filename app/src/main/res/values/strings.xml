@@ -32,6 +32,8 @@
     <string name="pref_wifiswitch_title">Only update on Wi-Fi</string>
     <string name="pref_wifiswitch_summary">Updating on Wi-Fi helps to reduce mobile data usage.</string>
 
+    <string name="pref_output_folder_key">pref_output_folder</string>
+
     <string name="pref_auto_update_key">pref_auto_update</string>
     <string name="pref_auto_update_title">Download automatically</string>
     <string name="pref_auto_update_summary">Automatically download new chapters available</string>
@@ -42,9 +44,11 @@
     <string name="pref_compress_chapters_title">Compress chapters</string>
     <string name="pref_compress_chapters_summary">Compress each chapter into a CBZ file</string>
     <string name="message_hint">Hey!</string>
-    <string name="message_empty_instance">You do not have any manga yet, why don\'t you start now by using the create button?</string>
+    <string name="message_empty_manga">You do not have any manga yet, why don\'t you start now by using the create button?</string>
     <string name="message_empty_history">You do not have any history yet</string>
     <string name="action_clean_history">Clean</string>
     <string name="check_manga_availability">Check mangas availabilities</string>
     <string name="check_manual_manga_availability">Manual check mangas availabilities</string>
+    <string name="manga_edit_button">Edit</string>
+    <string name="manga_remove_button">Remove</string>
 </resources>

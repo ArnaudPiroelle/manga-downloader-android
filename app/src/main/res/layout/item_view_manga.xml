@@ -1,75 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.arnaudpiroelle.manga.ui.manga.list.MangaView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/row_height">
+    android:layout_height="@dimen/row_height"
+    android:drawSelectorOnTop="true"
+    android:foreground="?attr/selectableItemBackground">
 
-    <com.daimajia.swipe.SwipeLayout
-        android:id="@+id/instance_swipe_layout"
+    <TextView
+        android:id="@+id/edit_button"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:background="#00FF55"
+        android:gravity="center"
+        android:text="@string/manga_edit_button"
+        android:textColor="@android:color/white"
+        android:visibility="gone" />
+
+
+    <TextView
+        android:id="@+id/remove_button"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:background="#FF0055"
+        android:gravity="center"
+        android:text="@string/manga_remove_button"
+        android:textColor="@android:color/white"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:padding="10dp">
 
-        <LinearLayout
-            android:id="@+id/manga_action"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/manga_modify"
-                android:layout_width="125dp"
-                android:layout_height="match_parent"
-                android:background="@color/item_modify"
-                android:drawablePadding="@dimen/padding"
-                android:drawableStart="@drawable/ic_modify"
-                android:gravity="center"
-                android:padding="@dimen/padding"
-                android:text="@string/item_modify"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/text_size_normal" />
-
-            <TextView
-                android:id="@+id/manga_remove"
-                android:layout_width="125dp"
-                android:layout_height="match_parent"
-                android:background="@color/item_remove"
-                android:drawablePadding="@dimen/padding"
-                android:drawableStart="@drawable/ic_delete"
-                android:gravity="center"
-                android:padding="@dimen/padding"
-                android:text="@string/item_remove"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/text_size_normal" />
-        </LinearLayout>
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/title"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="10dp"
-            android:gravity="center_vertical"
-            android:background="@color/item_view_background">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textSize="@dimen/text_size_big"
+            tools:text="Naruto" />
 
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/text_size_big"
-                tools:text="Naruto"
-                android:layout_gravity="center_vertical" />
+        <TextView
+            android:id="@+id/chapter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textSize="@dimen/text_size_small"
+            tools:text="789" />
 
-            <TextView
-                android:id="@+id/chapter"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/text_size_small"
-                tools:text="789"
-                android:visibility="gone"
-                android:layout_gravity="center_vertical" />
-
-        </LinearLayout>
-
-    </com.daimajia.swipe.SwipeLayout>
+    </LinearLayout>
 
 
-</com.arnaudpiroelle.manga.ui.manga.list.MangaView>
+</FrameLayout>

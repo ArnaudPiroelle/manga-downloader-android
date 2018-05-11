@@ -1,25 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.arnaudpiroelle.manga.ui.manga.list.MangaView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="@dimen/row_height"
+    android:layout_height="60dp"
     android:background="@color/item_view_background">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:orientation="vertical"
-            android:padding="10dp">
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:textSize="@dimen/text_size_big"
+        android:layout_gravity="center"
+        tools:text="Naruto" />
 
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textSize="@dimen/text_size_big"
-                tools:text="Naruto" />
-
-        </LinearLayout>
-
-</com.arnaudpiroelle.manga.ui.manga.list.MangaView>
+</FrameLayout>

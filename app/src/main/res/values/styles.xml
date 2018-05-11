@@ -7,11 +7,27 @@
         <item name="colorAccent">@color/accentColor</item>
 
         <item name="android:windowBackground">@color/window_background</item>
+        <item name="preferenceTheme">@style/AppTheme.Preferences</item>
+    </style>
+
+    <style name="AppTheme.Preferences" parent="@style/PreferenceThemeOverlay">
+        <item name="preferenceFragmentCompatStyle">@style/AppTheme.PreferenceFragment</item>
+    </style>
+
+    <style name="AppTheme.PreferenceFragment" parent="@style/PreferenceFragment.Material">
+        <item name="android:layout">@layout/fragment_preferences</item>
     </style>
 
     <style name="AppTheme.NavActivity" parent="AppTheme">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="Widget.MyApp.HeaderBar.Spinner" parent="Widget.AppCompat.Light.Spinner.DropDown.ActionBar">
+        <item name="android:background">?android:selectableItemBackground</item>
+        <item name="android:dropDownSelector">?android:selectableItemBackground</item>
+        <item name="android:divider">@null</item>
+        <item name="android:overlapAnchor">true</item>
     </style>
 
 </resources>

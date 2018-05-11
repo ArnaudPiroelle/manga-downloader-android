@@ -2,16 +2,33 @@
 
 This application allow you to download automatically your manga chapters.
 
-## Add your providers
-
-For the moment, this application use only one manga provider, [JapScan][].
-
-Add your own manga provider and make pull request.
-
-## For personnal usage only
-
+## Disclaimer
 This application is still a prototype and is not meant to finish on the store.
 
+For personal usage only!
 Buy your manga;)
 
-[JapScan]: http://www.japscan.com
+
+## Technical stack
+* Toothpick
+* OkHttp
+* RxJava2
+* Room
+* Jsoup
+* PermissionDispatcher
+* Kotlin
+
+## Change logs
+### 2.0.0
+- From scratch rewrite of the application with true MVP architecture
+- Migrate Dagger to Toothpick
+- Migrate Sprinkles to Room
+- Migrate RxJava to RxJava2
+- Rewrite JapScan Provider to use Jsoup instead of regex
+- Remove Retrofit and use directly OkHttp
+- Use JobScheduler to improve battery usage
+- Add eBooks folder selection at first start
+
+### 1.2.0
+- ...
+

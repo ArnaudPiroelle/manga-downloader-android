@@ -4,21 +4,17 @@ machine:
 
 dependencies:
   pre:
-    - echo y | android update sdk --no-ui --all --filter platform-tools,build-tools-22.0.1,android-22,sys-img-armeabi-v7a-android-22,extra-google-m2repository,extra-android-m2repository,extra-android-support
+    - echo y | android update sdk --no-ui --all --filter tools,platform-tools,extra-android-m2repository,extra-android-support,extra-google-google_play_services,extra-google-m2repository,android-23
+    - echo y | android update sdk --no-ui --all --filter build-tools-23.0.2
 
 test:
   override:
-    - TERM=dumb ./gradlew testMockDebug
-    - cp -r app/build/test-results/mockDebug* $CIRCLE_TEST_REPORTS
+    - ./gradlew assembleProdDebug
 
 deployment:
   develop:
     branch: develop
     commands:
-      - cp -r app/build/reports/tests/mockDebug $CIRCLE_ARTIFACTS
-
-  production:
-    branch: master
-    commands:
-      - echo "apiSecret=$FABRIC_API_SECRET" > app/fabric.properties
-      - TERM=dumb ./gradlew assembleRealRelease crashlyticsUploadDistributionRealRelease
+      - ./gradlew assembleProdRelease -PdisablePreDex
+      - cp -r app/build/outputs/apk/app-prod-release.apk $CIRCLE_ARTIFACTS
+      - curl -F "file=@app/build/outputs/apk/app-prod-release.apk" -F "token=$DEPLOYGATE_API_KEY" https://deploygate.com/api/users/ArnaudPiroelle/apps

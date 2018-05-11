@@ -1,61 +1,69 @@
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
-apply plugin: 'com.neenbedankt.android-apt'
-apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
 
-def getBuildNumber() {
-    return System.getenv("CIRCLE_BUILD_NUM") as Integer ?: 0
-}
+buildscript {
+    ext {
+        kotlin_version = '1.2.30'
+    }
 
-def getKeystorePassword(){
-    return System.getenv("APP_KEYSTORE_PASSWORD") as String ?: "PASSWORD"
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
 }
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
 
     defaultConfig {
         applicationId "com.arnaudpiroelle.manga"
-        minSdkVersion 21
-        targetSdkVersion 22
-        versionCode getBuildNumber()
-        versionName "1.1.0"
+        minSdkVersion 24
+        targetSdkVersion 27
+        versionCode 20
+        versionName "2.0.0"
+
+        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+
+        buildConfigField 'String', 'JAPSCAN_BASE_URL', '"http://www.japscan.cc"'
+        buildConfigField 'String', 'JAPSCAN_CDN_BASE_URL', '"http://ccc.blue15cdn.net/"'
+
+        buildConfigField 'String', 'MANGAPANDA_BASE_URL', '"http://www.mangapanda.com"'
+        buildConfigField 'String', 'MANGAPANDA_CDN_BASE_URL', '"http://i10.mangacdn.com"'
+    }
+
+    packagingOptions {
+        exclude 'LICENSE.txt'
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
     }
 
     signingConfigs {
         release {
             storeFile file('manga-downloader.keystore')
-            storePassword "${getKeystorePassword()}"
+            storePassword propOrDef("APP_KEYSTORE_PASSWORD", "manga-downloader")
             keyAlias 'manga-downloader'
-            keyPassword "${getKeystorePassword()}"
-        }
-    }
-
-    productFlavors {
-        mock {
-            buildConfigField 'String', 'JAPSCAN_BASE_URL', '"http://192.168.60.1:8989/japscan"'
-            buildConfigField 'String', 'JAPSCAN_CDN_BASE_URL', '"http://192.168.60.1:8989/japscan"'
-
-            buildConfigField 'String', 'MANGAPANDA_BASE_URL', '"http://192.168.60.1:8989/mangapanda"'
-            buildConfigField 'String', 'MANGAPANDA_CDN_BASE_URL', '"http://192.168.60.1:8989/mangapanda"'
-        }
-
-        real {
-            buildConfigField 'String', 'JAPSCAN_BASE_URL', '"http://www.japscan.com"'
-            buildConfigField 'String', 'JAPSCAN_CDN_BASE_URL', '"http://cdn.japscan.com"'
-
-            buildConfigField 'String', 'MANGAPANDA_BASE_URL', '"http://www.mangapanda.com"'
-            buildConfigField 'String', 'MANGAPANDA_CDN_BASE_URL', '"http://i10.mangacdn.com"'
+            keyPassword propOrDef("APP_KEYSTORE_PASSWORD", "manga-downloader")
         }
     }
 
     buildTypes {
+        debug {
+            minifyEnabled false
+            testCoverageEnabled = true
+
+            signingConfig signingConfigs.release
+        }
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -66,45 +74,74 @@ android {
         }
     }
 
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
+        androidTest.java.srcDirs += 'src/androidTest/kotlin'
+    }
 
+    lintOptions {
+        abortOnError false
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+
+    // Always show the result of every unit test, even if it passes.
+    testOptions.unitTests.all {
+        testLogging {
+            events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
+        }
+    }
+}
+
+kapt {
+    generateStubs = true
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:support-annotations:27.1.1'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.android.support:preference-v7:27.1.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
 
-    compile 'com.android.support:appcompat-v7:22.2.1'
-    compile 'com.android.support:design:22.2.1'
+    implementation 'com.github.codekidX:storage-chooser:2.0.3'
 
-    compile('com.squareup.retrofit:retrofit:1.9.0',
-            'com.squareup.okhttp:okhttp-urlconnection:2.2.0',
-            'com.squareup.okhttp:okhttp:2.2.0')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    compile 'com.google.dagger:dagger:2.0'
-    apt 'com.google.dagger:dagger-compiler:2.0'
-    provided 'org.glassfish:javax.annotation:10.0-b28'
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
+    implementation 'com.google.dagger:dagger:2.15'
 
-    compile 'se.emilsjolander:sprinkles:1.3.1'
+    implementation 'org.jsoup:jsoup:1.11.2'
 
-    compile 'com.jakewharton:butterknife:7.0.1'
+    implementation "android.arch.persistence.room:runtime:1.1.0"
+    implementation "android.arch.persistence.room:rxjava2:1.1.0"
+    kapt "android.arch.persistence.room:compiler:1.1.0"
 
-    compile 'io.reactivex:rxandroid:0.25.0'
-    compile 'de.greenrobot:eventbus:2.4.0'
+    implementation "io.reactivex.rxjava2:rxjava:2.1.9"
+    implementation "io.reactivex.rxjava2:rxandroid:2.0.2"
 
-    compile "com.daimajia.swipelayout:library:1.2.0@aar"
-    compile('com.crashlytics.sdk.android:crashlytics:2.4.0@aar') {
-        transitive = true;
+    implementation('com.crashlytics.sdk.android:crashlytics:2.4.0@aar') {
+        transitive = true
     }
 
-    testCompile(
-            'junit:junit:4.12',
-            'com.android.support:support-annotations:22.2.1',
-            'com.squareup.assertj:assertj-android:1.0.0',
-            'org.mockito:mockito-core:1.9.5',
-            'org.assertj:assertj-core:1.7.0'
-    )
-
-    testCompile('org.robolectric:robolectric:3.0') {
-        exclude group: 'commons-logging'
-        exclude group: 'org.apache.httpcomponents'
+    implementation("com.github.hotchemi:permissionsdispatcher:3.1.0") {
+        exclude module: "support-v13"
     }
+    kapt "com.github.hotchemi:permissionsdispatcher-processor:3.1.0"
+
+    kapt 'com.google.dagger:dagger-compiler:2.15'
+
+
+    testImplementation 'junit:junit:4.12'
+    testImplementation "org.robolectric:robolectric:3.8"
+}
+
+String propOrDef(String propertyName, String defaultValue) {
+    return hasProperty(propertyName) ? property(propertyName) : defaultValue
 }

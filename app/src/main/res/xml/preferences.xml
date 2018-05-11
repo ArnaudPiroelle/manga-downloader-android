@@ -26,8 +26,7 @@
             android:title="@string/pref_wifiswitch_title" />
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="@string/prefs_header_storages">
+    <PreferenceCategory android:title="@string/prefs_header_storages">
 
         <SwitchPreference
             android:defaultValue="true"
@@ -35,6 +34,11 @@
             android:persistent="true"
             android:summary="@string/pref_compress_chapters_summary"
             android:title="@string/pref_compress_chapters_title" />
+
+        <Preference
+            android:key="@string/pref_output_folder_key"
+            android:summary="Change downloads folder"
+            android:title="Downloads Folder" />
     </PreferenceCategory>
 
 
