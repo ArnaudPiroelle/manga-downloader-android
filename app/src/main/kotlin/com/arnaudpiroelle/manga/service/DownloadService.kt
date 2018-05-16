@@ -1,6 +1,8 @@
 package com.arnaudpiroelle.manga.service
 
 import android.app.job.JobInfo
+import android.app.job.JobInfo.NETWORK_TYPE_ANY
+import android.app.job.JobInfo.NETWORK_TYPE_UNMETERED
 import android.app.job.JobParameters
 import android.app.job.JobScheduler
 import android.app.job.JobService
@@ -261,13 +263,12 @@ class DownloadService : JobService() {
         fun updateScheduling(context: Context, period: Long = 60 * 1000, updateOnWifiOnly: Boolean = false) {
             val serviceComponent = ComponentName(context, DownloadService::class.java)
             val builder = JobInfo.Builder(JOB_ID, serviceComponent)
-                    //.setRequiredNetworkType(if (updateOnWifiOnly) NETWORK_TYPE_UNMETERED else NETWORK_TYPE_ANY)
+                    .setRequiredNetworkType(if (updateOnWifiOnly) NETWORK_TYPE_UNMETERED else NETWORK_TYPE_ANY)
                     .setPeriodic(period)
                     .setPersisted(true)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                builder.setRequiresBatteryNotLow(true)
-                        .setRequiresStorageNotLow(true)
+                builder.setRequiresStorageNotLow(true)
             }
 
 

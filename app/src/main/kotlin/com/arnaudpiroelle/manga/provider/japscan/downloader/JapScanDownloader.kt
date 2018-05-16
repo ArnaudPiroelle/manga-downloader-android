@@ -108,20 +108,21 @@ class JapScanDownloader(private val okHttpClient: OkHttpClient) : MangaProvider 
         val chapterName = chapitres.dataset()["nom"]
         val chapterUri = chapitres.dataset()["uri"]
 
-        return pages.map { page ->
-            val img = page.dataset()["img"]
-            if (oldPlayer) {
-                val src = image.attr("src")
-                val index = src.lastIndexOf("/")
-                val substring = src.substring(0, index + 1)
-                Page(substring + img)
-            } else {
-                val cleanName = mangaName!!.replace("/", "_").replace("?", "")
-                val chapter = chapterName ?: chapterUri
-                val url = "${BuildConfig.JAPSCAN_CDN_BASE_URL}/cr_images/$cleanName/$chapter/$img"
-                Page(url, MosaicPostProcess)
-            }
-        }
+        return pages.filter { it.dataset()["img"]?.isNotEmpty() ?: false }
+                .map { page ->
+                    val img = page.dataset()["img"]
+                    if (oldPlayer) {
+                        val src = image.attr("src")
+                        val index = src.lastIndexOf("/")
+                        val substring = src.substring(0, index + 1)
+                        Page(substring + img)
+                    } else {
+                        val cleanName = mangaName!!.replace("/", "_").replace("?", "")
+                        val chapter = chapterName ?: chapterUri
+                        val url = "${BuildConfig.JAPSCAN_CDN_BASE_URL}/cr_images/$cleanName/$chapter/$img"
+                        Page(url, MosaicPostProcess)
+                    }
+                }
 
     }
 
