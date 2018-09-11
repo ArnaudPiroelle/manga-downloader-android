@@ -1,20 +1,12 @@
 package com.arnaudpiroelle.manga.core.inject.module
 
-import com.arnaudpiroelle.manga.core.provider.MangaProvider
+import com.arnaudpiroelle.manga.core.inject.provider.JapScanDownloaderProvider
 import com.arnaudpiroelle.manga.provider.japscan.downloader.JapScanDownloader
-import dagger.Module
-import dagger.Provides
-import okhttp3.OkHttpClient
-import javax.inject.Named
-import javax.inject.Singleton
+import toothpick.config.Module
 
-@Module
-class JapScanModule {
+class JapScanModule : Module() {
 
-    @Provides
-    @Singleton
-    @Named("JapScanDownloader")
-    fun provideJapScanDownloader(okHttpClient: OkHttpClient): MangaProvider {
-        return JapScanDownloader(okHttpClient)
+    init {
+        bind(JapScanDownloader::class.java).toProvider(JapScanDownloaderProvider::class.java)
     }
 }

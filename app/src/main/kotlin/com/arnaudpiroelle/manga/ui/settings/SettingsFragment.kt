@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.support.v7.preference.Preference
 import android.support.v7.preference.Preference.OnPreferenceChangeListener
 import android.support.v7.preference.PreferenceFragmentCompat
-import com.arnaudpiroelle.manga.MangaApplication.Companion.GRAPH
 import com.arnaudpiroelle.manga.R
+import com.arnaudpiroelle.manga.core.inject.inject
 import com.arnaudpiroelle.manga.core.utils.PreferencesHelper
 import com.arnaudpiroelle.manga.service.DownloadService
 import com.arnaudpiroelle.manga.ui.explorer.ExplorerActivity
@@ -29,7 +29,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(p0: Bundle?, p1: String?) {
         addPreferencesFromResource(R.xml.preferences)
 
-        GRAPH.inject(this)
+        inject()
 
         setupPreferences()
     }

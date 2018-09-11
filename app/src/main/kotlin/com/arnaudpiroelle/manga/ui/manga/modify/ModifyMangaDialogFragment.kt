@@ -9,9 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.CheckedTextView
-import com.arnaudpiroelle.manga.MangaApplication.Companion.GRAPH
 import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.core.db.MangaDao
+import com.arnaudpiroelle.manga.core.inject.inject
 import com.arnaudpiroelle.manga.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.model.db.Manga
 import com.arnaudpiroelle.manga.model.network.Chapter
@@ -29,7 +29,7 @@ class ModifyMangaDialogFragment : DialogFragment(), ModifyMangaContract.View {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
-        GRAPH.inject(this)
+        inject()
 
         val dialogBuilder = AlertDialog.Builder(activity)
                 .setTitle(R.string.dialog_select_chapter)

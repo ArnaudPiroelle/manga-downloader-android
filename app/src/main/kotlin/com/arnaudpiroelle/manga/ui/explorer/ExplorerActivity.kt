@@ -6,8 +6,8 @@ import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
-import com.arnaudpiroelle.manga.MangaApplication.Companion.GRAPH
 import com.arnaudpiroelle.manga.R
+import com.arnaudpiroelle.manga.core.inject.inject
 import com.arnaudpiroelle.manga.core.utils.PreferencesHelper
 import com.arnaudpiroelle.manga.ui.history.HistoryFragment
 import com.arnaudpiroelle.manga.ui.manga.list.MangaListingFragment
@@ -34,7 +34,7 @@ class ExplorerActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_explorer)
 
-        GRAPH.inject(this)
+        inject()
 
         navigation.setOnNavigationItemSelectedListener(this)
 

@@ -6,9 +6,9 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.arnaudpiroelle.manga.MangaApplication.Companion.GRAPH
 import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.core.db.HistoryDao
+import com.arnaudpiroelle.manga.core.inject.inject
 import com.arnaudpiroelle.manga.model.db.History
 import com.arnaudpiroelle.manga.ui.history.HistoryContract.UserActionsListener
 import kotlinx.android.synthetic.main.fragment_listing_history.*
@@ -25,7 +25,7 @@ class HistoryFragment : Fragment(), HistoryContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        GRAPH.inject(this)
+        inject()
 
         setHasOptionsMenu(true)
     }

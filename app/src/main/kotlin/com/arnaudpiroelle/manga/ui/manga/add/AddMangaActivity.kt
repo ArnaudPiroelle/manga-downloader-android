@@ -12,8 +12,8 @@ import android.support.v7.widget.SearchView
 import android.view.*
 import android.widget.AdapterView
 import android.widget.Spinner
-import com.arnaudpiroelle.manga.MangaApplication.Companion.GRAPH
 import com.arnaudpiroelle.manga.R
+import com.arnaudpiroelle.manga.core.inject.inject
 import com.arnaudpiroelle.manga.core.provider.MangaProvider
 import com.arnaudpiroelle.manga.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.model.db.Manga
@@ -37,7 +37,7 @@ class AddMangaActivity : AppCompatActivity(), AddMangaContract.View, SearchView.
 
         setContentView(R.layout.activity_add_manga)
 
-        GRAPH.inject(this)
+        inject()
 
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

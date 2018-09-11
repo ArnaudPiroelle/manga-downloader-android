@@ -9,9 +9,9 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.arnaudpiroelle.manga.MangaApplication.Companion.GRAPH
 import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.core.db.MangaDao
+import com.arnaudpiroelle.manga.core.inject.inject
 import com.arnaudpiroelle.manga.core.utils.PreferencesHelper
 import com.arnaudpiroelle.manga.model.db.Manga
 import com.arnaudpiroelle.manga.service.DownloadService.Companion.updateScheduling
@@ -36,7 +36,7 @@ class MangaListingFragment : Fragment(), MangaListingContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        GRAPH.inject(this)
+        inject()
 
         setHasOptionsMenu(true)
 

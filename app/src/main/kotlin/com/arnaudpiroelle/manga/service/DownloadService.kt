@@ -9,9 +9,9 @@ import android.app.job.JobService
 import android.content.ComponentName
 import android.content.Context
 import android.os.Build
-import com.arnaudpiroelle.manga.MangaApplication.Companion.GRAPH
 import com.arnaudpiroelle.manga.core.db.HistoryDao
 import com.arnaudpiroelle.manga.core.db.MangaDao
+import com.arnaudpiroelle.manga.core.inject.inject
 import com.arnaudpiroelle.manga.core.provider.MangaProvider
 import com.arnaudpiroelle.manga.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.core.rx.plusAssign
@@ -55,7 +55,7 @@ class DownloadService : JobService() {
     override fun onCreate() {
         super.onCreate()
 
-        GRAPH.inject(this)
+        inject()
         notificationManager = NotificationManager(this)
     }
 
