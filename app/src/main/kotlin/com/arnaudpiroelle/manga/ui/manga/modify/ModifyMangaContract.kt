@@ -1,7 +1,6 @@
 package com.arnaudpiroelle.manga.ui.manga.modify
 
-import com.arnaudpiroelle.manga.model.db.Manga
-import com.arnaudpiroelle.manga.model.network.Chapter
+import com.arnaudpiroelle.manga.api.model.Chapter
 
 interface ModifyMangaContract {
     interface View {
@@ -10,7 +9,7 @@ interface ModifyMangaContract {
     }
 
     interface UserActionsListener {
-        fun findChapters(manga: Manga)
-        fun selectChapter(manga: Manga, chapter: Chapter)
+        fun findChapters(provider: String, mangaAlias: String, lastChapter: String)
+        fun selectChapter(provider: String, name: String, mangaAlias: String, chapterNumber: String)
     }
 }

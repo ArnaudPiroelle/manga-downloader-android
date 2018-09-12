@@ -13,10 +13,10 @@ import android.view.*
 import android.widget.AdapterView
 import android.widget.Spinner
 import com.arnaudpiroelle.manga.R
+import com.arnaudpiroelle.manga.api.model.Manga
+import com.arnaudpiroelle.manga.api.provider.MangaProvider
 import com.arnaudpiroelle.manga.core.inject.inject
-import com.arnaudpiroelle.manga.core.provider.MangaProvider
 import com.arnaudpiroelle.manga.core.provider.ProviderRegistry
-import com.arnaudpiroelle.manga.model.db.Manga
 import com.arnaudpiroelle.manga.ui.manga.modify.ModifyMangaDialogFragment
 import kotlinx.android.synthetic.main.activity_add_manga.*
 import javax.inject.Inject
@@ -148,7 +148,7 @@ class AddMangaActivity : AppCompatActivity(), AddMangaContract.View, SearchView.
     }
 
     override fun displayChapters(manga: Manga) {
-        val chapterChooser = ModifyMangaDialogFragment.newInstance(manga, true)
+        val chapterChooser = ModifyMangaDialogFragment.newInstance(manga.provider, manga.name, manga.alias, "", true)
         chapterChooser.show(supportFragmentManager, null)
     }
 }

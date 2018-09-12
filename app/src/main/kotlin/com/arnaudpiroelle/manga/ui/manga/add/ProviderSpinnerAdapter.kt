@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import com.arnaudpiroelle.manga.R
-import com.arnaudpiroelle.manga.core.provider.MangaProvider
+import com.arnaudpiroelle.manga.api.provider.MangaProvider
 
 
 class ProviderSpinnerAdapter(val context: Context) : BaseAdapter() {

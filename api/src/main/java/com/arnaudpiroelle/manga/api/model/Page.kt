@@ -1,4 +1,4 @@
-package com.arnaudpiroelle.manga.model.network
+package com.arnaudpiroelle.manga.api.model
 
 import java.io.File
 

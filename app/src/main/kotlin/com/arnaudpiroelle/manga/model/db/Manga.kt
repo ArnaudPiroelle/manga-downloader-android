@@ -20,16 +20,16 @@ class Manga() : Comparable<Manga>, Parcelable {
     var id: Long = 0
 
     @ColumnInfo(name = "name")
-    var name: String? = null
+    var name: String = ""
 
     @ColumnInfo(name = "mangaAlias")
-    var mangaAlias: String? = null
+    var mangaAlias: String = ""
 
     @ColumnInfo(name = "provider")
-    var provider: String? = null
+    var provider: String = ""
 
     @ColumnInfo(name = "lastChapter")
-    var lastChapter: String? = null
+    var lastChapter: String = ""
 
     private constructor(parcel: Parcel) : this() {
         id = parcel.readLong()

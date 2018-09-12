@@ -17,6 +17,9 @@ interface MangaDao {
     @Query("SELECT * FROM manga where id = :id")
     fun getById(id: Long): Maybe<Manga>
 
+    @Query("SELECT * FROM manga where mangaAlias = :alias")
+    fun getByAlias(alias: String): Maybe<Manga>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg mangas: Manga)
 

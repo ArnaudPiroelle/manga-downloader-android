@@ -9,18 +9,18 @@ import android.app.job.JobService
 import android.content.ComponentName
 import android.content.Context
 import android.os.Build
+import com.arnaudpiroelle.manga.api.model.Chapter
+import com.arnaudpiroelle.manga.api.model.Page
+import com.arnaudpiroelle.manga.api.provider.MangaProvider
 import com.arnaudpiroelle.manga.core.db.HistoryDao
 import com.arnaudpiroelle.manga.core.db.MangaDao
 import com.arnaudpiroelle.manga.core.inject.inject
-import com.arnaudpiroelle.manga.core.provider.MangaProvider
 import com.arnaudpiroelle.manga.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.core.rx.plusAssign
 import com.arnaudpiroelle.manga.core.utils.FileHelper
 import com.arnaudpiroelle.manga.core.utils.PreferencesHelper
 import com.arnaudpiroelle.manga.model.db.History
 import com.arnaudpiroelle.manga.model.db.Manga
-import com.arnaudpiroelle.manga.model.network.Chapter
-import com.arnaudpiroelle.manga.model.network.Page
 import io.reactivex.Completable
 import io.reactivex.Completable.fromAction
 import io.reactivex.Observable.fromIterable
@@ -88,8 +88,8 @@ class DownloadService : JobService() {
     private fun process(provider: Map.Entry<String, MangaProvider>): Completable {
         return mangaDao.getMangaForProvider(provider.key)
                 .firstElement()
-                .flatMapCompletable {
-                    fromIterable(it)
+                .flatMapCompletable { mangas ->
+                    fromIterable(mangas)
                             .doOnNext { println("Process ${it.name}") }
                             .flatMapCompletable { downloadManga(provider.value, it) }
                 }
@@ -97,7 +97,7 @@ class DownloadService : JobService() {
     }
 
     private fun downloadManga(provider: MangaProvider, manga: Manga): Completable {
-        val chapters = provider.findChapters(manga)
+        val chapters = provider.findChapters(manga.mangaAlias)
 
         return chapters
                 .flatMapObservable {
@@ -120,7 +120,7 @@ class DownloadService : JobService() {
     }
 
     private fun alreadyDownloadedChapters(manga: Manga, chapters: List<Chapter>): Long {
-        if (manga.lastChapter == null || manga.lastChapter?.isEmpty()!!) {
+        if (manga.lastChapter.isEmpty()) {
             return (chapters.size - 1).toLong()
         } else {
             if ("all" == manga.lastChapter) {
@@ -140,7 +140,7 @@ class DownloadService : JobService() {
     private fun downloadChapter(provider: MangaProvider, chapterInfo: ChapterInfo): Completable {
         val count = AtomicInteger(0)
 
-        return provider.findPages(chapterInfo.manga, chapterInfo.chapter)
+        return provider.findPages(chapterInfo.manga.mangaAlias, chapterInfo.chapter.chapterNumber)
                 .doOnSuccess { pages ->
                     val title = "${chapterInfo.manga.name} (${chapterInfo.chapter.chapterNumber})"
                     notificationManager.updateProgressNotification(title, 0, pages.size)
@@ -148,8 +148,8 @@ class DownloadService : JobService() {
                 .flatMapCompletable { pages ->
                     fromIterable(pages)
                             .map { PageInfo(chapterInfo.manga, chapterInfo.chapter, it) }
-                            .flatMapCompletable {
-                                downloadPage(provider, it, pages.indexOf(it.page)).retry(3)
+                            .flatMapCompletable {pageInfo ->
+                                downloadPage(provider, pageInfo, pages.indexOf(pageInfo.page)).retry(3)
                                         .andThen {
                                             val title = "${chapterInfo.manga.name} (${chapterInfo.chapter.chapterNumber})"
                                             notificationManager.updateProgressNotification(title, count.incrementAndGet(), pages.size)
@@ -226,7 +226,7 @@ class DownloadService : JobService() {
     private fun downloadPage(provider: MangaProvider, pageInfo: PageInfo, pagePosition: Int): Completable {
         val pageFile = fileHelper.getPageFile(pageInfo.manga, pageInfo.chapter, pageInfo.page, pagePosition)
 
-        return provider.findPage(pageInfo.page)
+        return provider.findPage(pageInfo.page.url)
                 .flatMapCompletable { response ->
                     fromAction {
                         val source = response.body()!!.source()

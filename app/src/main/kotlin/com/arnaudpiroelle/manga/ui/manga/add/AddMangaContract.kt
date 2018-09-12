@@ -1,7 +1,7 @@
 package com.arnaudpiroelle.manga.ui.manga.add
 
-import com.arnaudpiroelle.manga.core.provider.MangaProvider
-import com.arnaudpiroelle.manga.model.db.Manga
+import com.arnaudpiroelle.manga.api.model.Manga
+import com.arnaudpiroelle.manga.api.provider.MangaProvider
 
 interface AddMangaContract {
     interface View {

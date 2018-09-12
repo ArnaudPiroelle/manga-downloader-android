@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.arnaudpiroelle.manga.R
-import com.arnaudpiroelle.manga.model.db.Manga
+import com.arnaudpiroelle.manga.api.model.Manga
 import kotlinx.android.synthetic.main.item_view_provider_manga.view.*
 
 class ProviderMangaAdapter(context: Context, private val userActionsListener: AddMangaContract.UserActionsListener) : RecyclerView.Adapter<NewMangaViewHolder>() {
@@ -58,7 +58,7 @@ class NewMangaViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
 class MangaDiffUtil(private val oldList: List<Manga>, private val newList: List<Manga>) : DiffUtil.Callback() {
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition].mangaAlias == newList[newItemPosition].mangaAlias
+        return oldList[oldItemPosition].alias == newList[newItemPosition].alias
     }
 
     override fun getOldListSize(): Int {

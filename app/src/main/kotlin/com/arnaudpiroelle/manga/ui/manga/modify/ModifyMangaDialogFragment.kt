@@ -10,11 +10,10 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.CheckedTextView
 import com.arnaudpiroelle.manga.R
+import com.arnaudpiroelle.manga.api.model.Chapter
 import com.arnaudpiroelle.manga.core.db.MangaDao
 import com.arnaudpiroelle.manga.core.inject.inject
 import com.arnaudpiroelle.manga.core.provider.ProviderRegistry
-import com.arnaudpiroelle.manga.model.db.Manga
-import com.arnaudpiroelle.manga.model.network.Chapter
 import javax.inject.Inject
 
 class ModifyMangaDialogFragment : DialogFragment(), ModifyMangaContract.View {
@@ -35,15 +34,19 @@ class ModifyMangaDialogFragment : DialogFragment(), ModifyMangaContract.View {
                 .setTitle(R.string.dialog_select_chapter)
                 .setSingleChoiceItems(adapter, 0) { _, _ -> }
 
-        val manga: Manga? = arguments?.getParcelable(EXTRA_MANGA) as Manga
-        if (manga == null) {
+        val provider: String? = arguments?.getString(EXTRA_MANGA_PROVIDER)
+        val name: String? = arguments?.getString(EXTRA_MANGA_NAME)
+        val mangaAlias: String? = arguments?.getString(EXTRA_MANGA_ALIAS)
+        val mangaLastChapter: String? = arguments?.getString(EXTRA_MANGA_LAST_CHAPTER)
+
+        if (provider == null || name == null || mangaAlias == null || mangaLastChapter == null) {
             dismiss()
         } else {
             dialogBuilder.setPositiveButton(android.R.string.ok) { dialog, _ ->
                 val checkedItemPosition = (dialog as AlertDialog).listView.checkedItemPosition
-                userActionsListener.selectChapter(manga, adapter.getItem(checkedItemPosition))
+                userActionsListener.selectChapter(provider, name, mangaAlias, adapter.getItem(checkedItemPosition).chapterNumber)
             }
-            userActionsListener.findChapters(manga)
+            userActionsListener.findChapters(provider, mangaAlias, mangaLastChapter)
         }
 
         return dialogBuilder.create()
@@ -101,14 +104,20 @@ class ModifyMangaDialogFragment : DialogFragment(), ModifyMangaContract.View {
     }
 
     companion object {
-        const val EXTRA_MANGA = "EXTRA_MANGA"
+        const val EXTRA_MANGA_PROVIDER = "EXTRA_MANGA_PROVIDER"
+        const val EXTRA_MANGA_NAME = "EXTRA_MANGA_NAME"
+        const val EXTRA_MANGA_ALIAS = "EXTRA_MANGA_ALIAS"
+        const val EXTRA_MANGA_LAST_CHAPTER = "EXTRA_MANGA_LAST_CHAPTER"
         const val EXTRA_FINISH_AFTER = "EXTRA_FINISH_AFTER"
 
-        fun newInstance(manga: Manga, finishAfter: Boolean = false): ModifyMangaDialogFragment {
+        fun newInstance(provider: String, mangaName: String, mangaAlias: String, lastChapter: String, finishAfter: Boolean = false): ModifyMangaDialogFragment {
             val modifyMangaDialogFragment = ModifyMangaDialogFragment()
 
             val bundle = Bundle()
-            bundle.putParcelable(EXTRA_MANGA, manga)
+            bundle.putString(EXTRA_MANGA_PROVIDER, provider)
+            bundle.putString(EXTRA_MANGA_NAME, mangaName)
+            bundle.putString(EXTRA_MANGA_ALIAS, mangaAlias)
+            bundle.putString(EXTRA_MANGA_LAST_CHAPTER, lastChapter)
             bundle.putBoolean(EXTRA_FINISH_AFTER, finishAfter)
             modifyMangaDialogFragment.arguments = bundle
 

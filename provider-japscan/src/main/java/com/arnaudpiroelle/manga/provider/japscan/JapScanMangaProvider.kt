@@ -1,17 +1,15 @@
-package com.arnaudpiroelle.manga.provider.japscan.downloader
-
+package com.arnaudpiroelle.manga.provider.japscan
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Rect
-import com.arnaudpiroelle.manga.BuildConfig
-import com.arnaudpiroelle.manga.core.provider.MangaProvider
-import com.arnaudpiroelle.manga.core.rx.RxRequest
-import com.arnaudpiroelle.manga.model.db.Manga
-import com.arnaudpiroelle.manga.model.network.Chapter
-import com.arnaudpiroelle.manga.model.network.Page
-import com.arnaudpiroelle.manga.model.network.PostProcess
+import com.arnaudpiroelle.manga.api.core.rx.RxRequest
+import com.arnaudpiroelle.manga.api.model.Chapter
+import com.arnaudpiroelle.manga.api.model.Manga
+import com.arnaudpiroelle.manga.api.model.Page
+import com.arnaudpiroelle.manga.api.model.PostProcess
+import com.arnaudpiroelle.manga.api.provider.MangaProvider
 import io.reactivex.Single
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -21,8 +19,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.net.URLDecoder
 
-
-class JapScanDownloader(private val okHttpClient: OkHttpClient) : MangaProvider {
+class JapScanMangaProvider(val okHttpClient: OkHttpClient) : MangaProvider {
     override fun findMangas(): Single<List<Manga>> {
         val request = Request.Builder()
                 .url("${BuildConfig.JAPSCAN_BASE_URL}/mangas/")
@@ -33,9 +30,9 @@ class JapScanDownloader(private val okHttpClient: OkHttpClient) : MangaProvider 
                 .onErrorReturn { listOf() }
     }
 
-    override fun findChapters(manga: Manga): Single<List<Chapter>> {
+    override fun findChapters(mangaAlias: String): Single<List<Chapter>> {
         val request = Request.Builder()
-                .url("${BuildConfig.JAPSCAN_BASE_URL}/mangas/${manga.mangaAlias}")
+                .url("${BuildConfig.JAPSCAN_BASE_URL}/mangas/$mangaAlias")
                 .build()
 
         return RxRequest(okHttpClient, request)
@@ -45,9 +42,9 @@ class JapScanDownloader(private val okHttpClient: OkHttpClient) : MangaProvider 
 
     }
 
-    override fun findPages(manga: Manga, chapter: Chapter): Single<List<Page>> {
+    override fun findPages(mangaAlias: String, chapterNumber: String): Single<List<Page>> {
         val request = Request.Builder()
-                .url("${BuildConfig.JAPSCAN_BASE_URL}/lecture-en-ligne/${manga.mangaAlias}/${chapter.chapterNumber}")
+                .url("${BuildConfig.JAPSCAN_BASE_URL}/lecture-en-ligne/$mangaAlias/$chapterNumber")
                 .build()
 
         return RxRequest(okHttpClient, request)
@@ -55,9 +52,9 @@ class JapScanDownloader(private val okHttpClient: OkHttpClient) : MangaProvider 
                 .onErrorReturn { listOf() }
     }
 
-    override fun findPage(page: Page): Single<Response> {
+    override fun findPage(pageUrl: String): Single<Response> {
         val request = Request.Builder()
-                .url(page.url)
+                .url(pageUrl)
                 .build()
 
         return RxRequest(okHttpClient, request)

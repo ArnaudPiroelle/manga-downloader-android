@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.preference.PreferenceManager
-import com.arnaudpiroelle.manga.core.provider.MangaProvider
 import com.arnaudpiroelle.manga.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.core.provider.ProviderRegistryBuilder.Companion.createProviderRegister
 import okhttp3.OkHttpClient

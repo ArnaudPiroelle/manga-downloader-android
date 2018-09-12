@@ -1,5 +1,6 @@
 package com.arnaudpiroelle.manga.core.provider
 
+import com.arnaudpiroelle.manga.api.provider.MangaProvider
 import java.util.*
 
 open class ProviderRegistry {

@@ -6,7 +6,7 @@ import android.app.Service
 import android.support.v4.app.Fragment
 import com.arnaudpiroelle.manga.core.inject.module.ApplicationModule
 import com.arnaudpiroelle.manga.core.inject.module.DatabaseModule
-import com.arnaudpiroelle.manga.core.inject.module.JapScanModule
+import com.arnaudpiroelle.manga.provider.japscan.JapScanModule
 import toothpick.Toothpick
 
 fun Application.inject() {

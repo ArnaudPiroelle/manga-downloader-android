@@ -91,7 +91,7 @@ class MangaListingFragment : Fragment(), MangaListingContract.View {
     }
 
     override fun displayModificationDialog(manga: Manga) {
-        val modifyMangaDialogFragment = ModifyMangaDialogFragment.newInstance(manga)
+        val modifyMangaDialogFragment = ModifyMangaDialogFragment.newInstance(manga.provider, manga.name, manga.mangaAlias, manga.lastChapter)
         modifyMangaDialogFragment.show(childFragmentManager, null)
     }
 
