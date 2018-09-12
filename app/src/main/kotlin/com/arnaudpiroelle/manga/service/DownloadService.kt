@@ -9,6 +9,7 @@ import android.app.job.JobService
 import android.content.ComponentName
 import android.content.Context
 import android.os.Build
+import com.arnaudpiroelle.manga.api.core.rx.plusAssign
 import com.arnaudpiroelle.manga.api.model.Chapter
 import com.arnaudpiroelle.manga.api.model.Page
 import com.arnaudpiroelle.manga.api.provider.MangaProvider
@@ -16,7 +17,6 @@ import com.arnaudpiroelle.manga.core.db.HistoryDao
 import com.arnaudpiroelle.manga.core.db.MangaDao
 import com.arnaudpiroelle.manga.core.inject.inject
 import com.arnaudpiroelle.manga.core.provider.ProviderRegistry
-import com.arnaudpiroelle.manga.core.rx.plusAssign
 import com.arnaudpiroelle.manga.core.utils.FileHelper
 import com.arnaudpiroelle.manga.core.utils.PreferencesHelper
 import com.arnaudpiroelle.manga.model.db.History
@@ -148,7 +148,7 @@ class DownloadService : JobService() {
                 .flatMapCompletable { pages ->
                     fromIterable(pages)
                             .map { PageInfo(chapterInfo.manga, chapterInfo.chapter, it) }
-                            .flatMapCompletable {pageInfo ->
+                            .flatMapCompletable { pageInfo ->
                                 downloadPage(provider, pageInfo, pages.indexOf(pageInfo.page)).retry(3)
                                         .andThen {
                                             val title = "${chapterInfo.manga.name} (${chapterInfo.chapter.chapterNumber})"

@@ -1,9 +1,9 @@
 package com.arnaudpiroelle.manga.ui.manga.add
 
+import com.arnaudpiroelle.manga.api.core.rx.plusAssign
 import com.arnaudpiroelle.manga.api.model.Manga
 import com.arnaudpiroelle.manga.api.provider.MangaProvider
 import com.arnaudpiroelle.manga.core.provider.ProviderRegistry
-import com.arnaudpiroelle.manga.core.rx.plusAssign
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers

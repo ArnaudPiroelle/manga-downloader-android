@@ -41,7 +41,7 @@ class Manga() : Comparable<Manga>, Parcelable {
 
 
     override fun compareTo(other: Manga): Int {
-        return name!!.trim { it <= ' ' }.compareTo(other.name!!)
+        return name.trim { it <= ' ' }.compareTo(other.name)
     }
 
     override fun describeContents(): Int {
@@ -73,10 +73,10 @@ class Manga() : Comparable<Manga>, Parcelable {
 
     override fun hashCode(): Int {
         var result = id.hashCode()
-        result = 31 * result + (name?.hashCode() ?: 0)
-        result = 31 * result + (mangaAlias?.hashCode() ?: 0)
-        result = 31 * result + (provider?.hashCode() ?: 0)
-        result = 31 * result + (lastChapter?.hashCode() ?: 0)
+        result = 31 * result + name.hashCode()
+        result = 31 * result + mangaAlias.hashCode()
+        result = 31 * result + provider.hashCode()
+        result = 31 * result + lastChapter.hashCode()
         return result
     }
 

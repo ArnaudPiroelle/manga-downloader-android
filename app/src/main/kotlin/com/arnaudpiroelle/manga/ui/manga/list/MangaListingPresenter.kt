@@ -1,7 +1,7 @@
 package com.arnaudpiroelle.manga.ui.manga.list
 
+import com.arnaudpiroelle.manga.api.core.rx.plusAssign
 import com.arnaudpiroelle.manga.core.db.MangaDao
-import com.arnaudpiroelle.manga.core.rx.plusAssign
 import com.arnaudpiroelle.manga.model.db.Manga
 import com.arnaudpiroelle.manga.ui.manga.list.MangaListingContract.View
 import io.reactivex.Completable

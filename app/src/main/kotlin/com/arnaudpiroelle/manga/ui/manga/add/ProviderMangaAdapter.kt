@@ -39,7 +39,7 @@ class ProviderMangaAdapter(context: Context, private val userActionsListener: Ad
     }
 
     fun filter(name: String?) {
-        val filteredList = datas.filter { name == null || (it.name?.contains(name, true) ?: false) }
+        val filteredList = datas.filter { name == null || it.name.contains(name, true) }
         val calculateDiff = DiffUtil.calculateDiff(MangaDiffUtil(filtererDatas, filteredList))
         filtererDatas.clear()
         filtererDatas.addAll(filteredList)
