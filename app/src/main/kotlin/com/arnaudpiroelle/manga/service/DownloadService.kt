@@ -9,14 +9,14 @@ import android.app.job.JobService
 import android.content.ComponentName
 import android.content.Context
 import android.os.Build
+import com.arnaudpiroelle.manga.api.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.api.core.rx.plusAssign
 import com.arnaudpiroelle.manga.api.model.Chapter
 import com.arnaudpiroelle.manga.api.model.Page
 import com.arnaudpiroelle.manga.api.provider.MangaProvider
-import com.arnaudpiroelle.manga.core.db.HistoryDao
-import com.arnaudpiroelle.manga.core.db.MangaDao
+import com.arnaudpiroelle.manga.core.db.dao.HistoryDao
+import com.arnaudpiroelle.manga.core.db.dao.MangaDao
 import com.arnaudpiroelle.manga.core.inject.inject
-import com.arnaudpiroelle.manga.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.core.utils.FileHelper
 import com.arnaudpiroelle.manga.core.utils.PreferencesHelper
 import com.arnaudpiroelle.manga.model.db.History
@@ -37,8 +37,6 @@ import kotlin.properties.Delegates
 
 class DownloadService : JobService() {
 
-    @Inject
-    lateinit var providerRegistry: ProviderRegistry
     @Inject
     lateinit var fileHelper: FileHelper
     @Inject
@@ -70,7 +68,7 @@ class DownloadService : JobService() {
         }
         notificationManager.startDownloadNotification()
 
-        subscription += fromIterable(providerRegistry.list().entries)
+        subscription += fromIterable(ProviderRegistry.list().entries)
                 .subscribeOn(Schedulers.io())
                 .flatMapCompletable(this::process)
                 .subscribe({

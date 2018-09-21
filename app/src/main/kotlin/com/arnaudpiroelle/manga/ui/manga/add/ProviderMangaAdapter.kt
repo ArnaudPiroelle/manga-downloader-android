@@ -1,11 +1,11 @@
 package com.arnaudpiroelle.manga.ui.manga.add
 
 import android.content.Context
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.api.model.Manga
 import kotlinx.android.synthetic.main.item_view_provider_manga.view.*

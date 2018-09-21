@@ -1,9 +1,11 @@
 package com.arnaudpiroelle.manga.ui.manga.modify
 
+import com.arnaudpiroelle.manga.api.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.api.core.rx.plusAssign
 import com.arnaudpiroelle.manga.api.model.Chapter
-import com.arnaudpiroelle.manga.core.db.MangaDao
-import com.arnaudpiroelle.manga.core.provider.ProviderRegistry
+import com.arnaudpiroelle.manga.core.db.dao.MangaDao
+import com.arnaudpiroelle.manga.core.db.dao.TaskDao
+import com.arnaudpiroelle.manga.model.db.Task
 import io.reactivex.Completable.fromAction
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -12,7 +14,8 @@ import io.reactivex.schedulers.Schedulers
 class ModifyMangaPresenter(
         private val view: ModifyMangaContract.View,
         private val providerRegistry: ProviderRegistry,
-        private val mangaDao: MangaDao) : ModifyMangaContract.UserActionsListener {
+        private val mangaDao: MangaDao,
+        private val taskDao: TaskDao) : ModifyMangaContract.UserActionsListener {
 
     private val subscriptions = CompositeDisposable()
 
@@ -43,7 +46,9 @@ class ModifyMangaPresenter(
                 .flatMapCompletable {
                     it.lastChapter = chapterNumber
                     fromAction {
-                        mangaDao.insertAll(it)
+                        val id = mangaDao.insert(it)
+                        taskDao.insert(Task(status = Task.Status.NEW, type = Task.Type.MANGA_METADATA, item = id))
+
                     }
                 }
                 .subscribeOn(Schedulers.io())

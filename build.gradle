@@ -1,9 +1,43 @@
 buildscript {
-    ext.kotlin_version = '1.2.61'
 
-    ext {
-        kotlin_version = '1.2.61'
-    }
+    ext.versions = [
+            'android_gradle' : '3.2.0-rc03',
+            'androidx'       : [
+                    'appcompat'        : '1.0.0-rc02',
+                    'preference'       : '1.0.0-rc02',
+                    'browser'          : '1.0.0-rc02',
+                    'core'             : '2.0.0-beta01',
+                    'constraint_layout': '2.0.0-alpha2',
+                    'core_ktx'         : '1.0.0-rc02',
+                    'fragment'         : '1.0.0-rc02',
+                    'emoji'            : '1.0.0-rc02',
+                    'lifecycle'        : '2.0.0-rc01',
+                    'paging'           : '2.0.0-rc01',
+                    'palette'          : '1.0.0-rc02',
+                    'recyclerview'     : '1.0.0-rc02',
+                    'room'             : '2.0.0-rc01',
+                    'test_runner'      : '1.1.0-alpha4',
+                    'test_rules'       : '1.1.0-alpha4',
+                    'work'             : '1.0.0-alpha08'
+            ],
+            'epoxy'          : '3.0.0-rc1',
+            'espresso'       : '3.1.0-alpha4',
+            'fabric'         : '1.25.4',
+            'glide'          : '4.8.0',
+            'kotlin'         : '1.2.70',
+            'ktlint'         : '0.28.0',
+            'mockito'        : '2.18.3',
+            'material_design': '1.0.0-rc02',
+            'rx'             : '2.2.2',
+            'rxandroid'      : '2.1.0',
+            'rxlint'         : '1.6.1'
+    ]
+
+    ext.buildConfig = [
+            'compileSdk': 28,
+            'minSdk'    : 24,
+            'targetSdk' : 28,
+    ]
 
     repositories {
         google()
@@ -15,17 +49,17 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.4'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'io.fabric.tools:gradle:1.25.3'
+        classpath "com.android.tools.build:gradle:${versions.android_gradle}"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
+        classpath "io.fabric.tools:gradle:${versions.fabric}"
     }
 }
 
 allprojects {
     repositories {
         jcenter()
-        maven { url 'https://maven.fabric.io/public' }
         google()
+        maven { url 'https://maven.fabric.io/public' }
         maven { url "https://jitpack.io" }
     }
 }

@@ -40,6 +40,10 @@
             android:name=".service.DownloadService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
+        <service
+            android:name=".service.TaskService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="1a5c05cd44da4d5bdb36a429aeb4ac44b61c679e" />

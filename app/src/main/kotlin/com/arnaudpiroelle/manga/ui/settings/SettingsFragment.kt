@@ -1,9 +1,8 @@
 package com.arnaudpiroelle.manga.ui.settings
 
 import android.os.Bundle
-import android.support.v7.preference.Preference
-import android.support.v7.preference.Preference.OnPreferenceChangeListener
-import android.support.v7.preference.PreferenceFragmentCompat
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
 import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.core.inject.inject
 import com.arnaudpiroelle.manga.core.utils.PreferencesHelper
@@ -47,7 +46,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 true
             }
 
-            onPreferenceChangeListener = OnPreferenceChangeListener { _: Preference, _: Any ->
+            onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _: Preference, _: Any ->
                 //FIXME: Not called :(
                 summary = preferencesHelper.getOutputFolder() ?: "Choose a folder"
                 true
@@ -58,7 +57,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         intervalUpdate?.onPreferenceChangeListener = onSchedulerPreferenceChangeListener()
     }
 
-    private fun onSchedulerPreferenceChangeListener() = OnPreferenceChangeListener { _: Preference, _: Any ->
+    private fun onSchedulerPreferenceChangeListener() = Preference.OnPreferenceChangeListener { _: Preference, _: Any ->
         DownloadService.updateScheduling(requireActivity(), preferencesHelper)
         true
     }

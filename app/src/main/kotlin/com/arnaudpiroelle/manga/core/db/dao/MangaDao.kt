@@ -1,6 +1,6 @@
-package com.arnaudpiroelle.manga.core.db
+package com.arnaudpiroelle.manga.core.db.dao
 
-import android.arch.persistence.room.*
+import androidx.room.*
 import com.arnaudpiroelle.manga.model.db.Manga
 import io.reactivex.Flowable
 import io.reactivex.Maybe
@@ -22,6 +22,9 @@ interface MangaDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg mangas: Manga)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(manga: Manga): Long
 
     @Delete
     fun delete(manga: Manga)

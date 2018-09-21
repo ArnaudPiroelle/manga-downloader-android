@@ -3,20 +3,18 @@ package com.arnaudpiroelle.manga.core.inject
 import android.app.Activity
 import android.app.Application
 import android.app.Service
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.arnaudpiroelle.manga.core.inject.module.ApplicationModule
 import com.arnaudpiroelle.manga.core.inject.module.DatabaseModule
-import com.arnaudpiroelle.manga.provider.japscan.JapScanModule
 import toothpick.Toothpick
 
 fun Application.inject() {
-    val scope = Toothpick.openScope(this)
+    val scope = Toothpick.openScope(applicationContext)
 
     val applicationModule = ApplicationModule(this)
     val databaseModule = DatabaseModule(this)
-    val japScanModule = JapScanModule()
 
-    scope.installModules(applicationModule, databaseModule, japScanModule)
+    scope.installModules(applicationModule, databaseModule)
     Toothpick.inject(this, scope)
 }
 

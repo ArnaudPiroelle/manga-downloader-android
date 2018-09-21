@@ -1,9 +1,9 @@
 package com.arnaudpiroelle.manga.ui.manga.list
 
 import android.graphics.Canvas
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.View
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_view_manga.view.*
 
 
@@ -25,7 +25,7 @@ class MangaTouchHelperCallback(private val adapter: MangaListingAdapter, private
         adapter.notifyItemChanged(position)
     }
 
-    override fun clearView(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?) {
+    override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
         super.clearView(recyclerView, viewHolder)
 
         val mangaViewHolder = viewHolder as? MangaViewHolder

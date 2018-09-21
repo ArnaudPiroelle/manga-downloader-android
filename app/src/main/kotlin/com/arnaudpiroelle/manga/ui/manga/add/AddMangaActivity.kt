@@ -3,31 +3,27 @@ package com.arnaudpiroelle.manga.ui.manga.add
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.NavUtils
-import android.support.v7.app.ActionBar
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.SearchView
 import android.view.*
 import android.widget.AdapterView
 import android.widget.Spinner
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
+import androidx.core.app.NavUtils
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.arnaudpiroelle.manga.R
+import com.arnaudpiroelle.manga.api.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.api.model.Manga
 import com.arnaudpiroelle.manga.api.provider.MangaProvider
 import com.arnaudpiroelle.manga.core.inject.inject
-import com.arnaudpiroelle.manga.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.ui.manga.modify.ModifyMangaDialogFragment
 import kotlinx.android.synthetic.main.activity_add_manga.*
-import javax.inject.Inject
 import kotlin.properties.Delegates.notNull
 
 class AddMangaActivity : AppCompatActivity(), AddMangaContract.View, SearchView.OnQueryTextListener {
 
-    @Inject
-    lateinit var providerRegistry: ProviderRegistry
-
-    private val userActionsListener: AddMangaContract.UserActionsListener by lazy { AddMangaPresenter(this, providerRegistry) }
+    private val userActionsListener: AddMangaContract.UserActionsListener by lazy { AddMangaPresenter(this, ProviderRegistry) }
     private var searchManager by notNull<SearchManager>()
     private val providerAdapter by lazy { ProviderSpinnerAdapter(this) }
     private val mangaAdapter by lazy { ProviderMangaAdapter(this, userActionsListener) }

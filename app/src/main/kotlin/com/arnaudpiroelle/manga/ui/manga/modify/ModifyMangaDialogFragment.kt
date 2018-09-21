@@ -3,27 +3,29 @@ package com.arnaudpiroelle.manga.ui.manga.modify
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.CheckedTextView
+import androidx.fragment.app.DialogFragment
 import com.arnaudpiroelle.manga.R
+import com.arnaudpiroelle.manga.api.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.api.model.Chapter
-import com.arnaudpiroelle.manga.core.db.MangaDao
+import com.arnaudpiroelle.manga.core.db.dao.MangaDao
+import com.arnaudpiroelle.manga.core.db.dao.TaskDao
 import com.arnaudpiroelle.manga.core.inject.inject
-import com.arnaudpiroelle.manga.core.provider.ProviderRegistry
 import javax.inject.Inject
 
 class ModifyMangaDialogFragment : DialogFragment(), ModifyMangaContract.View {
 
     @Inject
-    lateinit var providerRegistry: ProviderRegistry
-    @Inject
     lateinit var mangaDao: MangaDao
 
-    private val userActionsListener: ModifyMangaContract.UserActionsListener by lazy { ModifyMangaPresenter(this, providerRegistry, mangaDao) }
+    @Inject
+    lateinit var taskDao: TaskDao
+
+    private val userActionsListener: ModifyMangaContract.UserActionsListener by lazy { ModifyMangaPresenter(this, ProviderRegistry, mangaDao, taskDao) }
     private val adapter = ChaptersAdapter()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

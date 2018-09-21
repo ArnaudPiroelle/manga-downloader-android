@@ -2,10 +2,9 @@ package com.arnaudpiroelle.manga.ui.explorer
 
 import android.Manifest
 import android.os.Bundle
-import android.support.design.widget.BottomNavigationView
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.core.inject.inject
 import com.arnaudpiroelle.manga.core.utils.PreferencesHelper
@@ -14,6 +13,7 @@ import com.arnaudpiroelle.manga.ui.manga.list.MangaListingFragment
 import com.arnaudpiroelle.manga.ui.settings.SettingsFragment
 import com.codekidlabs.storagechooser.StorageChooser
 import com.codekidlabs.storagechooser.StorageChooser.DIRECTORY_CHOOSER
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_explorer.*
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
@@ -52,6 +52,7 @@ class ExplorerActivity : AppCompatActivity(),
 
         onRequestPermissionsResult(requestCode, grantResults)
     }
+
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         if (item.itemId != navigation.selectedItemId) {
