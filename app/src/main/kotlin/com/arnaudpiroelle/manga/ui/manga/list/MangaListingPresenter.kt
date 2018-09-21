@@ -1,22 +1,21 @@
 package com.arnaudpiroelle.manga.ui.manga.list
 
 import com.arnaudpiroelle.manga.api.core.rx.plusAssign
-import com.arnaudpiroelle.manga.core.db.dao.MangaDao
-import com.arnaudpiroelle.manga.model.db.Manga
+import com.arnaudpiroelle.manga.data.MangaRepository
+import com.arnaudpiroelle.manga.data.model.Manga
 import com.arnaudpiroelle.manga.ui.manga.list.MangaListingContract.View
-import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
 class MangaListingPresenter(
         private val view: View,
-        private val mangaDao: MangaDao) : MangaListingContract.UserActionsListener {
+        private val mangaRepository: MangaRepository) : MangaListingContract.UserActionsListener {
 
     private val subscriptions = CompositeDisposable()
 
     override fun register() {
-        subscriptions += mangaDao.getAll()
+        subscriptions += mangaRepository.getAll()
                 .subscribeOn(Schedulers.io())
                 .map { it.sortedBy { it.name } }
                 .observeOn(AndroidSchedulers.mainThread())
@@ -40,7 +39,7 @@ class MangaListingPresenter(
     }
 
     override fun remove(manga: Manga) {
-        subscriptions += Completable.fromAction { mangaDao.delete(manga) }
+        subscriptions += mangaRepository.delete(manga)
                 .subscribeOn(Schedulers.io())
                 .subscribe({}, {})
     }

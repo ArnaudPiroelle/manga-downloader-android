@@ -11,14 +11,22 @@ import com.arnaudpiroelle.manga.core.inject.inject
 import com.arnaudpiroelle.manga.provider.japscan.JapScan
 import com.arnaudpiroelle.manga.service.TaskService
 import com.crashlytics.android.Crashlytics
+import com.facebook.stetho.Stetho
 import io.fabric.sdk.android.Fabric
+import timber.log.Timber
 
 class MangaApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
 
-        Fabric.with(this, Crashlytics())
+        if (BuildConfig.DEBUG) {
+            Stetho.initializeWithDefaults(this)
+            Timber.plant(Timber.DebugTree())
+        } else {
+            Fabric.with(this, Crashlytics())
+        }
+
         Mangas.with(this, JapScan())
 
         inject()

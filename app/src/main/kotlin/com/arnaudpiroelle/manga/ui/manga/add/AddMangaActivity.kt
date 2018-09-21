@@ -17,13 +17,21 @@ import com.arnaudpiroelle.manga.api.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.api.model.Manga
 import com.arnaudpiroelle.manga.api.provider.MangaProvider
 import com.arnaudpiroelle.manga.core.inject.inject
+import com.arnaudpiroelle.manga.data.core.db.dao.MangaDao
+import com.arnaudpiroelle.manga.data.core.db.dao.TaskDao
 import com.arnaudpiroelle.manga.ui.manga.modify.ModifyMangaDialogFragment
 import kotlinx.android.synthetic.main.activity_add_manga.*
+import javax.inject.Inject
 import kotlin.properties.Delegates.notNull
 
 class AddMangaActivity : AppCompatActivity(), AddMangaContract.View, SearchView.OnQueryTextListener {
 
-    private val userActionsListener: AddMangaContract.UserActionsListener by lazy { AddMangaPresenter(this, ProviderRegistry) }
+    @Inject
+    lateinit var taskDao: TaskDao
+    @Inject
+    lateinit var mangaDao: MangaDao
+
+    private val userActionsListener: AddMangaContract.UserActionsListener by lazy { AddMangaPresenter(this, ProviderRegistry, taskDao, mangaDao) }
     private var searchManager by notNull<SearchManager>()
     private val providerAdapter by lazy { ProviderSpinnerAdapter(this) }
     private val mangaAdapter by lazy { ProviderMangaAdapter(this, userActionsListener) }
@@ -146,5 +154,9 @@ class AddMangaActivity : AppCompatActivity(), AddMangaContract.View, SearchView.
     override fun displayChapters(manga: Manga) {
         val chapterChooser = ModifyMangaDialogFragment.newInstance(manga.provider, manga.name, manga.alias, "", true)
         chapterChooser.show(supportFragmentManager, null)
+    }
+
+    override fun closeWizard() {
+        finish()
     }
 }

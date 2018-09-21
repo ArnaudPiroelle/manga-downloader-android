@@ -1,42 +1,18 @@
 package com.arnaudpiroelle.manga.service
 
-import android.app.job.JobInfo
-import android.app.job.JobInfo.NETWORK_TYPE_ANY
-import android.app.job.JobInfo.NETWORK_TYPE_UNMETERED
 import android.app.job.JobParameters
-import android.app.job.JobScheduler
 import android.app.job.JobService
-import android.content.ComponentName
-import android.content.Context
-import android.os.Build
-import com.arnaudpiroelle.manga.api.core.provider.ProviderRegistry
-import com.arnaudpiroelle.manga.api.core.rx.plusAssign
-import com.arnaudpiroelle.manga.api.model.Chapter
-import com.arnaudpiroelle.manga.api.model.Page
-import com.arnaudpiroelle.manga.api.provider.MangaProvider
-import com.arnaudpiroelle.manga.core.db.dao.HistoryDao
-import com.arnaudpiroelle.manga.core.db.dao.MangaDao
-import com.arnaudpiroelle.manga.core.inject.inject
-import com.arnaudpiroelle.manga.core.utils.FileHelper
-import com.arnaudpiroelle.manga.core.utils.PreferencesHelper
-import com.arnaudpiroelle.manga.model.db.History
-import com.arnaudpiroelle.manga.model.db.Manga
-import io.reactivex.Completable
-import io.reactivex.Completable.fromAction
-import io.reactivex.Observable.fromIterable
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
-import okio.Okio
-import java.io.*
-import java.util.concurrent.atomic.AtomicInteger
-import java.util.zip.ZipEntry
-import java.util.zip.ZipOutputStream
-import javax.inject.Inject
-import kotlin.properties.Delegates
 
 
 class DownloadService : JobService() {
+    override fun onStopJob(params: JobParameters?): Boolean {
+        return false
+    }
 
+    override fun onStartJob(params: JobParameters?): Boolean {
+        return false
+    }
+/*
     @Inject
     lateinit var fileHelper: FileHelper
     @Inject
@@ -281,5 +257,5 @@ class DownloadService : JobService() {
     }
 
     data class ChapterInfo(val manga: Manga, val chapter: Chapter)
-    data class PageInfo(val manga: Manga, val chapter: Chapter, val page: Page)
+    data class PageInfo(val manga: Manga, val chapter: Chapter, val page: Page)*/
 }

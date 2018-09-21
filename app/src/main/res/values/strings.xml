@@ -51,4 +51,6 @@
     <string name="check_manual_manga_availability">Manual check mangas availabilities</string>
     <string name="manga_edit_button">Edit</string>
     <string name="manga_remove_button">Remove</string>
+    <string name="nav_tasks">Tasks</string>
+    <string name="title_tasks">Tasks</string>
 </resources>

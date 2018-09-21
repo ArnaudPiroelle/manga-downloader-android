@@ -3,10 +3,8 @@ package com.arnaudpiroelle.manga.ui.manga.modify
 import com.arnaudpiroelle.manga.api.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.api.core.rx.plusAssign
 import com.arnaudpiroelle.manga.api.model.Chapter
-import com.arnaudpiroelle.manga.core.db.dao.MangaDao
-import com.arnaudpiroelle.manga.core.db.dao.TaskDao
-import com.arnaudpiroelle.manga.model.db.Task
-import io.reactivex.Completable.fromAction
+import com.arnaudpiroelle.manga.data.core.db.dao.MangaDao
+import com.arnaudpiroelle.manga.data.core.db.dao.TaskDao
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -41,10 +39,10 @@ class ModifyMangaPresenter(
     }
 
     override fun selectChapter(provider: String, name: String, mangaAlias: String, chapterNumber: String) {
-        subscriptions += mangaDao.getByAlias(mangaAlias)
-                .defaultIfEmpty(com.arnaudpiroelle.manga.model.db.Manga(name, mangaAlias, provider))
+        /*subscriptions += mangaDao.getByAlias(mangaAlias)
+                .defaultIfEmpty(Manga(name, mangaAlias, provider))
                 .flatMapCompletable {
-                    it.lastChapter = chapterNumber
+                    //it.lastChapter = chapterNumber
                     fromAction {
                         val id = mangaDao.insert(it)
                         taskDao.insert(Task(status = Task.Status.NEW, type = Task.Type.MANGA_METADATA, item = id))
@@ -56,6 +54,7 @@ class ModifyMangaPresenter(
                         view::closeWizard,
                         { throwable -> throwable.printStackTrace() }
                 )
+                */
     }
 
 }

@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.arnaudpiroelle.manga.R
-import com.arnaudpiroelle.manga.model.db.History
+import com.arnaudpiroelle.manga.data.model.History
 import kotlinx.android.synthetic.main.item_view_history.view.*
 import java.text.SimpleDateFormat
 import java.util.*

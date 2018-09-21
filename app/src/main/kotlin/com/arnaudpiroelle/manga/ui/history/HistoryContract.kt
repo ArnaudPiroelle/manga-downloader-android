@@ -1,6 +1,6 @@
 package com.arnaudpiroelle.manga.ui.history
 
-import com.arnaudpiroelle.manga.model.db.History
+import com.arnaudpiroelle.manga.data.model.History
 
 interface HistoryContract {
     interface View {

@@ -3,7 +3,7 @@ package com.arnaudpiroelle.manga.core.utils
 import android.os.Environment.getExternalStorageDirectory
 import com.arnaudpiroelle.manga.api.model.Chapter
 import com.arnaudpiroelle.manga.api.model.Page
-import com.arnaudpiroelle.manga.model.db.Manga
+import com.arnaudpiroelle.manga.data.model.Manga
 import java.io.File
 import javax.inject.Inject
 

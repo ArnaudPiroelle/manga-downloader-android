@@ -6,8 +6,12 @@ interface PostProcess {
     fun execute(file: File)
 }
 
+enum class PostProcessType {
+    NONE,
+    MOSAIC
+}
 
-data class Page(var url: String, var postProcess: PostProcess? = null) {
+data class Page(var url: String, var postProcess: PostProcessType = PostProcessType.NONE) {
     fun getExtension(): String {
         return url.substringAfterLast(".", "jpg")
     }

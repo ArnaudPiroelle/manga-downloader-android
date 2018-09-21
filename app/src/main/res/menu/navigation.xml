@@ -12,6 +12,11 @@
         android:title="@string/nav_history" />
 
     <item
+        android:id="@+id/navigation_tasks"
+        android:icon="@drawable/ic_assignment_black_24dp"
+        android:title="@string/nav_tasks" />
+
+    <item
         android:id="@+id/navigation_settings"
         android:icon="@drawable/ic_settings_black_24dp"
         android:title="@string/nav_settings" />

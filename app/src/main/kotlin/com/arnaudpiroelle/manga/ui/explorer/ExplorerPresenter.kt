@@ -19,6 +19,11 @@ class ExplorerPresenter(val view: ExplorerContract.View) : ExplorerContract.User
                 view.displaySettings()
                 true
             }
+
+            R.id.navigation_tasks -> {
+                view.displayTasks()
+                true
+            }
             else -> false
         }
     }

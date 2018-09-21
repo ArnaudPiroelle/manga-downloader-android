@@ -1,1 +1,1 @@
-include ':app', ':provider-japscan', ':api'
+include ':app', ':provider-japscan', ':api', ':data'

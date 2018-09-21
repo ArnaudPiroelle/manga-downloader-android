@@ -9,6 +9,7 @@ interface AddMangaContract {
         fun displayMangas(mangas: List<Manga>)
         fun filterMangasBy(name: String)
         fun displayChapters(manga: Manga)
+        fun closeWizard()
     }
 
     interface UserActionsListener {

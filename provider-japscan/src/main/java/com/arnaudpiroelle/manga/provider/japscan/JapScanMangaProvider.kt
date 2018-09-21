@@ -5,10 +5,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Rect
 import com.arnaudpiroelle.manga.api.core.rx.RxRequest
-import com.arnaudpiroelle.manga.api.model.Chapter
-import com.arnaudpiroelle.manga.api.model.Manga
-import com.arnaudpiroelle.manga.api.model.Page
-import com.arnaudpiroelle.manga.api.model.PostProcess
+import com.arnaudpiroelle.manga.api.model.*
 import com.arnaudpiroelle.manga.api.provider.MangaProvider
 import io.reactivex.Single
 import okhttp3.OkHttpClient
@@ -117,7 +114,7 @@ class JapScanMangaProvider(val okHttpClient: OkHttpClient) : MangaProvider {
                         val cleanName = mangaName!!.replace("/", "_").replace("?", "")
                         val chapter = chapterName ?: chapterUri
                         val url = "${BuildConfig.JAPSCAN_CDN_BASE_URL}/cr_images/$cleanName/$chapter/$img"
-                        Page(url, MosaicPostProcess)
+                        Page(url, PostProcessType.MOSAIC)
                     }
                 }
 

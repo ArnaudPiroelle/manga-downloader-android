@@ -1,6 +1,6 @@
 package com.arnaudpiroelle.manga.ui.manga.list
 
-import com.arnaudpiroelle.manga.model.db.Manga
+import com.arnaudpiroelle.manga.data.model.Manga
 
 interface MangaListingContract {
     interface View {

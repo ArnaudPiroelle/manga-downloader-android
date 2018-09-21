@@ -25,6 +25,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:background="?android:attr/windowBackground"
+        app:labelVisibilityMode="labeled"
         app:menu="@menu/navigation" />
 
 

@@ -7,7 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.arnaudpiroelle.manga.R
-import com.arnaudpiroelle.manga.model.db.Manga
+import com.arnaudpiroelle.manga.data.model.Manga
 
 
 class NotificationManager(val context: Context) {
@@ -55,7 +55,7 @@ class NotificationManager(val context: Context) {
                     .setContentText("$count new chapter(s) downloaded")
                     .setGroup(GROUP_ID)
                     .build()
-            notificationManager.notify(manga.mangaAlias, SUMMARY_NOTIF_ID, newMessageNotification)
+            //notificationManager.notify(manga.mangaAlias, SUMMARY_NOTIF_ID, newMessageNotification)
 
             inboxStyle.addLine("${manga.name}: $count new chapter(s)")
         }

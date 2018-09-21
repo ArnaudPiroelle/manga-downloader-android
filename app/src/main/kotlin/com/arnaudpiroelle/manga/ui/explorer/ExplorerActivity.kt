@@ -5,12 +5,14 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.core.inject.inject
 import com.arnaudpiroelle.manga.core.utils.PreferencesHelper
 import com.arnaudpiroelle.manga.ui.history.HistoryFragment
 import com.arnaudpiroelle.manga.ui.manga.list.MangaListingFragment
 import com.arnaudpiroelle.manga.ui.settings.SettingsFragment
+import com.arnaudpiroelle.manga.ui.tasks.TasksFragment
 import com.codekidlabs.storagechooser.StorageChooser
 import com.codekidlabs.storagechooser.StorageChooser.DIRECTORY_CHOOSER
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -38,12 +40,16 @@ class ExplorerActivity : AppCompatActivity(),
 
         navigation.setOnNavigationItemSelectedListener(this)
 
-        if (preferencesHelper.getOutputFolder() == null) {
-            selectDestinationFolderWithPermissionCheck()
-        }
-
         if (savedInstanceState == null) {
             userActionsListener.navigateTo(navigation.selectedItemId)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (preferencesHelper.getOutputFolder() == null) {
+            selectDestinationFolderWithPermissionCheck()
         }
     }
 
@@ -74,6 +80,10 @@ class ExplorerActivity : AppCompatActivity(),
         replace(SettingsFragment())
     }
 
+    override fun displayTasks() {
+        replace(TasksFragment())
+    }
+
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     override fun selectDestinationFolder() {
         val chooser = StorageChooser.Builder()
@@ -95,7 +105,7 @@ class ExplorerActivity : AppCompatActivity(),
 
     private fun replace(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
-                //.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .replace(R.id.content, fragment)
                 .commit()
     }

@@ -7,16 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.arnaudpiroelle.manga.R
-import com.arnaudpiroelle.manga.core.db.dao.MangaDao
 import com.arnaudpiroelle.manga.core.inject.inject
-import com.arnaudpiroelle.manga.core.utils.PreferencesHelper
-import com.arnaudpiroelle.manga.model.db.Manga
-import com.arnaudpiroelle.manga.service.DownloadService.Companion.updateScheduling
+import com.arnaudpiroelle.manga.data.MangaRepository
+import com.arnaudpiroelle.manga.data.model.Manga
 import com.arnaudpiroelle.manga.ui.manga.add.AddMangaActivity
-import com.arnaudpiroelle.manga.ui.manga.modify.ModifyMangaDialogFragment
 import kotlinx.android.synthetic.main.fragment_listing_manga.*
 import javax.inject.Inject
 
@@ -24,14 +20,10 @@ import javax.inject.Inject
 class MangaListingFragment : Fragment(), MangaListingContract.View {
 
     @Inject
-    lateinit var mangaDao: MangaDao
+    lateinit var mangaRepository: MangaRepository
 
-    @Inject
-    lateinit var preferencesHelper: PreferencesHelper
-
-    private val userActionsListener: MangaListingContract.UserActionsListener  by lazy { MangaListingPresenter(this, mangaDao) }
+    private val userActionsListener: MangaListingContract.UserActionsListener  by lazy { MangaListingPresenter(this, mangaRepository) }
     private val adapter by lazy { MangaListingAdapter(activity) }
-    private val touchHelper by lazy { ItemTouchHelper(MangaTouchHelperCallback(adapter, userActionsListener)) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +41,7 @@ class MangaListingFragment : Fragment(), MangaListingContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        list_manga.layoutManager = LinearLayoutManager(activity)
+        list_manga.layoutManager = GridLayoutManager(activity, 3)
         list_manga.adapter = adapter
 
         toolbar.setTitle(R.string.title_mymangas)
@@ -57,14 +49,12 @@ class MangaListingFragment : Fragment(), MangaListingContract.View {
         toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.action_download -> {
-                    updateScheduling(requireContext(), preferencesHelper)
+                    //updateScheduling(requireContext(), preferencesHelper)
                     true
                 }
                 else -> false
             }
         }
-
-        touchHelper.attachToRecyclerView(list_manga)
 
         action_add_manga.setOnClickListener { userActionsListener.addManga() }
 
@@ -91,8 +81,8 @@ class MangaListingFragment : Fragment(), MangaListingContract.View {
     }
 
     override fun displayModificationDialog(manga: Manga) {
-        val modifyMangaDialogFragment = ModifyMangaDialogFragment.newInstance(manga.provider, manga.name, manga.mangaAlias, manga.lastChapter)
-        modifyMangaDialogFragment.show(childFragmentManager, null)
+        /*val modifyMangaDialogFragment = ModifyMangaDialogFragment.newInstance(manga.provider, manga.name, manga.mangaAlias, manga.lastChapter)
+        modifyMangaDialogFragment.show(childFragmentManager, null)*/
     }
 
     override fun displayRemoveConfirmation(manga: Manga) {

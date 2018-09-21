@@ -6,6 +6,7 @@ interface ExplorerContract {
         fun displayHistory()
         fun displaySettings()
         fun selectDestinationFolder()
+        fun displayTasks()
     }
 
     interface UserActionsListener {

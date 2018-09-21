@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arnaudpiroelle.manga.R
-import com.arnaudpiroelle.manga.core.db.dao.HistoryDao
 import com.arnaudpiroelle.manga.core.inject.inject
-import com.arnaudpiroelle.manga.model.db.History
+import com.arnaudpiroelle.manga.data.core.db.dao.HistoryDao
+import com.arnaudpiroelle.manga.data.model.History
 import com.arnaudpiroelle.manga.ui.history.HistoryContract.UserActionsListener
 import kotlinx.android.synthetic.main.fragment_listing_history.*
 import javax.inject.Inject

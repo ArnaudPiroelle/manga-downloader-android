@@ -12,9 +12,9 @@ import androidx.fragment.app.DialogFragment
 import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.api.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.api.model.Chapter
-import com.arnaudpiroelle.manga.core.db.dao.MangaDao
-import com.arnaudpiroelle.manga.core.db.dao.TaskDao
 import com.arnaudpiroelle.manga.core.inject.inject
+import com.arnaudpiroelle.manga.data.core.db.dao.MangaDao
+import com.arnaudpiroelle.manga.data.core.db.dao.TaskDao
 import javax.inject.Inject
 
 class ModifyMangaDialogFragment : DialogFragment(), ModifyMangaContract.View {

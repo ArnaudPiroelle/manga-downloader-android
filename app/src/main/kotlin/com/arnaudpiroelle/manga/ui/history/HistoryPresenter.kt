@@ -1,7 +1,7 @@
 package com.arnaudpiroelle.manga.ui.history
 
 import com.arnaudpiroelle.manga.api.core.rx.plusAssign
-import com.arnaudpiroelle.manga.core.db.dao.HistoryDao
+import com.arnaudpiroelle.manga.data.core.db.dao.HistoryDao
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable

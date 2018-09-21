@@ -58,7 +58,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun onSchedulerPreferenceChangeListener() = Preference.OnPreferenceChangeListener { _: Preference, _: Any ->
-        DownloadService.updateScheduling(requireActivity(), preferencesHelper)
+        //DownloadService.updateScheduling(requireActivity(), preferencesHelper)
         true
     }
 
