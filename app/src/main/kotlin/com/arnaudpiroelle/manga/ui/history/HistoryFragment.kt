@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.core.inject.inject
@@ -38,6 +39,7 @@ class HistoryFragment : Fragment(), HistoryContract.View {
         super.onViewCreated(view, savedInstanceState)
 
         list_history.layoutManager = LinearLayoutManager(activity)
+        list_history.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.HORIZONTAL))
         list_history.adapter = adapter
 
         toolbar.setTitle(R.string.title_history)

@@ -53,4 +53,6 @@
     <string name="manga_remove_button">Remove</string>
     <string name="nav_tasks">Tasks</string>
     <string name="title_tasks">Tasks</string>
+    <string name="task_retrieve_chapters">Retrieve chapters</string>
+    <string name="task_download_chapter">Download chapter</string>
 </resources>

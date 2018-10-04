@@ -39,7 +39,7 @@ class AddMangaPresenter(
     override fun selectManga(manga: Manga) {
         subscriptions += fromAction {
             val id = mangaDao.insert(com.arnaudpiroelle.manga.data.model.Manga(name = manga.name, alias = manga.alias, provider = manga.provider))
-            taskDao.insert(Task(type = Task.Type.RETRIEVE_CHAPTERS, item = id))
+            taskDao.insert(Task(type = Task.Type.RETRIEVE_CHAPTERS, label = manga.name, item = id))
         }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

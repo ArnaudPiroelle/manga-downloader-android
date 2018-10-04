@@ -1,12 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/task_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <View
+        android:id="@+id/task_status"
+        android:layout_width="8dp"
+        android:layout_height="match_parent"
+        android:background="@color/colorAccent" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="4dp">
+
+        <TextView
+            android:id="@+id/task_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            tools:text="One Piece" />
+
+        <TextView
+            android:id="@+id/task_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            tools:text="Récupération de la liste des chapitres" />
+
+    </LinearLayout>
 </LinearLayout>

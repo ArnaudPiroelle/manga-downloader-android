@@ -39,8 +39,20 @@ class TasksAdapter(context: Context?) : RecyclerView.Adapter<TasksAdapter.TaskVi
     }
 
     class TaskViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val context = itemView.context
         fun bind(task: Task) {
-            itemView.task_name.text = task.status.name
+            itemView.task_name.text = task.label
+            itemView.task_desc.text = when (task.type) {
+                Task.Type.RETRIEVE_CHAPTERS -> context.getString(R.string.task_retrieve_chapters)
+                Task.Type.DOWNLOAD_CHAPTER -> context.getString(R.string.task_download_chapter)
+            }
+            val color = when (task.status) {
+                Task.Status.NEW -> context.getColor(R.color.task_status_new)
+                Task.Status.IN_PROGRESS -> context.getColor(R.color.task_status_in_progress)
+                Task.Status.SUCCESS -> context.getColor(R.color.task_status_done)
+                Task.Status.ERROR -> context.getColor(R.color.task_status_error)
+            }
+            itemView.task_status.setBackgroundColor(color)
         }
     }
 }

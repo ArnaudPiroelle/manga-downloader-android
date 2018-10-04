@@ -8,6 +8,7 @@ import androidx.room.PrimaryKey
 data class Task(
         @PrimaryKey(autoGenerate = true) val id: Long = 0,
         @ColumnInfo(name = "status") val status: Status = Status.NEW,
+        @ColumnInfo(name = "label") val label: String = "",
         @ColumnInfo(name = "type") val type: Type = Type.RETRIEVE_CHAPTERS,
         @ColumnInfo(name = "item") val item: Long) {
 

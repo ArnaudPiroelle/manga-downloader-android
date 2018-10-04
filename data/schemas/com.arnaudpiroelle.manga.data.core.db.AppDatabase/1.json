@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "1987c36797b0d8a32ead73c9778e5f9c",
+    "identityHash": "12089ab59ba028a4f9f853c29472e1d5",
     "entities": [
       {
         "tableName": "mangas",
@@ -217,7 +217,7 @@
       },
       {
         "tableName": "tasks",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `status` TEXT NOT NULL, `type` TEXT NOT NULL, `item` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `status` TEXT NOT NULL, `label` TEXT NOT NULL, `type` TEXT NOT NULL, `item` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -228,6 +228,12 @@
           {
             "fieldPath": "status",
             "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "label",
+            "columnName": "label",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -256,7 +262,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"1987c36797b0d8a32ead73c9778e5f9c\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"12089ab59ba028a4f9f853c29472e1d5\")"
     ]
   }
 }

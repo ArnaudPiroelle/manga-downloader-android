@@ -9,4 +9,10 @@
 
     <color name="item_remove">#f44336</color>
     <color name="item_modify">#fbc02d</color>
+
+    <color name="task_status_new">#fbc02d</color>
+    <color name="task_status_in_progress">#275591</color>
+    <color name="task_status_done">#00FF00</color>
+    <color name="task_status_error">#f44336</color>
+
 </resources>
