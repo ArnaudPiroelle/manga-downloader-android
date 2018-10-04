@@ -9,11 +9,12 @@
     android:elevation="2dp"
     android:foreground="?attr/selectableItemBackground"
     android:orientation="vertical"
-    app:cardCornerRadius="4dp">
+    app:cardCornerRadius="4dp"
+    tools:layout_width="140dp">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
         <com.arnaudpiroelle.manga.core.widget.AspectRatioView
             android:id="@+id/image"
@@ -33,9 +34,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/image"
             android:layout_gravity="bottom"
-            android:background="@android:color/white"
+            android:background="#55000000"
             android:padding="4dp">
 
             <TextView
@@ -45,12 +45,12 @@
                 android:ellipsize="marquee"
                 android:fontFamily="sans-serif"
                 android:singleLine="true"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/white"
                 android:textSize="18sp"
                 tools:text="One Piece" />
         </LinearLayout>
 
-    </RelativeLayout>
+    </FrameLayout>
 
 
 </androidx.cardview.widget.CardView>
