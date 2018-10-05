@@ -13,6 +13,7 @@ import io.reactivex.Flowable.fromIterable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class TaskService : JobService() {
@@ -37,11 +38,13 @@ class TaskService : JobService() {
     override fun onStartJob(params: JobParameters?): Boolean {
         Timber.d("TaskService started")
 
-        subscriptions += taskRepository.findByStatus(Task.Status.NEW)
+        subscriptions += taskRepository.findByStatus(Task.Status.NEW, Task.Status.IN_PROGRESS)
+                .throttleFirst(10, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .concatMapCompletable(this::process)
                 .subscribe {
                     println("End of process")
+                    jobFinished(params, true)
                 }
 
         return true
