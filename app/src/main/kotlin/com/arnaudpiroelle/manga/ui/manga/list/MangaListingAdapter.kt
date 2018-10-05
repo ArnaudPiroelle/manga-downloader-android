@@ -7,12 +7,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.core.utils.calculateDiff
-import com.arnaudpiroelle.manga.data.model.Manga
+import com.arnaudpiroelle.manga.data.model.MangaWithCover
+import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_view_manga.view.*
 
 class MangaListingAdapter(context: Context?) : RecyclerView.Adapter<MangaViewHolder>() {
 
-    private val datas = mutableListOf<Manga>()
+    private val datas = mutableListOf<MangaWithCover>()
     private val layoutInflater = LayoutInflater.from(context)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MangaViewHolder {
@@ -27,7 +28,7 @@ class MangaListingAdapter(context: Context?) : RecyclerView.Adapter<MangaViewHol
         holder.bind(datas[position])
     }
 
-    fun update(mangas: List<Manga>) {
+    fun update(mangas: List<MangaWithCover>) {
         val calculateDiff = calculateDiff(datas, mangas) { old, new ->
             old.id == new.id
         }
@@ -40,14 +41,15 @@ class MangaListingAdapter(context: Context?) : RecyclerView.Adapter<MangaViewHol
         return datas[position].id
     }
 
-    fun getItem(position: Int): Manga {
-        return datas[position]
-    }
 }
 
 class MangaViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-    fun bind(manga: Manga) {
+    fun bind(manga: MangaWithCover) {
         itemView.manga_name.text = manga.name
+
+        Glide.with(itemView)
+                .load(manga.image)
+                .into(itemView.manga_thumbnail)
         //itemView.title.text = manga.name
         //itemView.chapter.text = manga.lastChapter
     }

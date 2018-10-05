@@ -1,10 +1,11 @@
 package com.arnaudpiroelle.manga.ui.manga.list
 
 import com.arnaudpiroelle.manga.data.model.Manga
+import com.arnaudpiroelle.manga.data.model.MangaWithCover
 
 interface MangaListingContract {
     interface View {
-        fun displayMangas(mangas: List<Manga>)
+        fun displayMangas(mangas: List<MangaWithCover>)
         fun openNewMangaWizard()
         fun displayModificationDialog(manga: Manga)
         fun displayRemoveConfirmation(manga: Manga)

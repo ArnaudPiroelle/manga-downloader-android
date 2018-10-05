@@ -2,13 +2,15 @@ package com.arnaudpiroelle.manga.data.core.db.dao
 
 import androidx.room.*
 import com.arnaudpiroelle.manga.data.model.Manga
+import com.arnaudpiroelle.manga.data.model.MangaWithCover
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 
 
 @Dao
 interface MangaDao {
-    @Query("SELECT * FROM mangas")
+
+    @Query("SELECT * FROM mangas ORDER BY name")
     fun getAll(): Flowable<List<Manga>>
 
     @Query("SELECT * FROM mangas where provider = :provider")

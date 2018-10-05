@@ -9,8 +9,8 @@ interface TaskDao {
     @Query("SELECT * FROM tasks")
     fun getAll(): Flowable<List<Task>>
 
-    @Query("SELECT * FROM tasks where status = :status")
-    fun findByStatus(status: Task.Status): Flowable<List<Task>>
+    @Query("SELECT * FROM tasks where status in(:status)")
+    fun findByStatus(vararg status: Task.Status): Flowable<List<Task>>
 
     @Insert
     fun insert(task: Task): Long

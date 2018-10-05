@@ -15,8 +15,8 @@ class TaskRepository @Inject constructor(private val taskDao: TaskDao) {
         return taskDao.getAll()
     }
 
-    fun findByStatus(status: Task.Status): Flowable<List<Task>> {
-        return taskDao.findByStatus(status)
+    fun findByStatus(vararg status: Task.Status): Flowable<List<Task>> {
+        return taskDao.findByStatus(*status)
     }
 
     fun insert(task: Task): Maybe<Long> {

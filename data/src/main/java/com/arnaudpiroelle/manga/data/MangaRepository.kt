@@ -10,6 +10,11 @@ import javax.inject.Singleton
 
 @Singleton
 class MangaRepository @Inject constructor(private val mangaDao: MangaDao) {
+
+    fun getMangasWithCover(): Flowable<List<Manga>> {
+        return mangaDao.getAll()
+    }
+
     fun getAll(): Flowable<List<Manga>> {
         return mangaDao.getAll()
     }

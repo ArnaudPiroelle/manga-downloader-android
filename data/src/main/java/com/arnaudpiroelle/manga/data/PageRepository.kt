@@ -12,4 +12,8 @@ class PageRepository @Inject constructor(private val pageDao: PageDao) {
         return Maybe.fromCallable { pageDao.insert(page) }
     }
 
+    fun getPagesFor(chapterId: Long): Maybe<List<Page>> {
+        return pageDao.getPagesFor(chapterId)
+    }
+
 }

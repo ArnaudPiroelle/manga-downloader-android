@@ -10,8 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.core.inject.inject
+import com.arnaudpiroelle.manga.data.ChapterRepository
 import com.arnaudpiroelle.manga.data.MangaRepository
+import com.arnaudpiroelle.manga.data.PageRepository
 import com.arnaudpiroelle.manga.data.model.Manga
+import com.arnaudpiroelle.manga.data.model.MangaWithCover
 import com.arnaudpiroelle.manga.ui.manga.add.AddMangaActivity
 import kotlinx.android.synthetic.main.fragment_listing_manga.*
 import javax.inject.Inject
@@ -21,8 +24,12 @@ class MangaListingFragment : Fragment(), MangaListingContract.View {
 
     @Inject
     lateinit var mangaRepository: MangaRepository
+    @Inject
+    lateinit var chapterRepository: ChapterRepository
+    @Inject
+    lateinit var pageRepository: PageRepository
 
-    private val userActionsListener: MangaListingContract.UserActionsListener  by lazy { MangaListingPresenter(this, mangaRepository) }
+    private val userActionsListener: MangaListingContract.UserActionsListener  by lazy { MangaListingPresenter(this, mangaRepository, chapterRepository, pageRepository) }
     private val adapter by lazy { MangaListingAdapter(activity) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,7 +38,6 @@ class MangaListingFragment : Fragment(), MangaListingContract.View {
         inject()
 
         setHasOptionsMenu(true)
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -72,7 +78,7 @@ class MangaListingFragment : Fragment(), MangaListingContract.View {
         super.onPause()
     }
 
-    override fun displayMangas(mangas: List<Manga>) {
+    override fun displayMangas(mangas: List<MangaWithCover>) {
         adapter.update(mangas)
     }
 
