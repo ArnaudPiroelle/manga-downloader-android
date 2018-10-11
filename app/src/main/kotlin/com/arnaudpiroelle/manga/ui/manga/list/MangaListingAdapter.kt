@@ -11,13 +11,13 @@ import com.arnaudpiroelle.manga.data.model.MangaWithCover
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_view_manga.view.*
 
-class MangaListingAdapter(context: Context?) : RecyclerView.Adapter<MangaViewHolder>() {
+class MangaListingAdapter(context: Context?, val userActionsListener: MangaListingContract.UserActionsListener) : RecyclerView.Adapter<MangaViewHolder>() {
 
     private val datas = mutableListOf<MangaWithCover>()
     private val layoutInflater = LayoutInflater.from(context)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MangaViewHolder {
-        return MangaViewHolder(layoutInflater.inflate(R.layout.item_view_manga, parent, false))
+        return MangaViewHolder(userActionsListener, layoutInflater.inflate(R.layout.item_view_manga, parent, false))
     }
 
     override fun getItemCount(): Int {
@@ -43,7 +43,7 @@ class MangaListingAdapter(context: Context?) : RecyclerView.Adapter<MangaViewHol
 
 }
 
-class MangaViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+class MangaViewHolder(val userActionsListener: MangaListingContract.UserActionsListener, view: View) : RecyclerView.ViewHolder(view) {
     fun bind(manga: MangaWithCover) {
         itemView.manga_name.text = manga.name
 
@@ -52,5 +52,9 @@ class MangaViewHolder(view: View) : RecyclerView.ViewHolder(view) {
                 .into(itemView.manga_thumbnail)
         //itemView.title.text = manga.name
         //itemView.chapter.text = manga.lastChapter
+
+        itemView.setOnClickListener {
+            userActionsListener.openMangaDetails(manga)
+        }
     }
 }

@@ -7,6 +7,7 @@ interface MangaListingContract {
     interface View {
         fun displayMangas(mangas: List<MangaWithCover>)
         fun openNewMangaWizard()
+        fun showMangaDetails()
         fun displayModificationDialog(manga: Manga)
         fun displayRemoveConfirmation(manga: Manga)
     }
@@ -18,5 +19,6 @@ interface MangaListingContract {
         fun askForRemove(manga: Manga)
         fun askForModify(manga: Manga)
         fun remove(manga: Manga)
+        fun openMangaDetails(manga: MangaWithCover)
     }
 }

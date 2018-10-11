@@ -59,4 +59,8 @@ class MangaListingPresenter(
                 .subscribeOn(Schedulers.io())
                 .subscribe({}, {})
     }
+
+    override fun openMangaDetails(manga: MangaWithCover) {
+        view.showMangaDetails()
+    }
 }

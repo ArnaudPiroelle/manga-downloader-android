@@ -16,6 +16,7 @@ import com.arnaudpiroelle.manga.data.PageRepository
 import com.arnaudpiroelle.manga.data.model.Manga
 import com.arnaudpiroelle.manga.data.model.MangaWithCover
 import com.arnaudpiroelle.manga.ui.manga.add.AddMangaActivity
+import com.arnaudpiroelle.manga.ui.manga.details.MangaDetailsActivity
 import kotlinx.android.synthetic.main.fragment_listing_manga.*
 import javax.inject.Inject
 
@@ -30,7 +31,7 @@ class MangaListingFragment : Fragment(), MangaListingContract.View {
     lateinit var pageRepository: PageRepository
 
     private val userActionsListener: MangaListingContract.UserActionsListener  by lazy { MangaListingPresenter(this, mangaRepository, chapterRepository, pageRepository) }
-    private val adapter by lazy { MangaListingAdapter(activity) }
+    private val adapter by lazy { MangaListingAdapter(activity, userActionsListener) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,5 +104,9 @@ class MangaListingFragment : Fragment(), MangaListingContract.View {
                 .show()
 
 
+    }
+
+    override fun showMangaDetails() {
+        startActivity(Intent(activity, MangaDetailsActivity::class.java))
     }
 }
