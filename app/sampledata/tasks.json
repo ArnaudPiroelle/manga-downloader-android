@@ -1,0 +1,24 @@
+{
+  "data": [
+    {
+      "label": "One Piece",
+      "desc": "Récupération de la liste des chapitres",
+      "color": "@color/task_status_new"
+    },
+    {
+      "label": "Berserk",
+      "desc": "Récupération de la liste des chapitres",
+      "color": "@color/task_status_in_progress"
+    },
+    {
+      "label": "Naruto",
+      "desc": "Récupération de la liste des chapitres",
+      "color": "@color/task_status_error"
+    },
+    {
+      "label": "Bleach",
+      "desc": "Récupération de la liste des chapitres",
+      "color": "@color/task_status_done"
+    }
+  ]
+}

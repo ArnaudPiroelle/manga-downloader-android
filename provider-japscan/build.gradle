@@ -23,15 +23,13 @@ android {
 
 }
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     api project(':api')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
     implementation 'org.jsoup:jsoup:1.11.3'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.0-RC1'
+
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

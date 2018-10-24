@@ -1,68 +1,45 @@
 package com.arnaudpiroelle.manga.ui.history
 
-import android.content.Context
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.arnaudpiroelle.manga.R
+import com.arnaudpiroelle.manga.core.utils.inflate
 import com.arnaudpiroelle.manga.data.model.History
 import kotlinx.android.synthetic.main.item_view_history.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class HistoryAdapter(context: Context?) : RecyclerView.Adapter<HistoryViewHolder>() {
-
-    private val layoutInflater = LayoutInflater.from(context)
-    private val datas = mutableListOf<History>()
+class HistoryAdapter : PagedListAdapter<History, HistoryAdapter.HistoryViewHolder>(HistoryDiff) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryViewHolder {
-        return HistoryViewHolder(layoutInflater.inflate(R.layout.item_view_history, parent, false))
-    }
-
-    override fun getItemCount(): Int {
-        return datas.size
+        return HistoryViewHolder(parent.inflate(R.layout.item_view_history, false))
     }
 
     override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) {
-        holder.bind(datas[position])
+        holder.bind(getItem(position))
     }
 
-    fun update(histories: List<History>) {
-        val calculateDiff = DiffUtil.calculateDiff(HistoryDiffUtil(datas, histories))
-        datas.clear()
-        datas.addAll(histories)
-        calculateDiff.dispatchUpdatesTo(this)
-    }
-}
+    class HistoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        fun bind(history: History?) {
+            if (history == null) {
+                return
+            }
 
-class HistoryDiffUtil(private val oldList: List<History>, private val newList: List<History>) : DiffUtil.Callback() {
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition].id == newList[newItemPosition].id
-    }
+            itemView.history_label.text = history.label
+            itemView.history_date.text = simpleDateFormat.format(history.date)
+        }
 
-    override fun getOldListSize(): Int {
-        return oldList.size
-    }
-
-    override fun getNewListSize(): Int {
-        return newList.size
-    }
-
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition] == newList[newItemPosition]
+        companion object {
+            private val simpleDateFormat = SimpleDateFormat("dd/MM/yy hh:mm", Locale.getDefault())
+        }
     }
 
 }
 
-class HistoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-    fun bind(history: History) {
-        itemView.history_label.text = history.label
-        itemView.history_date.text = simpleDateFormat.format(history.date)
-    }
-
-    companion object {
-        private val simpleDateFormat = SimpleDateFormat("dd/MM/yy hh:mm", Locale.getDefault())
-    }
+object HistoryDiff : DiffUtil.ItemCallback<History>() {
+    override fun areItemsTheSame(oldItem: History, newItem: History) = oldItem.id == newItem.id
+    override fun areContentsTheSame(oldItem: History, newItem: History) = oldItem == newItem
 }

@@ -1,16 +1,15 @@
 package com.arnaudpiroelle.manga.ui.manga.add
 
-import android.content.Context
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.api.provider.MangaProvider
+import com.arnaudpiroelle.manga.core.utils.inflate
 
 
-class ProviderSpinnerAdapter(val context: Context) : BaseAdapter() {
+class ProviderSpinnerAdapter() : BaseAdapter() {
 
     private var mItems: List<Provider> = arrayListOf()
 
@@ -18,17 +17,17 @@ class ProviderSpinnerAdapter(val context: Context) : BaseAdapter() {
         return mItems.size
     }
 
-    override fun getItem(position: Int): MangaProvider {
-        return mItems[position].mangaProvider
+    override fun getItem(position: Int): Provider {
+        return mItems[position]
     }
 
     override fun getItemId(position: Int): Long {
         return position.toLong()
     }
 
-    override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup?): View? {
+    override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View? {
         val view: View = if (convertView == null || convertView.tag.toString() != "DROPDOWN") {
-            val viewItem = LayoutInflater.from(context).inflate(R.layout.toolbar_spinner_item_dropdown, parent, false)
+            val viewItem = parent.inflate(R.layout.toolbar_spinner_item_dropdown, false)
             viewItem.tag = "DROPDOWN"
             viewItem
         } else {
@@ -42,9 +41,9 @@ class ProviderSpinnerAdapter(val context: Context) : BaseAdapter() {
         return view
     }
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view: View = if (convertView == null || convertView.tag.toString() != "DROPDOWN") {
-            val viewItem = LayoutInflater.from(context).inflate(R.layout.toolbar_spinner_item_actionbar, parent, false)
+            val viewItem = parent.inflate(R.layout.toolbar_spinner_item_actionbar, false)
             viewItem.tag = "NON_DROPDOWN"
             viewItem
         } else {
@@ -60,8 +59,8 @@ class ProviderSpinnerAdapter(val context: Context) : BaseAdapter() {
         return if (position >= 0 && position < mItems.size) mItems[position].name else ""
     }
 
-    fun update(datas: Map<String, MangaProvider>) {
-        mItems = datas.map { Provider(it.key, it.value) }
+    fun update(datas: List<Provider>) {
+        mItems = datas
         notifyDataSetChanged()
     }
 

@@ -1,32 +1,25 @@
 package com.arnaudpiroelle.manga.ui.history
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arnaudpiroelle.manga.R
-import com.arnaudpiroelle.manga.core.inject.inject
-import com.arnaudpiroelle.manga.data.core.db.dao.HistoryDao
-import com.arnaudpiroelle.manga.data.model.History
-import com.arnaudpiroelle.manga.ui.history.HistoryContract.UserActionsListener
+import com.arnaudpiroelle.manga.ui.home.setActionBar
 import kotlinx.android.synthetic.main.fragment_listing_history.*
-import javax.inject.Inject
+import kotlinx.android.synthetic.main.include_bottombar.*
+import kotlinx.android.synthetic.main.include_title.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class HistoryFragment : Fragment(), HistoryContract.View {
+class HistoryFragment : Fragment() {
 
-    @Inject
-    lateinit var historyDao: HistoryDao
-
-    private val userActionsListener: UserActionsListener by lazy { HistoryPresenter(this, historyDao) }
-    private val adapter by lazy { HistoryAdapter(activity) }
+    private val viewModel: HistoriesViewModel by viewModel()
+    private val adapter by lazy { HistoryAdapter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        inject()
 
         setHasOptionsMenu(true)
     }
@@ -38,40 +31,31 @@ class HistoryFragment : Fragment(), HistoryContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        title.setText(R.string.title_history)
+        setActionBar(bar)
+
         list_history.layoutManager = LinearLayoutManager(activity)
         list_history.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.HORIZONTAL))
         list_history.adapter = adapter
 
-        toolbar.setTitle(R.string.title_history)
-        toolbar.inflateMenu(R.menu.menu_history)
-        toolbar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.action_clean_history -> {
-                    userActionsListener.cleanHistory()
-                    true
-                }
-                else -> false
+        viewModel.histories.observe(this, Observer {
+            adapter.submitList(it)
+        })
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.menu_history, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            R.id.action_clean_history -> {
+                viewModel.cleanHistory()
+                true
             }
+            else -> false
         }
-
     }
-
-
-    override fun onResume() {
-        super.onResume()
-
-        userActionsListener.register()
-    }
-
-    override fun onPause() {
-        userActionsListener.unregister()
-
-        super.onPause()
-    }
-
-    override fun displayHistories(histories: List<History>) {
-        adapter.update(histories)
-    }
-
 
 }

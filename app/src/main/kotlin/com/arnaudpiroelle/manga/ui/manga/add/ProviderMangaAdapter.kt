@@ -1,76 +1,39 @@
 package com.arnaudpiroelle.manga.ui.manga.add
 
-import android.content.Context
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.api.model.Manga
+import com.arnaudpiroelle.manga.core.utils.inflate
 import kotlinx.android.synthetic.main.item_view_provider_manga.view.*
 
-class ProviderMangaAdapter(context: Context, private val userActionsListener: AddMangaContract.UserActionsListener) : RecyclerView.Adapter<NewMangaViewHolder>() {
-    private val layoutInflater = LayoutInflater.from(context)
-    private val datas = mutableListOf<Manga>()
-    private val filtererDatas = mutableListOf<Manga>()
-
+class ProviderMangaAdapter(private val callback: Callback) : ListAdapter<Manga, NewMangaViewHolder>(MangaDiffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewMangaViewHolder {
-        return NewMangaViewHolder(layoutInflater.inflate(R.layout.item_view_provider_manga, parent, false))
-    }
-
-    override fun getItemCount(): Int {
-        return filtererDatas.size
+        return NewMangaViewHolder(parent.inflate(R.layout.item_view_provider_manga, false), callback)
     }
 
     override fun onBindViewHolder(holder: NewMangaViewHolder, position: Int) {
-        holder.bind(filtererDatas[position], userActionsListener)
+        holder.bind(getItem(position))
     }
 
-    fun update(mangas: List<Manga>) {
-        val calculateDiff = DiffUtil.calculateDiff(MangaDiffUtil(datas, mangas))
-
-        datas.clear()
-        datas.addAll(mangas)
-        filtererDatas.clear()
-        filtererDatas.addAll(mangas)
-
-        calculateDiff.dispatchUpdatesTo(this)
-    }
-
-    fun filter(name: String?) {
-        val filteredList = datas.filter { name == null || it.name.contains(name, true) }
-        val calculateDiff = DiffUtil.calculateDiff(MangaDiffUtil(filtererDatas, filteredList))
-        filtererDatas.clear()
-        filtererDatas.addAll(filteredList)
-        calculateDiff.dispatchUpdatesTo(this)
+    interface Callback {
+        fun onMangaSelected(manga: Manga)
     }
 }
 
-class NewMangaViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-    fun bind(manga: Manga, userActionsListener: AddMangaContract.UserActionsListener) {
+class NewMangaViewHolder(view: View, val callback: ProviderMangaAdapter.Callback) : RecyclerView.ViewHolder(view) {
+    fun bind(manga: Manga) {
         itemView.title.text = manga.name
         itemView.setOnClickListener {
-            userActionsListener.selectManga(manga)
+            callback.onMangaSelected(manga)
         }
     }
 }
 
-class MangaDiffUtil(private val oldList: List<Manga>, private val newList: List<Manga>) : DiffUtil.Callback() {
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition].alias == newList[newItemPosition].alias
-    }
-
-    override fun getOldListSize(): Int {
-        return oldList.size
-    }
-
-    override fun getNewListSize(): Int {
-        return newList.size
-    }
-
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition] == newList[newItemPosition]
-    }
-
+object MangaDiffUtil : DiffUtil.ItemCallback<Manga>() {
+    override fun areItemsTheSame(oldItem: Manga, newItem: Manga) = oldItem.alias == newItem.alias
+    override fun areContentsTheSame(oldItem: Manga, newItem: Manga) = oldItem == newItem
 }

@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primaryColor">#275591</color>
+    <color name="primaryColor">#FFFFFF</color>
     <color name="primaryColorDark">#20467b</color>
-    <color name="accentColor">#e95330</color>
+    <color name="accentColor">#346DF4</color>
+    <color name="indigo_dark">#303F9F</color>
+    <color name="highlight_light">#33ffffff</color> <!-- 20% white -->
+    <color name="status_bar">@android:color/white</color>
 
     <color name="window_background">#FFF5F5F5</color>
     <color name="item_view_background">#ffffff</color>
@@ -14,5 +17,6 @@
     <color name="task_status_in_progress">#275591</color>
     <color name="task_status_done">#00FF00</color>
     <color name="task_status_error">#f44336</color>
+    <color name="text_body">#191919</color>
 
 </resources>

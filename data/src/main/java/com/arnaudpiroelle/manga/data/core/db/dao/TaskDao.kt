@@ -1,6 +1,8 @@
 package com.arnaudpiroelle.manga.data.core.db.dao
 
+import androidx.paging.DataSource
 import androidx.room.*
+import com.arnaudpiroelle.manga.data.model.Manga
 import com.arnaudpiroelle.manga.data.model.Task
 import io.reactivex.Flowable
 
@@ -10,7 +12,7 @@ interface TaskDao {
     fun getAll(): Flowable<List<Task>>
 
     @Query("SELECT * FROM tasks where status in(:status)")
-    fun findByStatus(vararg status: Task.Status): Flowable<List<Task>>
+    fun findByStatus(vararg status: Task.Status): List<Task>
 
     @Insert
     fun insert(task: Task): Long
@@ -20,4 +22,7 @@ interface TaskDao {
 
     @Update
     fun update(task: Task)
+
+    @Query("SELECT * FROM tasks")
+    fun observeAll(): DataSource.Factory<Int, Task>
 }

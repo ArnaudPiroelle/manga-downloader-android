@@ -1,25 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/manga_listing_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/task_listing_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
-    </com.google.android.material.appbar.AppBarLayout>
+    <include layout="@layout/include_title" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_tasks"
@@ -27,6 +14,20 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/appbar"
         android:layout_alignParentBottom="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_view_task" />
+
+    <View
+        android:id="@+id/shadow_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/bab_fake_shadow"
+        android:padding="50dp"
+        android:theme="@style/Widget.MaterialComponents.BottomAppBar.Colored" />
+
+    <include layout="@layout/include_bottombar" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

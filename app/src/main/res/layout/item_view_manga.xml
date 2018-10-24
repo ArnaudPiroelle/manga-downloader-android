@@ -2,18 +2,17 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
     android:drawSelectorOnTop="true"
     android:elevation="2dp"
     android:foreground="?attr/selectableItemBackground"
     android:orientation="vertical"
-    app:cardCornerRadius="4dp"
-    tools:layout_width="140dp">
+    app:cardCornerRadius="4dp">
 
-    <FrameLayout
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <com.arnaudpiroelle.manga.core.widget.AspectRatioView
@@ -27,30 +26,29 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#D0D0D0"
-                android:scaleType="centerCrop" />
+                android:scaleType="centerCrop"
+                tools:src="@sample/covers" />
 
         </com.arnaudpiroelle.manga.core.widget.AspectRatioView>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/image"
             android:layout_gravity="bottom"
-            android:background="#88000000"
             android:padding="4dp">
 
             <TextView
                 android:id="@+id/manga_name"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ellipsize="marquee"
-                android:fontFamily="sans-serif"
-                android:singleLine="true"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
-                tools:text="One Piece" />
+                android:ellipsize="end"
+                android:fontFamily="@font/google_sans"
+                android:lines="2"
+                android:textColor="@color/text_body"
+                tools:text="@sample/mangas.json/data/name" />
         </LinearLayout>
 
-    </FrameLayout>
-
+    </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

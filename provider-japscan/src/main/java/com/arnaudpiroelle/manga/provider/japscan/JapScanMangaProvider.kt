@@ -4,10 +4,10 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Rect
-import com.arnaudpiroelle.manga.api.core.rx.RxRequest
 import com.arnaudpiroelle.manga.api.model.*
 import com.arnaudpiroelle.manga.api.provider.MangaProvider
-import io.reactivex.Single
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -17,44 +17,40 @@ import java.io.FileOutputStream
 import java.net.URLDecoder
 
 class JapScanMangaProvider(val okHttpClient: OkHttpClient) : MangaProvider {
-    override fun findMangas(): Single<List<Manga>> {
+    override fun findMangas(): List<Manga> {
         val request = Request.Builder()
                 .url("${BuildConfig.JAPSCAN_BASE_URL}/mangas/")
                 .build()
 
-        return RxRequest(okHttpClient, request)
-                .map(this::parseMangas)
-                .onErrorReturn { listOf() }
+        val response = okHttpClient.newCall(request).execute()
+        return parseMangas(response)
     }
 
-    override fun findChapters(mangaAlias: String): Single<List<Chapter>> {
+    override fun findChapters(mangaAlias: String): List<Chapter> {
         val request = Request.Builder()
                 .url("${BuildConfig.JAPSCAN_BASE_URL}/mangas/$mangaAlias")
                 .build()
 
-        return RxRequest(okHttpClient, request)
-                .map(this::parseChapters)
-                .map { it.reversed() }
-                .onErrorReturn { listOf() }
+        val response = okHttpClient.newCall(request).execute()
+        return parseChapters(response).reversed()
 
     }
 
-    override fun findPages(mangaAlias: String, chapterNumber: String): Single<List<Page>> {
+    override fun findPages(mangaAlias: String, chapterNumber: String): List<Page> {
         val request = Request.Builder()
                 .url("${BuildConfig.JAPSCAN_BASE_URL}/lecture-en-ligne/$mangaAlias/$chapterNumber")
                 .build()
 
-        return RxRequest(okHttpClient, request)
-                .map(this::parsePages)
-                .onErrorReturn { listOf() }
+        val response = okHttpClient.newCall(request).execute()
+        return parsePages(response)
+
     }
 
-    override fun findPage(pageUrl: String): Single<Response> {
+    override fun findPage(pageUrl: String): Response {
         val request = Request.Builder()
                 .url(pageUrl)
                 .build()
-
-        return RxRequest(okHttpClient, request)
+        return okHttpClient.newCall(request).execute()
     }
 
     private fun parseMangas(response: Response): List<Manga> {

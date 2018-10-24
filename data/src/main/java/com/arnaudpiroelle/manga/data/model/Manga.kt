@@ -14,11 +14,5 @@ data class Manga(
         @PrimaryKey(autoGenerate = true) val id: Long = 0,
         @ColumnInfo(name = "provider") val provider: String = "",
         @ColumnInfo(name = "name") val name: String = "",
-        @ColumnInfo(name = "alias") val alias: String = "")
-
-
-data class MangaWithCover(
-        val id: Long = 0,
-        val name: String = "",
-        val image: String? = ""
-)
+        @ColumnInfo(name = "alias") val alias: String = "",
+        @ColumnInfo(name = "thumbnail") val thumbnail: String = "")

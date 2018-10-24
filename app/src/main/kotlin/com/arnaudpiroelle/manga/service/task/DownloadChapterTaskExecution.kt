@@ -1,15 +1,11 @@
 package com.arnaudpiroelle.manga.service.task
 
 import com.arnaudpiroelle.manga.data.model.Task
-import io.reactivex.Completable
-import javax.inject.Inject
-import javax.inject.Singleton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
-@Singleton
-class DownloadChapterTaskExecution @Inject constructor() : TaskExecution {
-
-    override fun execute(task: Task): Completable {
-        return Completable.complete()
+class DownloadChapterTaskExecution : TaskExecution {
+    override suspend operator fun invoke(task: Task) {
+        return withContext(Dispatchers.IO) { }
     }
-
 }

@@ -5,9 +5,8 @@ import com.arnaudpiroelle.manga.api.model.Chapter
 import com.arnaudpiroelle.manga.api.model.Page
 import com.arnaudpiroelle.manga.data.model.Manga
 import java.io.File
-import javax.inject.Inject
 
-open class FileHelper @Inject constructor(val preferencesHelper: PreferencesHelper) {
+open class FileHelper(val preferencesHelper: PreferencesHelper) {
 
     private fun getEbooksFolder(): File {
         val outputFolder = preferencesHelper.getOutputFolder()

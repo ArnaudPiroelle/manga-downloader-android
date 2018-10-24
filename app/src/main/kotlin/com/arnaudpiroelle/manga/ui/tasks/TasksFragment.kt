@@ -1,35 +1,25 @@
 package com.arnaudpiroelle.manga.ui.tasks
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.arnaudpiroelle.manga.R
-import com.arnaudpiroelle.manga.core.inject.inject
-import com.arnaudpiroelle.manga.core.inject.uninject
-import com.arnaudpiroelle.manga.data.TaskRepository
-import com.arnaudpiroelle.manga.data.model.Task
+import com.arnaudpiroelle.manga.ui.home.setActionBar
 import kotlinx.android.synthetic.main.fragment_tasks.*
-import javax.inject.Inject
+import kotlinx.android.synthetic.main.include_bottombar.*
+import kotlinx.android.synthetic.main.include_title.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class TasksFragment : Fragment(), TasksContract.View {
+class TasksFragment : Fragment() {
 
-    @Inject
-    lateinit var taskRepository: TaskRepository
-
-    private val userActionsListener by lazy { TasksPresenter(this, taskRepository) }
-    private val adapter by lazy { TasksAdapter(activity) }
-
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-
-        inject()
-    }
+    private val viewModel: TasksViewModel by viewModel()
+    private val adapter by lazy { TasksAdapter() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_tasks, container, false)
@@ -38,33 +28,16 @@ class TasksFragment : Fragment(), TasksContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        toolbar.setTitle(R.string.title_tasks)
+        title.setText(R.string.title_tasks)
+        setActionBar(bar)
 
         list_tasks.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
-        list_tasks.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.HORIZONTAL))
+        list_tasks.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
         list_tasks.adapter = adapter
 
-    }
+        viewModel.tasks.observe(this, Observer {
+            adapter.submitList(it)
+        })
 
-    override fun onResume() {
-        super.onResume()
-
-        userActionsListener.retrieveTasks()
-    }
-
-    override fun onPause() {
-        userActionsListener.unregister()
-
-        super.onPause()
-    }
-
-    override fun onDetach() {
-        uninject()
-
-        super.onDetach()
-    }
-
-    override fun displayTasks(tasks: List<Task>) {
-        adapter.update(tasks)
     }
 }

@@ -1,11 +1,10 @@
 package com.arnaudpiroelle.manga.ui.manga.list
 
 import com.arnaudpiroelle.manga.data.model.Manga
-import com.arnaudpiroelle.manga.data.model.MangaWithCover
 
 interface MangaListingContract {
     interface View {
-        fun displayMangas(mangas: List<MangaWithCover>)
+        fun displayMangas(mangas: List<Manga>)
         fun openNewMangaWizard()
         fun showMangaDetails()
         fun displayModificationDialog(manga: Manga)
@@ -19,6 +18,6 @@ interface MangaListingContract {
         fun askForRemove(manga: Manga)
         fun askForModify(manga: Manga)
         fun remove(manga: Manga)
-        fun openMangaDetails(manga: MangaWithCover)
+        fun openMangaDetails(manga: Manga)
     }
 }

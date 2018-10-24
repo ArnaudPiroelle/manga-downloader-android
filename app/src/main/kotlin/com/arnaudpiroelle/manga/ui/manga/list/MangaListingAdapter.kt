@@ -1,60 +1,32 @@
 package com.arnaudpiroelle.manga.ui.manga.list
 
-import android.content.Context
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import com.arnaudpiroelle.manga.R
-import com.arnaudpiroelle.manga.core.utils.calculateDiff
-import com.arnaudpiroelle.manga.data.model.MangaWithCover
-import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.item_view_manga.view.*
+import com.arnaudpiroelle.manga.core.utils.inflate
+import com.arnaudpiroelle.manga.data.model.Manga
 
-class MangaListingAdapter(context: Context?, val userActionsListener: MangaListingContract.UserActionsListener) : RecyclerView.Adapter<MangaViewHolder>() {
-
-    private val datas = mutableListOf<MangaWithCover>()
-    private val layoutInflater = LayoutInflater.from(context)
-
+class MangaListingAdapter(val callback: Callback) : PagedListAdapter<Manga, MangaViewHolder>(MangaDiff) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MangaViewHolder {
-        return MangaViewHolder(userActionsListener, layoutInflater.inflate(R.layout.item_view_manga, parent, false))
-    }
-
-    override fun getItemCount(): Int {
-        return datas.size
+        return MangaViewHolder(parent.inflate(R.layout.item_view_manga, false))
     }
 
     override fun onBindViewHolder(holder: MangaViewHolder, position: Int) {
-        holder.bind(datas[position])
+        holder.bind(getItem(position), callback)
     }
 
-    fun update(mangas: List<MangaWithCover>) {
-        val calculateDiff = calculateDiff(datas, mangas) { old, new ->
-            old.id == new.id
-        }
-        datas.clear()
-        datas.addAll(mangas)
-        calculateDiff.dispatchUpdatesTo(this)
+    interface Callback {
+        fun onMangaSelected(manga: Manga)
     }
-
-    override fun getItemId(position: Int): Long {
-        return datas[position].id
-    }
-
 }
 
-class MangaViewHolder(val userActionsListener: MangaListingContract.UserActionsListener, view: View) : RecyclerView.ViewHolder(view) {
-    fun bind(manga: MangaWithCover) {
-        itemView.manga_name.text = manga.name
+object MangaDiff : DiffUtil.ItemCallback<Manga>() {
+    override fun areItemsTheSame(oldItem: Manga, newItem: Manga): Boolean {
+        return oldItem.id == newItem.id
+    }
 
-        Glide.with(itemView)
-                .load(manga.image)
-                .into(itemView.manga_thumbnail)
-        //itemView.title.text = manga.name
-        //itemView.chapter.text = manga.lastChapter
-
-        itemView.setOnClickListener {
-            userActionsListener.openMangaDetails(manga)
-        }
+    override fun areContentsTheSame(oldItem: Manga, newItem: Manga): Boolean {
+        return oldItem == newItem
     }
 }

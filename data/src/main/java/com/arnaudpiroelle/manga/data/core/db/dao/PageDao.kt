@@ -13,4 +13,7 @@ interface PageDao {
 
     @Query("SELECT * from pages WHERE chapterId = :chapterId")
     fun getPagesFor(chapterId: Long): Maybe<List<Page>>
+
+    @Insert
+    fun insertAll(pages: List<Page>)
 }

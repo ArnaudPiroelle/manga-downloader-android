@@ -10,7 +10,7 @@ Buy your manga;)
 
 
 ## Technical stack
-* Toothpick
+* Koin
 * OkHttp
 * RxJava2
 * Room
@@ -18,7 +18,18 @@ Buy your manga;)
 * PermissionDispatcher
 * Kotlin
 
+## TODO
+* Use LiveData
+* Use Coroutines
+* Use ViewModel
+* Use AutoBinding ?
+* Use Navigation Controller
+
 ## Change logs
+
+### 3.0.0
+- Toothpick is good, but not enough. I choose to use Koin for his kotlin DSL.
+
 ### 2.0.0
 - From scratch rewrite of the application with true MVP architecture
 - Migrate Dagger to Toothpick

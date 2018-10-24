@@ -9,7 +9,7 @@
         android:id="@+id/task_status"
         android:layout_width="8dp"
         android:layout_height="match_parent"
-        android:background="@color/colorAccent" />
+        tools:background="@sample/tasks.json/data/color" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,14 +23,14 @@
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
             android:textSize="18sp"
-            tools:text="One Piece" />
+            tools:text="@sample/tasks.json/data/label" />
 
         <TextView
             android:id="@+id/task_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            tools:text="Récupération de la liste des chapitres" />
+            tools:text="@sample/tasks.json/data/desc" />
 
     </LinearLayout>
 </LinearLayout>

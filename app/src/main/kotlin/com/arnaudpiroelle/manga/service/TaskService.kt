@@ -2,50 +2,45 @@ package com.arnaudpiroelle.manga.service
 
 import android.app.job.JobParameters
 import android.app.job.JobService
-import com.arnaudpiroelle.manga.api.core.rx.plusAssign
-import com.arnaudpiroelle.manga.core.inject.inject
-import com.arnaudpiroelle.manga.data.TaskRepository
+import com.arnaudpiroelle.manga.data.core.db.dao.TaskDao
 import com.arnaudpiroelle.manga.data.model.Task
 import com.arnaudpiroelle.manga.service.task.DownloadChapterTaskExecution
 import com.arnaudpiroelle.manga.service.task.RetrieveChaptersTaskExecution
-import io.reactivex.Completable
-import io.reactivex.Flowable.fromIterable
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.koin.android.ext.android.inject
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
-class TaskService : JobService() {
+class TaskService : JobService(), CoroutineScope {
 
-    @Inject
-    lateinit var taskRepository: TaskRepository
+    private val taskDao: TaskDao by inject()
+    private val retrieveChaptersTaskExecution: RetrieveChaptersTaskExecution by inject()
+    private val downloadChapterTaskExecution: DownloadChapterTaskExecution by inject()
 
-    @Inject
-    lateinit var retrieveChaptersTaskExecution: RetrieveChaptersTaskExecution
+    private val job = Job()
 
-    @Inject
-    lateinit var downloadChapterTaskExecution: DownloadChapterTaskExecution
-
-    private val subscriptions = CompositeDisposable()
-
-    override fun onCreate() {
-        super.onCreate()
-
-        inject()
-    }
+    override val coroutineContext = job + Main
 
     override fun onStartJob(params: JobParameters?): Boolean {
         Timber.d("TaskService started")
 
-        subscriptions += taskRepository.findByStatus(Task.Status.NEW, Task.Status.IN_PROGRESS)
-                .throttleFirst(10, TimeUnit.SECONDS)
-                .subscribeOn(Schedulers.io())
-                .concatMapCompletable(this::process)
-                .subscribe {
-                    println("End of process")
-                    jobFinished(params, true)
+        launch {
+            withContext(IO) {
+                val tasks = taskDao.findByStatus(Task.Status.NEW, Task.Status.IN_PROGRESS)
+                tasks.forEach { task ->
+                    taskDao.update(task.copy(status = Task.Status.IN_PROGRESS))
+                    executeTask(task)
+                    taskDao.update(task.copy(status = Task.Status.SUCCESS))
                 }
+
+                Timber.d("End of process")
+                jobFinished(params, true)
+            }
+        }
 
         return true
     }
@@ -53,27 +48,15 @@ class TaskService : JobService() {
     override fun onStopJob(params: JobParameters?): Boolean {
         Timber.d("TaskService stopped")
 
-        subscriptions.clear()
+        job.cancel()
 
         return true
     }
 
-    private fun process(tasks: List<Task>): Completable {
-        return fromIterable(tasks)
-                .distinct()
-                .concatMapCompletable(this::processTask)
-    }
-
-    private fun processTask(task: Task): Completable {
-        return taskRepository.update(task.copy(status = Task.Status.IN_PROGRESS))
-                .andThen(executeTask(task))
-                .andThen(taskRepository.update(task.copy(status = Task.Status.SUCCESS)))
-    }
-
-    private fun executeTask(task: Task): Completable {
+    private suspend fun executeTask(task: Task) {
         return when (task.type) {
-            Task.Type.RETRIEVE_CHAPTERS -> retrieveChaptersTaskExecution.execute(task)
-            Task.Type.DOWNLOAD_CHAPTER -> downloadChapterTaskExecution.execute(task)
+            Task.Type.RETRIEVE_CHAPTERS -> retrieveChaptersTaskExecution(task)
+            Task.Type.DOWNLOAD_CHAPTER -> downloadChapterTaskExecution(task)
         }
     }
 

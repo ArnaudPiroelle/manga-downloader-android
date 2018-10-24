@@ -1,46 +1,34 @@
 package com.arnaudpiroelle.manga.ui.tasks
 
-import android.content.Context
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.arnaudpiroelle.manga.R
-import com.arnaudpiroelle.manga.core.utils.calculateDiff
+import com.arnaudpiroelle.manga.core.utils.inflate
 import com.arnaudpiroelle.manga.data.model.Task
 import kotlinx.android.synthetic.main.item_view_task.view.*
 
-class TasksAdapter(context: Context?) : RecyclerView.Adapter<TasksAdapter.TaskViewHolder>() {
-
-    private val datas = mutableListOf<Task>()
-    private val layoutInflater = LayoutInflater.from(context)
+class TasksAdapter : PagedListAdapter<Task, TasksAdapter.TaskViewHolder>(TaskDiff) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
-        val view = layoutInflater.inflate(R.layout.item_view_task, parent, false)
+        val view = parent.inflate(R.layout.item_view_task, false)
         return TaskViewHolder(view)
     }
 
-    override fun getItemCount(): Int {
-        return datas.size
-    }
-
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
-        holder.bind(datas[position])
-    }
-
-    fun update(tasks: List<Task>) {
-        val calculateDiff = calculateDiff(datas, tasks) { old, new ->
-            old.id == new.id
-        }
-
-        datas.clear()
-        datas.addAll(tasks)
-        calculateDiff.dispatchUpdatesTo(this)
+        holder.bind(getItem(position))
     }
 
     class TaskViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val context = itemView.context
-        fun bind(task: Task) {
+        fun bind(task: Task?) {
+
+            if (task == null) {
+                return
+            }
+
             itemView.task_name.text = task.label
             itemView.task_desc.text = when (task.type) {
                 Task.Type.RETRIEVE_CHAPTERS -> context.getString(R.string.task_retrieve_chapters)
@@ -57,3 +45,7 @@ class TasksAdapter(context: Context?) : RecyclerView.Adapter<TasksAdapter.TaskVi
     }
 }
 
+object TaskDiff : DiffUtil.ItemCallback<Task>() {
+    override fun areItemsTheSame(oldItem: Task, newItem: Task) = oldItem.id == newItem.id
+    override fun areContentsTheSame(oldItem: Task, newItem: Task) = oldItem == newItem
+}

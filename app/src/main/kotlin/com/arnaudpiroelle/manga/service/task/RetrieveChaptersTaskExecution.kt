@@ -2,61 +2,52 @@ package com.arnaudpiroelle.manga.service.task
 
 import com.arnaudpiroelle.manga.api.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.api.model.PostProcessType
-import com.arnaudpiroelle.manga.api.provider.MangaProvider
-import com.arnaudpiroelle.manga.data.ChapterRepository
-import com.arnaudpiroelle.manga.data.MangaRepository
-import com.arnaudpiroelle.manga.data.PageRepository
+import com.arnaudpiroelle.manga.data.core.db.dao.ChapterDao
+import com.arnaudpiroelle.manga.data.core.db.dao.MangaDao
+import com.arnaudpiroelle.manga.data.core.db.dao.PageDao
 import com.arnaudpiroelle.manga.data.model.Chapter
-import com.arnaudpiroelle.manga.data.model.Manga
 import com.arnaudpiroelle.manga.data.model.Page
 import com.arnaudpiroelle.manga.data.model.Task
-import io.reactivex.Completable
-import io.reactivex.Observable
-import javax.inject.Inject
-import javax.inject.Singleton
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 
-@Singleton
-class RetrieveChaptersTaskExecution @Inject constructor(
-        private val mangaRepository: MangaRepository,
-        private val chapterRepository: ChapterRepository,
-        private val pageRepository: PageRepository
+class RetrieveChaptersTaskExecution(
+        private val mangaDao: MangaDao,
+        private val chapterDao: ChapterDao,
+        private val pageDao: PageDao,
+        private val providerRegistry: ProviderRegistry
 ) : TaskExecution {
 
-    override fun execute(task: Task): Completable {
-        val mangaId = task.id
+    override suspend operator fun invoke(task: Task) {
+        return withContext(IO) {
+            val manga = mangaDao.getById(task.id)
+            val provider = providerRegistry.find(manga.provider)
 
-        return mangaRepository.getById(mangaId)
-                .flatMapCompletable(this::fetchChapters)
-    }
+            val chapters = provider.findChapters(manga.alias)
+            chapters.forEachIndexed { index, chapter ->
 
-    private fun fetchChapters(manga: Manga): Completable {
-        val provider = ProviderRegistry.find(manga.provider)
+                val newChapter = Chapter(name = chapter.name, number = chapter.chapterNumber, mangaId = manga.id, status = Chapter.Status.WANTED)
+                val chapterId = chapterDao.insert(newChapter)
 
-        return provider.findChapters(manga.alias)
-                .flatMapObservable { Observable.fromIterable(it) }
-                .map { Chapter(name = it.name, number = it.chapterNumber, mangaId = manga.id, status = Chapter.Status.WANTED) }
-                .flatMapCompletable { addChapter(provider, manga, it) }
-    }
+                val pages = provider.findPages(manga.alias, newChapter.number)
+                        .map {
+                            val postProcess = when (it.postProcess) {
+                                PostProcessType.NONE -> Page.PostProcess.NONE
+                                PostProcessType.MOSAIC -> Page.PostProcess.MOSAIC
+                            }
+                            Page(chapterId = chapterId, url = it.url, postProcess = postProcess)
+                        }
 
-    private fun addChapter(provider: MangaProvider, manga: Manga, chapter: Chapter): Completable {
-        return chapterRepository.insert(chapter)
-                .flatMapCompletable { chapterId ->
-                    fetchPages(provider, manga, chapter.copy(id = chapterId))
+                pageDao.insertAll(pages)
+                if (index == 0) {
+                    val thumbnail = pages.first().url
+                    mangaDao.update(manga.copy(thumbnail = thumbnail))
                 }
-    }
+            }
 
-    private fun fetchPages(provider: MangaProvider, manga: Manga, chapter: Chapter): Completable {
-        return provider.findPages(manga.alias, chapter.number)
-                .flatMapObservable { Observable.fromIterable(it) }
-                .map {
-                    val postProcess = when (it.postProcess) {
-                        PostProcessType.NONE -> Page.PostProcess.NONE
-                        PostProcessType.MOSAIC -> Page.PostProcess.MOSAIC
-                    }
-                    Page(chapterId = chapter.id, url = it.url, postProcess = postProcess)
-                }
-                .flatMapCompletable { pageRepository.insert(it).ignoreElement() }
 
+            Unit
+        }
     }
 
 }

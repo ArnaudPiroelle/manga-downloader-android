@@ -1,42 +1,27 @@
 package com.arnaudpiroelle.manga.ui.manga.list
 
-import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
+import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.arnaudpiroelle.manga.R
-import com.arnaudpiroelle.manga.core.inject.inject
-import com.arnaudpiroelle.manga.data.ChapterRepository
-import com.arnaudpiroelle.manga.data.MangaRepository
-import com.arnaudpiroelle.manga.data.PageRepository
 import com.arnaudpiroelle.manga.data.model.Manga
-import com.arnaudpiroelle.manga.data.model.MangaWithCover
-import com.arnaudpiroelle.manga.ui.manga.add.AddMangaActivity
-import com.arnaudpiroelle.manga.ui.manga.details.MangaDetailsActivity
+import com.arnaudpiroelle.manga.ui.home.setActionBar
+import com.arnaudpiroelle.manga.ui.manga.list.MangaListingFragmentDirections.actionShowDetails
 import kotlinx.android.synthetic.main.fragment_listing_manga.*
-import javax.inject.Inject
+import kotlinx.android.synthetic.main.include_bottombar.*
+import kotlinx.android.synthetic.main.include_title.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class MangaListingFragment : Fragment(), MangaListingContract.View {
-
-    @Inject
-    lateinit var mangaRepository: MangaRepository
-    @Inject
-    lateinit var chapterRepository: ChapterRepository
-    @Inject
-    lateinit var pageRepository: PageRepository
-
-    private val userActionsListener: MangaListingContract.UserActionsListener  by lazy { MangaListingPresenter(this, mangaRepository, chapterRepository, pageRepository) }
-    private val adapter by lazy { MangaListingAdapter(activity, userActionsListener) }
+class MangaListingFragment : Fragment(), MangaListingAdapter.Callback {
+    private val navController by lazy { findNavController() }
+    private val viewModel: MangaListingViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        inject()
 
         setHasOptionsMenu(true)
     }
@@ -48,65 +33,50 @@ class MangaListingFragment : Fragment(), MangaListingContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        title.setText(R.string.title_mymangas)
+        setActionBar(bar)
+
+        val adapter = MangaListingAdapter(this)
         list_manga.layoutManager = GridLayoutManager(activity, 3)
         list_manga.adapter = adapter
 
-        toolbar.setTitle(R.string.title_mymangas)
-        toolbar.inflateMenu(R.menu.menu_manga_listing)
-        toolbar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.action_download -> {
-                    //updateScheduling(requireContext(), preferencesHelper)
-                    true
-                }
-                else -> false
-            }
+        add_manga.setOnClickListener {
+            navController.navigate(R.id.action_add_manga)
         }
 
-        action_add_manga.setOnClickListener { userActionsListener.addManga() }
+        viewModel.mangas.observe(this, Observer { mangas ->
+            adapter.submitList(mangas)
+        })
 
     }
 
     override fun onResume() {
         super.onResume()
 
-        userActionsListener.register()
+        add_manga.show()
     }
 
     override fun onPause() {
-        userActionsListener.unregister()
+        add_manga.hide()
 
         super.onPause()
     }
 
-    override fun displayMangas(mangas: List<MangaWithCover>) {
-        adapter.update(mangas)
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.menu_manga_listing, menu)
     }
 
-    override fun openNewMangaWizard() {
-        startActivity(Intent(activity, AddMangaActivity::class.java))
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            R.id.action_download -> {
+                true
+            }
+            else -> false
+        }
     }
 
-    override fun displayModificationDialog(manga: Manga) {
-        /*val modifyMangaDialogFragment = ModifyMangaDialogFragment.newInstance(manga.provider, manga.name, manga.mangaAlias, manga.lastChapter)
-        modifyMangaDialogFragment.show(childFragmentManager, null)*/
+    override fun onMangaSelected(manga: Manga) {
+        findNavController().navigate(actionShowDetails(manga.id))
     }
 
-    override fun displayRemoveConfirmation(manga: Manga) {
-        AlertDialog.Builder(requireContext())
-                .setTitle("Remove ${manga.name} ?")
-                .setMessage("Do you really want to remove this manga?")
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .setPositiveButton(android.R.string.yes) { _, _ ->
-                    userActionsListener.remove(manga)
-                }
-                .setNegativeButton(android.R.string.no, null)
-                .show()
-
-
-    }
-
-    override fun showMangaDetails() {
-        startActivity(Intent(activity, MangaDetailsActivity::class.java))
-    }
 }

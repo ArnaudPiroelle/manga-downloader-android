@@ -7,12 +7,13 @@ import android.app.job.JobScheduler
 import android.content.ComponentName
 import android.content.Context
 import com.arnaudpiroelle.manga.api.Mangas
-import com.arnaudpiroelle.manga.core.inject.inject
+import com.arnaudpiroelle.manga.core.inject.applicationModule
+import com.arnaudpiroelle.manga.core.inject.databaseModule
+import com.arnaudpiroelle.manga.core.inject.viewModels
 import com.arnaudpiroelle.manga.provider.japscan.JapScan
 import com.arnaudpiroelle.manga.service.TaskService
-import com.crashlytics.android.Crashlytics
 import com.facebook.stetho.Stetho
-import io.fabric.sdk.android.Fabric
+import org.koin.android.ext.android.startKoin
 import timber.log.Timber
 
 class MangaApplication : Application() {
@@ -23,13 +24,11 @@ class MangaApplication : Application() {
         if (BuildConfig.DEBUG) {
             Stetho.initializeWithDefaults(this)
             Timber.plant(Timber.DebugTree())
-        } else {
-            Fabric.with(this, Crashlytics())
         }
 
         Mangas.with(this, JapScan())
 
-        inject()
+        startKoin(this, listOf(applicationModule, databaseModule, viewModels))
 
         scheduleTaskService()
 
