@@ -85,6 +85,15 @@ jobs:
     - store_artifacts:
         path: ~/junit
 
+  deploy_to_deploygate:
+    <<: *config_android
+    steps:
+    - checkout
+    - <<: *restore_cache
+    - <<: *attach_workspace
+    - run:
+        name: Deploy to DeployGate
+        command: curl -F "file=@app/build/outputs/apk/debug/app-debug.apk" -F "token=$DEPLOYGATE_API_KEY" https://deploygate.com/api/users/ArnaudPiroelle/apps
 
 workflows:
   version: 2
@@ -95,4 +104,8 @@ workflows:
     - check:
         requires:
         - build_debug
+        <<: *workflow_filter_only_develop
+    - deploy_to_deploygate:
+        requires:
+        - check
         <<: *workflow_filter_only_develop
