@@ -17,12 +17,6 @@ android {
         versionName "3.0.0"
 
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
-
-        buildConfigField 'String', 'JAPSCAN_BASE_URL', '"http://www.japscan.cc"'
-        buildConfigField 'String', 'JAPSCAN_CDN_BASE_URL', '"http://ccc.blue15cdn.net/"'
-
-        buildConfigField 'String', 'MANGAPANDA_BASE_URL', '"http://www.mangapanda.com"'
-        buildConfigField 'String', 'MANGAPANDA_CDN_BASE_URL', '"http://i10.mangacdn.com"'
     }
 
     packagingOptions {
@@ -55,8 +49,6 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-
-            ext.betaDistributionGroupAliases = "release"
 
             signingConfig signingConfigs.release
         }
@@ -128,8 +120,6 @@ dependencies {
 
     implementation "org.koin:koin-androidx-scope:1.0.1"
     implementation "org.koin:koin-androidx-viewmodel:1.0.1"
-
-
 }
 
 String propOrDef(String propertyName, String defaultValue) {
