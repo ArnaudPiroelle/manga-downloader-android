@@ -1,12 +1,9 @@
 package com.arnaudpiroelle.manga.ui.manga.add
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.arnaudpiroelle.manga.api.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.api.model.Manga
-import com.arnaudpiroelle.manga.core.utils.combineLatest
-import com.arnaudpiroelle.manga.core.utils.map
+import com.arnaudpiroelle.manga.core.utils.createDefaultLiveData
 import com.arnaudpiroelle.manga.data.core.db.dao.MangaDao
 import com.arnaudpiroelle.manga.data.core.db.dao.TaskDao
 import com.arnaudpiroelle.manga.data.model.Task
@@ -19,44 +16,23 @@ class AddMangaViewModel(
         private val mangaDao: MangaDao) : ViewModel(), CoroutineScope {
 
     private val job = Job()
-
     override val coroutineContext = job + Dispatchers.Main
 
-    private val filter = MutableLiveData<String>().apply { value = "" }
-    private val providers = MutableLiveData<List<ProviderSpinnerAdapter.Provider>>()
-    private val mangas = MutableLiveData<List<Manga>>()
-    val wizardStatus = MutableLiveData<WizardStatus>()
-
-    enum class WizardStatus {
-        STARTED,
-        FINISHED
-    }
+    val state = createDefaultLiveData(State())
 
     fun loadProviders() {
-        providers.value = providerRegistry.list()
-                .map { ProviderSpinnerAdapter.Provider(it.key, it.value) }
+        val providers = providerRegistry.list().map { ProviderSpinnerAdapter.Provider(it.key, it.value) }
+        state.value = state.value?.copy(isLoading = true, providers = providers)
     }
 
     fun selectProvider(provider: ProviderSpinnerAdapter.Provider) {
-
         launch {
             val items = withContext(IO) {
                 provider.mangaProvider.findMangas()
             }
 
-            mangas.value = items
+            state.value = state.value?.copy(isLoading = false, results = items)
         }
-    }
-
-    fun getProviders(): LiveData<List<ProviderSpinnerAdapter.Provider>> {
-        return providers
-    }
-
-    fun getMangas(): LiveData<List<Manga>> {
-        return filter.combineLatest(mangas)
-                .map { result ->
-                    result.second.filter { it.name.toLowerCase().contains(result.first) }
-                }
     }
 
     override fun onCleared() {
@@ -69,11 +45,27 @@ class AddMangaViewModel(
                 val mangaId = mangaDao.insert(com.arnaudpiroelle.manga.data.model.Manga(name = manga.name, alias = manga.alias, provider = manga.provider))
                 taskDao.insert(Task(type = Task.Type.RETRIEVE_CHAPTERS, label = manga.name, item = mangaId))
             }
-            wizardStatus.value = WizardStatus.FINISHED
+
+            state.value = state.value?.copy(status = WizardStatus.FINISHED)
         }
     }
 
-    fun filter(name: String) {
-        filter.value = name
+    fun filter(query: String) {
+        state.value = state.value?.copy(filter = query)
+    }
+
+    enum class WizardStatus {
+        STARTED,
+        FINISHED
+    }
+
+    data class State(
+            val isLoading: Boolean = false,
+            val status: WizardStatus = WizardStatus.STARTED,
+            val providers: List<ProviderSpinnerAdapter.Provider> = listOf(),
+            val results: List<Manga> = listOf(),
+            val filter: String = ""
+    ) {
+        fun getFilteredResults() = results.filter { it.name.toLowerCase().contains(filter) }
     }
 }

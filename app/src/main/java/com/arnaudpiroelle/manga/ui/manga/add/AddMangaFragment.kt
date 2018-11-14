@@ -8,12 +8,16 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.api.model.Manga
+import com.arnaudpiroelle.manga.core.utils.bind
+import com.arnaudpiroelle.manga.core.utils.distinctUntilChanged
+import com.arnaudpiroelle.manga.core.utils.map
+import com.arnaudpiroelle.manga.ui.manga.add.AddMangaViewModel.WizardStatus.FINISHED
+import com.arnaudpiroelle.manga.ui.manga.add.ProviderSpinnerAdapter.Provider
 import kotlinx.android.synthetic.main.fragment_add_manga.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -52,7 +56,7 @@ class AddMangaFragment : Fragment(), SearchView.OnQueryTextListener, ProviderMan
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
-        toolbar.setNavigationOnClickListener { activity?.onNavigateUp() }
+
         toolbar.inflateMenu(R.menu.menu_provider_mangas)
 
         val menu = toolbar.menu
@@ -70,18 +74,14 @@ class AddMangaFragment : Fragment(), SearchView.OnQueryTextListener, ProviderMan
             requestFocus()
         }
 
-        viewModel.getMangas().observe(this, Observer {
-            list_provider_mangas.scrollToPosition(0)
-            mangaAdapter.submitList(it)
-        })
+        toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
 
-        viewModel.getProviders().observe(this, Observer {
-            providerAdapter.update(it)
-        })
-
-        viewModel.wizardStatus.observe(this, Observer {
-            Navigation.findNavController(view).navigateUp()
-        })
+        viewModel.state.map { it.isLoading }.distinctUntilChanged().bind(this, this::onLoadingChanged)
+        viewModel.state.map { it.status }.distinctUntilChanged().bind(this, this::onStatusChanged)
+        viewModel.state.map { it.providers }.distinctUntilChanged().bind(this, this::onProvidersChanged)
+        viewModel.state.map { it.getFilteredResults() }.distinctUntilChanged().bind(this, this::onResultsChanged)
 
         viewModel.loadProviders()
     }
@@ -99,4 +99,24 @@ class AddMangaFragment : Fragment(), SearchView.OnQueryTextListener, ProviderMan
         viewModel.selectManga(manga)
     }
 
+    private fun onLoadingChanged(isLoading: Boolean) {
+
+    }
+
+    private fun onProvidersChanged(providers: List<Provider>) {
+        providerAdapter.update(providers)
+    }
+
+    private fun onResultsChanged(results: List<Manga>) {
+        list_provider_mangas.scrollToPosition(0)
+        mangaAdapter.submitList(results)
+    }
+
+    private fun onStatusChanged(status: AddMangaViewModel.WizardStatus) {
+        when (status) {
+            FINISHED -> findNavController().navigateUp()
+            else -> {
+            }
+        }
+    }
 }
