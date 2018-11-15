@@ -4,6 +4,8 @@ import android.app.SearchManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.AdapterView
 import androidx.appcompat.widget.SearchView
@@ -64,11 +66,6 @@ class AddMangaFragment : Fragment(), SearchView.OnQueryTextListener, ProviderMan
         searchView?.apply {
             setSearchableInfo(searchManager.getSearchableInfo(activity?.componentName))
             queryHint = resources.getString(R.string.search_title)
-            setOnCloseListener {
-                searchView.onActionViewCollapsed()
-                false
-            }
-            setOnSearchClickListener {}
             isIconified = true
             setOnQueryTextListener(this@AddMangaFragment)
             requestFocus()
@@ -100,7 +97,8 @@ class AddMangaFragment : Fragment(), SearchView.OnQueryTextListener, ProviderMan
     }
 
     private fun onLoadingChanged(isLoading: Boolean) {
-
+        list_provider_mangas.visibility = if (isLoading) GONE else VISIBLE
+        loading.visibility = if (isLoading) VISIBLE else GONE
     }
 
     private fun onProvidersChanged(providers: List<Provider>) {
