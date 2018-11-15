@@ -1,71 +1,71 @@
 package com.arnaudpiroelle.manga.ui.manga.add
 
-import androidx.lifecycle.ViewModel
+import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.api.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.api.model.Manga
-import com.arnaudpiroelle.manga.core.utils.createDefaultLiveData
 import com.arnaudpiroelle.manga.data.core.db.dao.MangaDao
 import com.arnaudpiroelle.manga.data.core.db.dao.TaskDao
 import com.arnaudpiroelle.manga.data.model.Task
+import com.arnaudpiroelle.manga.ui.core.BaseViewModel
+import com.arnaudpiroelle.manga.ui.manga.add.ProviderSpinnerAdapter.Provider
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 
 class AddMangaViewModel(
         private val providerRegistry: ProviderRegistry,
         private val taskDao: TaskDao,
-        private val mangaDao: MangaDao) : ViewModel(), CoroutineScope {
+        private val mangaDao: MangaDao) : BaseViewModel<AddMangaAction, AddMangaState>(AddMangaState()), CoroutineScope {
 
     private val job = Job()
     override val coroutineContext = job + Dispatchers.Main
 
-    val state = createDefaultLiveData(State())
+    private fun loadProviders() {
+        launch {
+            val providers = providerRegistry.list().map { Provider(it.key, it.value) }
 
-    fun loadProviders() {
-        val providers = providerRegistry.list().map { ProviderSpinnerAdapter.Provider(it.key, it.value) }
-        state.value = state.value?.copy(isLoading = true, providers = providers)
+            updateState { state -> state.copy(providers = providers) }
+        }
     }
 
-    fun selectProvider(provider: ProviderSpinnerAdapter.Provider) {
+    private fun selectProvider(provider: Provider) {
         launch {
-            val items = withContext(IO) {
-                provider.mangaProvider.findMangas()
-            }
+            updateState { state -> state.copy(isLoading = true, error = null) }
 
-            state.value = state.value?.copy(isLoading = false, results = items)
+            try {
+                val items = withContext(IO) {
+                    provider.mangaProvider.findMangas()
+                }
+                updateState { state -> state.copy(isLoading = false, results = items) }
+            } catch (e: Exception) {
+                updateState { state -> state.copy(isLoading = false, error = ActionError(R.string.error_occured, SelectProvider(provider))) }
+            }
         }
+    }
+
+    private fun selectManga(manga: Manga) {
+        launch {
+            withContext(IO) {
+                val mangaId = mangaDao.insert(com.arnaudpiroelle.manga.data.model.Manga(name = manga.name, alias = manga.alias, provider = manga.provider))
+                taskDao.insert(Task(type = Task.Type.RETRIEVE_CHAPTERS, label = manga.name, item = mangaId))
+            }
+            updateState { state -> state.copy(status = WizardStatus.FINISHED) }
+        }
+    }
+
+    private fun filter(query: String) {
+        updateState { state -> state.copy(filter = query) }
     }
 
     override fun onCleared() {
         job.cancel()
     }
 
-    fun selectManga(manga: Manga) {
-        launch {
-            withContext(IO) {
-                val mangaId = mangaDao.insert(com.arnaudpiroelle.manga.data.model.Manga(name = manga.name, alias = manga.alias, provider = manga.provider))
-                taskDao.insert(Task(type = Task.Type.RETRIEVE_CHAPTERS, label = manga.name, item = mangaId))
-            }
-
-            state.value = state.value?.copy(status = WizardStatus.FINISHED)
+    override fun handle(action: AddMangaAction) {
+        when (action) {
+            is LoadProviders -> loadProviders()
+            is SelectProvider -> selectProvider(action.provider)
+            is Filter -> filter(action.query)
+            is SelectManga -> selectManga(action.manga)
         }
-    }
-
-    fun filter(query: String) {
-        state.value = state.value?.copy(filter = query)
-    }
-
-    enum class WizardStatus {
-        STARTED,
-        FINISHED
-    }
-
-    data class State(
-            val isLoading: Boolean = false,
-            val status: WizardStatus = WizardStatus.STARTED,
-            val providers: List<ProviderSpinnerAdapter.Provider> = listOf(),
-            val results: List<Manga> = listOf(),
-            val filter: String = ""
-    ) {
-        fun getFilteredResults() = results.filter { it.name.toLowerCase().contains(filter) }
     }
 }

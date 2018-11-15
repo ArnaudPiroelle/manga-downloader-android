@@ -18,8 +18,9 @@ import com.arnaudpiroelle.manga.api.model.Manga
 import com.arnaudpiroelle.manga.core.utils.bind
 import com.arnaudpiroelle.manga.core.utils.distinctUntilChanged
 import com.arnaudpiroelle.manga.core.utils.map
-import com.arnaudpiroelle.manga.ui.manga.add.AddMangaViewModel.WizardStatus.FINISHED
 import com.arnaudpiroelle.manga.ui.manga.add.ProviderSpinnerAdapter.Provider
+import com.arnaudpiroelle.manga.ui.manga.add.WizardStatus.FINISHED
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_add_manga.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -32,6 +33,8 @@ class AddMangaFragment : Fragment(), SearchView.OnQueryTextListener, ProviderMan
     private val providerAdapter by lazy { ProviderSpinnerAdapter() }
 
     private val mangaAdapter by lazy { ProviderMangaAdapter(this) }
+    private val errorSnackbar by lazy { Snackbar.make(list_provider_mangas, R.string.error_occured, Snackbar.LENGTH_INDEFINITE) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -53,7 +56,7 @@ class AddMangaFragment : Fragment(), SearchView.OnQueryTextListener, ProviderMan
         provider_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val provider = providerAdapter.getItem(position)
-                viewModel.selectProvider(provider)
+                viewModel.handle(SelectProvider(provider))
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -75,12 +78,13 @@ class AddMangaFragment : Fragment(), SearchView.OnQueryTextListener, ProviderMan
             findNavController().navigateUp()
         }
 
-        viewModel.state.map { it.isLoading }.distinctUntilChanged().bind(this, this::onLoadingChanged)
+        viewModel.state.map { it.isLoading }.distinctUntilChanged().bind(this, this::onIsLoadingChanged)
+        viewModel.state.map { it.error }.distinctUntilChanged().bind(this, this::onHasErrorChanged)
         viewModel.state.map { it.status }.distinctUntilChanged().bind(this, this::onStatusChanged)
         viewModel.state.map { it.providers }.distinctUntilChanged().bind(this, this::onProvidersChanged)
         viewModel.state.map { it.getFilteredResults() }.distinctUntilChanged().bind(this, this::onResultsChanged)
 
-        viewModel.loadProviders()
+        viewModel.handle(LoadProviders)
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
@@ -88,17 +92,30 @@ class AddMangaFragment : Fragment(), SearchView.OnQueryTextListener, ProviderMan
     }
 
     override fun onQueryTextChange(name: String): Boolean {
-        viewModel.filter(name)
+        viewModel.handle(Filter(name))
         return true
     }
 
     override fun onMangaSelected(manga: Manga) {
-        viewModel.selectManga(manga)
+        viewModel.handle(SelectManga(manga))
     }
 
-    private fun onLoadingChanged(isLoading: Boolean) {
+    private fun onIsLoadingChanged(isLoading: Boolean) {
         list_provider_mangas.visibility = if (isLoading) GONE else VISIBLE
         loading.visibility = if (isLoading) VISIBLE else GONE
+    }
+
+    private fun onHasErrorChanged(error: ActionError?) {
+        if (error != null) {
+            if (error.retry != null) {
+                errorSnackbar.setAction(R.string.retry) { viewModel.handle(error.retry) }
+            }
+            errorSnackbar.show()
+        } else {
+            if (errorSnackbar.isShown) {
+                errorSnackbar.dismiss()
+            }
+        }
     }
 
     private fun onProvidersChanged(providers: List<Provider>) {
@@ -110,7 +127,7 @@ class AddMangaFragment : Fragment(), SearchView.OnQueryTextListener, ProviderMan
         mangaAdapter.submitList(results)
     }
 
-    private fun onStatusChanged(status: AddMangaViewModel.WizardStatus) {
+    private fun onStatusChanged(status: WizardStatus) {
         when (status) {
             FINISHED -> findNavController().navigateUp()
             else -> {
