@@ -97,7 +97,7 @@ class AddMangaFragment : Fragment(), SearchView.OnQueryTextListener, ProviderMan
     }
 
     override fun onMangaSelected(manga: Manga) {
-        viewModel.handle(SelectManga(manga))
+        viewModel.handle(AddNewManga(manga))
     }
 
     private fun onIsLoadingChanged(isLoading: Boolean) {

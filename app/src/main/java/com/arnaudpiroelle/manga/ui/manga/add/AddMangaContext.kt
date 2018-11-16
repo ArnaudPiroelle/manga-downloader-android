@@ -10,7 +10,7 @@ sealed class AddMangaAction : Action
 object LoadProviders : AddMangaAction()
 data class SelectProvider(val provider: ProviderSpinnerAdapter.Provider) : AddMangaAction()
 data class Filter(val query: String) : AddMangaAction()
-data class SelectManga(val manga: Manga) : AddMangaAction()
+data class AddNewManga(val manga: Manga) : AddMangaAction()
 
 data class ActionError(@StringRes val message: Int, val retry: AddMangaAction? = null)
 

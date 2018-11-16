@@ -1,4 +1,4 @@
-package com.arnaudpiroelle.manga.core.widget
+package com.arnaudpiroelle.manga.core.utils
 
 import android.text.TextUtils
 import androidx.appcompat.graphics.drawable.DrawerArrowDrawable

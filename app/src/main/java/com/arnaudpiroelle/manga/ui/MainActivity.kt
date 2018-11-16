@@ -1,4 +1,4 @@
-package com.arnaudpiroelle.manga.ui.home
+package com.arnaudpiroelle.manga.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

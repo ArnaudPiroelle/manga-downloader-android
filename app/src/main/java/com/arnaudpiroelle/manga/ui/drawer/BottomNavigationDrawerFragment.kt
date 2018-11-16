@@ -1,4 +1,4 @@
-package com.arnaudpiroelle.manga.ui.home
+package com.arnaudpiroelle.manga.ui.drawer
 
 import android.app.Dialog
 import android.os.Bundle

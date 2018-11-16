@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.arnaudpiroelle.manga.R
-import com.arnaudpiroelle.manga.ui.home.setActionBar
+import com.arnaudpiroelle.manga.core.utils.setActionBar
 import kotlinx.android.synthetic.main.fragment_tasks.*
 import kotlinx.android.synthetic.main.include_bottombar.*
 import kotlinx.android.synthetic.main.include_title.*

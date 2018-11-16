@@ -65,7 +65,7 @@ class AddMangaViewModel(
             is LoadProviders -> loadProviders()
             is SelectProvider -> selectProvider(action.provider)
             is Filter -> filter(action.query)
-            is SelectManga -> selectManga(action.manga)
+            is AddNewManga -> selectManga(action.manga)
         }
     }
 }

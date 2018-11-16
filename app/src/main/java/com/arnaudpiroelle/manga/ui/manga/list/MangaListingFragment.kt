@@ -3,13 +3,17 @@ package com.arnaudpiroelle.manga.ui.manga.list
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import com.arnaudpiroelle.manga.R
+import com.arnaudpiroelle.manga.core.utils.bind
+import com.arnaudpiroelle.manga.core.utils.distinctUntilChanged
+import com.arnaudpiroelle.manga.core.utils.map
+import com.arnaudpiroelle.manga.core.utils.setActionBar
 import com.arnaudpiroelle.manga.data.model.Manga
-import com.arnaudpiroelle.manga.ui.home.setActionBar
 import com.arnaudpiroelle.manga.ui.manga.list.MangaListingFragmentDirections.actionShowDetails
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_listing_manga.*
 import kotlinx.android.synthetic.main.include_bottombar.*
 import kotlinx.android.synthetic.main.include_title.*
@@ -19,6 +23,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class MangaListingFragment : Fragment(), MangaListingAdapter.Callback {
     private val navController by lazy { findNavController() }
     private val viewModel: MangaListingViewModel by viewModel()
+
+    private val adapter by lazy { MangaListingAdapter(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +42,6 @@ class MangaListingFragment : Fragment(), MangaListingAdapter.Callback {
         title.setText(R.string.title_mymangas)
         setActionBar(bar)
 
-        val adapter = MangaListingAdapter(this)
         list_manga.layoutManager = GridLayoutManager(activity, 3)
         list_manga.adapter = adapter
 
@@ -44,10 +49,8 @@ class MangaListingFragment : Fragment(), MangaListingAdapter.Callback {
             navController.navigate(R.id.action_add_manga)
         }
 
-        viewModel.mangas.observe(this, Observer { mangas ->
-            adapter.submitList(mangas)
-        })
-
+        viewModel.mangas.bind(this, this::onMangasChanged)
+        viewModel.state.map { it.notificationResId }.distinctUntilChanged().bind(this, this::onNotificationChanged)
     }
 
     override fun onResume() {
@@ -69,6 +72,7 @@ class MangaListingFragment : Fragment(), MangaListingAdapter.Callback {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             R.id.action_download -> {
+                viewModel.handle(StartSync)
                 true
             }
             else -> false
@@ -77,6 +81,19 @@ class MangaListingFragment : Fragment(), MangaListingAdapter.Callback {
 
     override fun onMangaSelected(manga: Manga) {
         findNavController().navigate(actionShowDetails(manga.id))
+    }
+
+    private fun onMangasChanged(mangas: PagedList<Manga>) {
+        adapter.submitList(mangas)
+    }
+
+    private fun onNotificationChanged(notificationResId: Int?) {
+        if (notificationResId != null) {
+            Snackbar.make(list_manga, notificationResId, Snackbar.LENGTH_SHORT)
+                    .show()
+
+            viewModel.handle(DismissNotification)
+        }
     }
 
 }

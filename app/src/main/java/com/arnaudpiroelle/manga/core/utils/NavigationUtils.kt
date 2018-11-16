@@ -1,7 +1,8 @@
-package com.arnaudpiroelle.manga.ui.home
+package com.arnaudpiroelle.manga.core.utils
 
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import com.arnaudpiroelle.manga.ui.drawer.BottomNavigationDrawerFragment
 
 
 fun Fragment.setActionBar(bar: Toolbar) {
