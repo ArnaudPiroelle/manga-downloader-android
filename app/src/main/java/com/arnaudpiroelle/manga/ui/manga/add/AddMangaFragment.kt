@@ -102,6 +102,7 @@ class AddMangaFragment : Fragment(), SearchView.OnQueryTextListener, ProviderMan
 
     private fun onIsLoadingChanged(isLoading: Boolean) {
         list_provider_mangas.visibility = if (isLoading) GONE else VISIBLE
+        empty_view.visibility =  if (isLoading) GONE else VISIBLE
         loading.visibility = if (isLoading) VISIBLE else GONE
     }
 
@@ -123,8 +124,18 @@ class AddMangaFragment : Fragment(), SearchView.OnQueryTextListener, ProviderMan
     }
 
     private fun onResultsChanged(results: List<Manga>) {
-        list_provider_mangas.scrollToPosition(0)
+
+        if (results.isEmpty()) {
+            list_provider_mangas.visibility = GONE
+            empty_view.visibility = VISIBLE
+        } else {
+            list_provider_mangas.scrollToPosition(0)
+            list_provider_mangas.visibility = VISIBLE
+            empty_view.visibility = GONE
+        }
+
         mangaAdapter.submitList(results)
+
     }
 
     private fun onStatusChanged(status: WizardStatus) {
