@@ -21,9 +21,12 @@ import com.arnaudpiroelle.manga.core.utils.map
 import com.arnaudpiroelle.manga.ui.manga.add.ProviderSpinnerAdapter.Provider
 import com.arnaudpiroelle.manga.ui.manga.add.WizardStatus.FINISHED
 import com.google.android.material.snackbar.Snackbar
+import com.reddit.indicatorfastscroll.FastScrollItemIndicator
+import com.reddit.indicatorfastscroll.FastScrollerView
 import kotlinx.android.synthetic.main.fragment_add_manga.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.text.Normalizer
 
 
 class AddMangaFragment : Fragment(), SearchView.OnQueryTextListener, ProviderMangaAdapter.Callback {
@@ -50,7 +53,26 @@ class AddMangaFragment : Fragment(), SearchView.OnQueryTextListener, ProviderMan
 
         list_provider_mangas.layoutManager = LinearLayoutManager(context)
         list_provider_mangas.adapter = mangaAdapter
-        list_provider_mangas.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+
+        fastscroller.setupWithRecyclerView(list_provider_mangas, useDefaultScroller = false, getItemIndicator = { position ->
+            val item = mangaAdapter.getItemBy(position)
+            val firstLetter = Normalizer.normalize(item.name, Normalizer.Form.NFD)
+                    .substring(0, 1)
+                    .replace("\\p{InCombiningDiacriticalMarks}+", "")
+            val letter = if (Character.isLetter(firstLetter.first())) {
+                firstLetter.toUpperCase()
+            } else {
+                "#"
+            }
+            FastScrollItemIndicator.Text(letter)
+        })
+        fastscroller_thumb.setupWithFastScroller(fastscroller)
+        fastscroller.itemIndicatorSelectedCallbacks += object : FastScrollerView.ItemIndicatorSelectedCallback {
+            override fun onItemIndicatorSelected(indicator: FastScrollItemIndicator, indicatorCenterY: Int, itemPosition: Int) {
+                val layoutManager = list_provider_mangas.layoutManager as LinearLayoutManager
+                layoutManager.scrollToPositionWithOffset(itemPosition, 0)
+            }
+        }
 
         provider_spinner.adapter = providerAdapter
         provider_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -102,7 +124,7 @@ class AddMangaFragment : Fragment(), SearchView.OnQueryTextListener, ProviderMan
 
     private fun onIsLoadingChanged(isLoading: Boolean) {
         list_provider_mangas.visibility = if (isLoading) GONE else VISIBLE
-        empty_view.visibility =  if (isLoading) GONE else VISIBLE
+        empty_view.visibility = if (isLoading) GONE else VISIBLE
         loading.visibility = if (isLoading) VISIBLE else GONE
     }
 

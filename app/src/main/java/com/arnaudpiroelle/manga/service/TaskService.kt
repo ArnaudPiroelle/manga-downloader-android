@@ -33,13 +33,17 @@ class TaskService : JobService(), CoroutineScope {
                 val tasks = taskDao.findByStatus(Task.Status.NEW, Task.Status.IN_PROGRESS)
                 tasks.forEach { task ->
                     taskDao.update(task.copy(status = Task.Status.IN_PROGRESS))
-                    executeTask(task)
-                    taskDao.update(task.copy(status = Task.Status.SUCCESS))
+                    try {
+                        executeTask(task)
+                        taskDao.update(task.copy(status = Task.Status.SUCCESS))
+                    } catch (e: Exception) {
+                        taskDao.update(task.copy(status = Task.Status.ERROR))
+                    }
                 }
-
-                Timber.d("End of process")
-                jobFinished(params, true)
             }
+
+            Timber.d("End of process")
+            jobFinished(params, true)
         }
 
         return true

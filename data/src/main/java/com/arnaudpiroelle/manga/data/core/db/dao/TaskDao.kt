@@ -20,4 +20,7 @@ interface TaskDao {
 
     @Query("SELECT * FROM tasks")
     fun observeAll(): DataSource.Factory<Int, Task>
+
+    @Query("SELECT * FROM tasks where type = :type and item = :item")
+    fun get(type: Task.Type, item: Long): Task?
 }

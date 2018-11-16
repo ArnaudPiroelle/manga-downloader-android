@@ -6,8 +6,6 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import com.arnaudpiroelle.manga.api.model.*
 import com.arnaudpiroelle.manga.api.provider.MangaProvider
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -51,6 +49,13 @@ class JapScanMangaProvider(val okHttpClient: OkHttpClient) : MangaProvider {
                 .url(pageUrl)
                 .build()
         return okHttpClient.newCall(request).execute()
+    }
+
+    override fun postProcess(postProcessType: PostProcessType, page: File) {
+        when (postProcessType) {
+            PostProcessType.MOSAIC -> MosaicPostProcess.execute(page)
+            else -> Unit
+        }
     }
 
     private fun parseMangas(response: Response): List<Manga> {

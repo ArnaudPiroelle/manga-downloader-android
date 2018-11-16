@@ -1,6 +1,5 @@
 package com.arnaudpiroelle.manga.data.core.db.dao
 
-import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.room.*
 import com.arnaudpiroelle.manga.data.model.Manga
@@ -8,8 +7,8 @@ import com.arnaudpiroelle.manga.data.model.Manga
 @Dao
 interface MangaDao {
 
-    @Query("SELECT * FROM mangas ORDER BY name")
-    fun findAll(): LiveData<List<Manga>>
+    @Query("SELECT * FROM mangas")
+    fun getAll(): List<Manga>
 
     @Query("SELECT * FROM mangas where provider = :provider")
     fun getMangaForProvider(provider: String): List<Manga>

@@ -1,12 +1,12 @@
 package com.arnaudpiroelle.manga.core.utils
 
 import android.os.Environment.getExternalStorageDirectory
-import com.arnaudpiroelle.manga.api.model.Chapter
-import com.arnaudpiroelle.manga.api.model.Page
+import com.arnaudpiroelle.manga.data.model.Chapter
 import com.arnaudpiroelle.manga.data.model.Manga
+import com.arnaudpiroelle.manga.data.model.Page
 import java.io.File
 
-open class FileHelper(val preferencesHelper: PreferencesHelper) {
+open class FileHelper(private val preferencesHelper: PreferencesHelper) {
 
     private fun getEbooksFolder(): File {
         val outputFolder = preferencesHelper.getOutputFolder()
@@ -23,7 +23,11 @@ open class FileHelper(val preferencesHelper: PreferencesHelper) {
     }
 
     fun getChapterFolder(manga: Manga, chapter: Chapter): File {
-        return File(getMangaFolder(manga), chapter.chapterNumber)
+        return File(getMangaFolder(manga), "${manga.name} - ${chapter.number}")
+    }
+
+    fun getChapterCBZFile(manga: Manga, chapter: Chapter): File {
+        return File(getMangaFolder(manga), "${manga.name} - ${chapter.number}")
     }
 
     fun getPageFile(manga: Manga, chapter: Chapter, page: Page, pagePosition: Int): File {

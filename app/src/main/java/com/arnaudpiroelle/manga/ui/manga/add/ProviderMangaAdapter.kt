@@ -19,6 +19,10 @@ class ProviderMangaAdapter(private val callback: Callback) : ListAdapter<Manga, 
         holder.bind(getItem(position))
     }
 
+    fun getItemBy(position: Int): Manga {
+        return super.getItem(position)
+    }
+
     interface Callback {
         fun onMangaSelected(manga: Manga)
     }

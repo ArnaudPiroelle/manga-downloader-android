@@ -17,6 +17,10 @@ data class Page(
         @ColumnInfo(name = "url") val url: String,
         @ColumnInfo(name = "postProcess") val postProcess: PostProcess) {
 
+    fun getExtension(): String {
+        return url.substringAfterLast(".", "jpg")
+    }
+
     enum class PostProcess {
         NONE,
         MOSAIC

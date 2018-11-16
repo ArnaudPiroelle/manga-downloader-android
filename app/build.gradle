@@ -114,6 +114,8 @@ dependencies {
 
     implementation "org.koin:koin-androidx-scope:1.0.1"
     implementation "org.koin:koin-androidx-viewmodel:1.0.1"
+
+    implementation 'com.reddit:indicator-fast-scroll:1.1.0-beta1'
 }
 
 String propOrDef(String propertyName, String defaultValue) {
