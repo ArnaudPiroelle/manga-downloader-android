@@ -2,11 +2,12 @@ package com.arnaudpiroelle.manga.ui.manga.list
 
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.data.core.db.dao.MangaDao
 import com.arnaudpiroelle.manga.ui.core.BaseViewModel
-import com.arnaudpiroelle.manga.R
+import com.arnaudpiroelle.manga.worker.TaskManager
 
-class MangaListingViewModel(private val mangaDao: MangaDao) : BaseViewModel<MangaListingAction, MangaListingState>(MangaListingState()) {
+class MangaListingViewModel(private val mangaDao: MangaDao, private val taskManager: TaskManager) : BaseViewModel<MangaListingAction, MangaListingState>(MangaListingState()) {
     val mangas = LivePagedListBuilder(mangaDao.observeAll(), PagedList.Config.Builder()
             .setPageSize(10)
             .setEnablePlaceholders(true)
@@ -17,14 +18,13 @@ class MangaListingViewModel(private val mangaDao: MangaDao) : BaseViewModel<Mang
 
     override fun handle(action: MangaListingAction) {
         when (action) {
-            StartSync -> startSyncJob()
-            DismissNotification -> dismissNotifications()
+            StartSyncAction -> startSyncJob()
+            DismissNotificationAction -> dismissNotifications()
         }
     }
 
     private fun startSyncJob() {
-        //TODO: Start job scheduler
-
+        taskManager.scheduleManualCheckNewChapters()
         updateState { state -> state.copy(notificationResId = R.string.notify_sync_started) }
     }
 

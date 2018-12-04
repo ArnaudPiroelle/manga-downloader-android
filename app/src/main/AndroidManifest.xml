@@ -30,18 +30,6 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".service.DownloadService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-
-        <service
-            android:name=".service.TaskService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-
-        <service
-            android:name=".service.CheckerService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-
     </application>
 
 </manifest>

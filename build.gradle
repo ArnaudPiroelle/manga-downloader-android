@@ -1,7 +1,7 @@
 buildscript {
 
     ext.versions = [
-            'android_gradle' : '3.3.0-beta04',
+            'android_gradle' : '3.3.0-rc01',
             'androidx'       : [
                 'appcompat'        : '1.0.0',
                 'preference'       : '1.0.0',
@@ -17,7 +17,7 @@ buildscript {
                 'room'             : '2.0.0',
                 'test_runner'      : '1.1.0-alpha4',
                 'test_rules'       : '1.1.0-alpha4',
-                'work'             : '1.0.0-alpha08',
+                'worker'           : '1.0.0-alpha11',
                 'navigation'       : '1.0.0-alpha07'
             ],
             'epoxy'          : '3.0.0-rc1',

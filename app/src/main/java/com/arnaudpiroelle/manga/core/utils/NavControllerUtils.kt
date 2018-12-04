@@ -32,7 +32,6 @@ class ToolbarOnNavigatedListener(toolbar: Toolbar) : NavController.OnNavigatedLi
         val isRootDestination = when (destination.id) {
             R.id.navigation_mangas,
             R.id.navigation_history,
-            R.id.navigation_tasks,
             R.id.navigation_settings -> true
             else -> false
         }

@@ -7,10 +7,10 @@ import com.arnaudpiroelle.manga.ui.core.State
 
 sealed class AddMangaAction : Action
 
-object LoadProviders : AddMangaAction()
-data class SelectProvider(val provider: ProviderSpinnerAdapter.Provider) : AddMangaAction()
-data class Filter(val query: String) : AddMangaAction()
-data class AddNewManga(val manga: Manga) : AddMangaAction()
+object LoadProvidersAction : AddMangaAction()
+data class SelectProviderAction(val provider: ProviderSpinnerAdapter.Provider) : AddMangaAction()
+data class FilterResultsAction(val query: String) : AddMangaAction()
+data class AddNewMangaAction(val manga: Manga) : AddMangaAction()
 
 data class ActionError(@StringRes val message: Int, val retry: AddMangaAction? = null)
 

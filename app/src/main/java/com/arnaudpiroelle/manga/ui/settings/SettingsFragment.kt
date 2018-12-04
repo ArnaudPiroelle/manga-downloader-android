@@ -4,8 +4,8 @@ import android.os.Bundle
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.arnaudpiroelle.manga.R
-import com.arnaudpiroelle.manga.core.utils.PreferencesHelper
 import com.arnaudpiroelle.manga.core.utils.setActionBar
+import com.arnaudpiroelle.manga.worker.utils.PreferencesHelper
 import kotlinx.android.synthetic.main.include_bottombar.*
 import kotlinx.android.synthetic.main.include_title.*
 import org.koin.android.ext.android.inject

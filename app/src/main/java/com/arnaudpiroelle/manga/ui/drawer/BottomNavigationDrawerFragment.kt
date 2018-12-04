@@ -33,7 +33,6 @@ class BottomNavigationDrawerFragment : BottomSheetDialogFragment() {
             when (menuItem.itemId) {
                 R.id.navigation_mangas -> navigateTo(R.id.myMangasFragment)
                 R.id.navigation_history -> navigateTo(R.id.historyFragment)
-                R.id.navigation_tasks -> navigateTo(R.id.tasksFragment)
                 R.id.navigation_settings -> navigateTo(R.id.settingsFragment)
             }
 
@@ -50,7 +49,6 @@ class BottomNavigationDrawerFragment : BottomSheetDialogFragment() {
             when (item.itemId) {
                 R.id.navigation_mangas -> item.isChecked = destinationId == R.id.myMangasFragment
                 R.id.navigation_history -> item.isChecked = destinationId == R.id.historyFragment
-                R.id.navigation_tasks -> item.isChecked = destinationId == R.id.tasksFragment
                 R.id.navigation_settings -> item.isChecked = destinationId == R.id.settingsFragment
             }
         }

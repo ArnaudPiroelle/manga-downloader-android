@@ -7,5 +7,5 @@ import com.arnaudpiroelle.manga.ui.core.State
 data class MangaListingState(@StringRes val notificationResId: Int? = null) : State
 
 sealed class MangaListingAction : Action
-object StartSync : MangaListingAction()
-object DismissNotification : MangaListingAction()
+object StartSyncAction : MangaListingAction()
+object DismissNotificationAction : MangaListingAction()

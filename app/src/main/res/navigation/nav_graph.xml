@@ -31,10 +31,6 @@
         android:name="com.arnaudpiroelle.manga.ui.settings.SettingsFragment"
         android:label="SettingsFragment" />
     <fragment
-        android:id="@+id/tasksFragment"
-        android:name="com.arnaudpiroelle.manga.ui.tasks.TasksFragment"
-        android:label="TasksFragment" />
-    <fragment
         android:id="@+id/mangaDetailsFragment"
         android:name="com.arnaudpiroelle.manga.ui.manga.details.MangaDetailsFragment"
         android:label="MangaDetailsFragment">

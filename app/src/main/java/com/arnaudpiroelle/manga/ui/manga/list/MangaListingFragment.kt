@@ -7,7 +7,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import com.arnaudpiroelle.manga.R
-import com.arnaudpiroelle.manga.core.manager.Schedulers
 import com.arnaudpiroelle.manga.core.utils.bind
 import com.arnaudpiroelle.manga.core.utils.distinctUntilChanged
 import com.arnaudpiroelle.manga.core.utils.map
@@ -18,15 +17,12 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_listing_manga.*
 import kotlinx.android.synthetic.main.include_bottombar.*
 import kotlinx.android.synthetic.main.include_title.*
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class MangaListingFragment : Fragment(), MangaListingAdapter.Callback {
     private val navController by lazy { findNavController() }
     private val viewModel: MangaListingViewModel by viewModel()
-
-    private val schedulers: Schedulers by inject()
 
     private val adapter by lazy { MangaListingAdapter(this) }
 
@@ -76,8 +72,7 @@ class MangaListingFragment : Fragment(), MangaListingAdapter.Callback {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             R.id.action_download -> {
-                viewModel.handle(StartSync)
-                schedulers.scheduleCheckerService()
+                viewModel.handle(StartSyncAction)
                 true
             }
             else -> false
@@ -97,7 +92,7 @@ class MangaListingFragment : Fragment(), MangaListingAdapter.Callback {
             Snackbar.make(list_manga, notificationResId, Snackbar.LENGTH_SHORT)
                     .show()
 
-            viewModel.handle(DismissNotification)
+            viewModel.handle(DismissNotificationAction)
         }
     }
 

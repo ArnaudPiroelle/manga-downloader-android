@@ -20,8 +20,11 @@ data class Chapter(
         @ColumnInfo(name = "mangaId") val mangaId: Long) {
 
     enum class Status {
+        CREATED,
         WANTED,
         SKIPPED,
-        DOWNLOADED
+        DOWNLOADING,
+        DOWNLOADED,
+        ERROR
     }
 }

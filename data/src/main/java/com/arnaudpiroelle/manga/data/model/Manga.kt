@@ -15,4 +15,9 @@ data class Manga(
         @ColumnInfo(name = "provider") val provider: String = "",
         @ColumnInfo(name = "name") val name: String = "",
         @ColumnInfo(name = "alias") val alias: String = "",
-        @ColumnInfo(name = "thumbnail") val thumbnail: String = "")
+        @ColumnInfo(name = "thumbnail") val thumbnail: String = "",
+        @ColumnInfo(name = "enable") val enable: Boolean = false) {
+    fun cleanName(): String {
+        return name.replace("/", "-")
+    }
+}

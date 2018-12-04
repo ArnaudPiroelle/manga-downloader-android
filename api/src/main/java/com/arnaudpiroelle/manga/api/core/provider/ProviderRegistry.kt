@@ -11,8 +11,8 @@ object ProviderRegistry {
         registry[name] = mangaProvider
     }
 
-    fun find(providerName: String): MangaProvider {
-        return registry[providerName]!!
+    fun find(providerName: String): MangaProvider? {
+        return registry[providerName]
     }
 
     fun list(): Map<String, MangaProvider> {

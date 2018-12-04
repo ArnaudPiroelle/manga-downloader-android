@@ -11,7 +11,6 @@ import android.widget.AdapterView
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.api.model.Manga
@@ -78,7 +77,7 @@ class AddMangaFragment : Fragment(), SearchView.OnQueryTextListener, ProviderMan
         provider_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val provider = providerAdapter.getItem(position)
-                viewModel.handle(SelectProvider(provider))
+                viewModel.handle(SelectProviderAction(provider))
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -106,7 +105,7 @@ class AddMangaFragment : Fragment(), SearchView.OnQueryTextListener, ProviderMan
         viewModel.state.map { it.providers }.distinctUntilChanged().bind(this, this::onProvidersChanged)
         viewModel.state.map { it.getFilteredResults() }.distinctUntilChanged().bind(this, this::onResultsChanged)
 
-        viewModel.handle(LoadProviders)
+        viewModel.handle(LoadProvidersAction)
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
@@ -114,12 +113,12 @@ class AddMangaFragment : Fragment(), SearchView.OnQueryTextListener, ProviderMan
     }
 
     override fun onQueryTextChange(name: String): Boolean {
-        viewModel.handle(Filter(name))
+        viewModel.handle(FilterResultsAction(name))
         return true
     }
 
     override fun onMangaSelected(manga: Manga) {
-        viewModel.handle(AddNewManga(manga))
+        viewModel.handle(AddNewMangaAction(manga))
     }
 
     private fun onIsLoadingChanged(isLoading: Boolean) {
