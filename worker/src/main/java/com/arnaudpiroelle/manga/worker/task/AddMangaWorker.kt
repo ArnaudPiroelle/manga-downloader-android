@@ -10,7 +10,7 @@ import com.arnaudpiroelle.manga.data.core.db.dao.MangaDao
 import com.arnaudpiroelle.manga.data.core.db.dao.PageDao
 import com.arnaudpiroelle.manga.data.model.Chapter
 import com.arnaudpiroelle.manga.data.model.Chapter.Status.CREATED
-import com.arnaudpiroelle.manga.data.model.Chapter.Status.WANTED
+import com.arnaudpiroelle.manga.data.model.Chapter.Status.SKIPPED
 import com.arnaudpiroelle.manga.data.model.Page
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
@@ -67,7 +67,7 @@ class AddMangaWorker(context: Context, workerParams: WorkerParameters) : Worker(
                         }
 
                 pageDao.insertAll(pages)
-                chapterDao.update(chapterToProcess.copy(status = WANTED))
+                chapterDao.update(chapterToProcess.copy(status = SKIPPED))
 
                 if (index == 0) {
                     val thumbnail = pages.first().url
