@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "ff4a1b2f2fb19b1938999ebb5caa20c6",
+    "identityHash": "1fc67e98666702b2973dd2cb96e6ddfc",
     "entities": [
       {
         "tableName": "mangas",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `provider` TEXT NOT NULL, `name` TEXT NOT NULL, `alias` TEXT NOT NULL, `thumbnail` TEXT NOT NULL, `enable` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `provider` TEXT NOT NULL, `name` TEXT NOT NULL, `alias` TEXT NOT NULL, `thumbnail` TEXT NOT NULL, `status` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -39,9 +39,9 @@
             "notNull": true
           },
           {
-            "fieldPath": "enable",
-            "columnName": "enable",
-            "affinity": "INTEGER",
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
             "notNull": true
           }
         ],
@@ -137,65 +137,6 @@
         ]
       },
       {
-        "tableName": "pages",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `chapterId` INTEGER NOT NULL, `url` TEXT NOT NULL, `postProcess` TEXT NOT NULL, FOREIGN KEY(`chapterId`) REFERENCES `chapters`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "chapterId",
-            "columnName": "chapterId",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "url",
-            "columnName": "url",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "postProcess",
-            "columnName": "postProcess",
-            "affinity": "TEXT",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "id"
-          ],
-          "autoGenerate": true
-        },
-        "indices": [
-          {
-            "name": "index_pages_chapterId",
-            "unique": false,
-            "columnNames": [
-              "chapterId"
-            ],
-            "createSql": "CREATE  INDEX `index_pages_chapterId` ON `${TABLE_NAME}` (`chapterId`)"
-          }
-        ],
-        "foreignKeys": [
-          {
-            "table": "chapters",
-            "onDelete": "CASCADE",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "chapterId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
-          }
-        ]
-      },
-      {
         "tableName": "History",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `label` TEXT, `date` INTEGER NOT NULL)",
         "fields": [
@@ -228,9 +169,10 @@
         "foreignKeys": []
       }
     ],
+    "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"ff4a1b2f2fb19b1938999ebb5caa20c6\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"1fc67e98666702b2973dd2cb96e6ddfc\")"
     ]
   }
 }

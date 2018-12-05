@@ -7,8 +7,12 @@ import com.arnaudpiroelle.manga.data.model.Manga
 @Dao
 interface MangaDao {
 
-    @Query("SELECT * FROM mangas WHERE enable = :enable")
-    fun getAll(enable: Boolean): List<Manga>
+    @Query("SELECT * FROM mangas")
+    fun getAll(): List<Manga>
+
+    @Query("SELECT * FROM mangas WHERE status = :status")
+    fun getAll(status: Manga.Status): List<Manga>
+
 
     @Query("SELECT * FROM mangas where provider = :provider")
     fun getMangaForProvider(provider: String): List<Manga>

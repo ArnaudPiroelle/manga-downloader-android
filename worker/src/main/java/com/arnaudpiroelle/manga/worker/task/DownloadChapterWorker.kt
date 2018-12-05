@@ -8,10 +8,8 @@ import com.arnaudpiroelle.manga.api.model.PostProcessType
 import com.arnaudpiroelle.manga.api.provider.MangaProvider
 import com.arnaudpiroelle.manga.data.core.db.dao.ChapterDao
 import com.arnaudpiroelle.manga.data.core.db.dao.MangaDao
-import com.arnaudpiroelle.manga.data.core.db.dao.PageDao
 import com.arnaudpiroelle.manga.data.model.Chapter
 import com.arnaudpiroelle.manga.data.model.Manga
-import com.arnaudpiroelle.manga.data.model.Page
 import com.arnaudpiroelle.manga.worker.utils.FileHelper
 import com.arnaudpiroelle.manga.worker.utils.PreferencesHelper
 import okio.Okio
@@ -26,7 +24,6 @@ class DownloadChapterWorker(context: Context, workerParams: WorkerParameters) : 
 
     private val mangaDao: MangaDao by inject()
     private val chapterDao: ChapterDao by inject()
-    private val pageDao: PageDao by inject()
     private val providerRegistry: ProviderRegistry by inject()
     private val fileHelper: FileHelper by inject()
     private val preferencesHelper: PreferencesHelper by inject()
@@ -56,9 +53,8 @@ class DownloadChapterWorker(context: Context, workerParams: WorkerParameters) : 
         }
 
         try {
-            val pages = pageDao.getPagesFor(chapterId)
-
             if (chapter.status == Chapter.Status.WANTED || chapter.status == Chapter.Status.ERROR) {
+                val pages = provider.findPages(manga.alias, chapter.number)
                 if (pages.isEmpty()) {
                     return Result.SUCCESS
                 }
@@ -98,13 +94,7 @@ class DownloadChapterWorker(context: Context, workerParams: WorkerParameters) : 
         return Result.SUCCESS
     }
 
-    private fun postProcess(provider: MangaProvider, pagePostProcess: Page.PostProcess, page: File) {
-        val postProcess = when (pagePostProcess) {
-            Page.PostProcess.NONE -> PostProcessType.NONE
-            Page.PostProcess.MOSAIC -> PostProcessType.MOSAIC
-            else -> PostProcessType.NONE
-        }
-
+    private fun postProcess(provider: MangaProvider, postProcess: PostProcessType, page: File) {
         provider.postProcess(postProcess, page)
     }
 

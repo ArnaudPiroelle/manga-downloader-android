@@ -9,6 +9,5 @@ val dataModule = module {
     single { Room.databaseBuilder(androidContext(), AppDatabase::class.java, "mangas").build() }
     single { get<AppDatabase>().mangaDao() }
     single { get<AppDatabase>().chapterDao() }
-    single { get<AppDatabase>().pageDao() }
     single { get<AppDatabase>().historyDao() }
 }

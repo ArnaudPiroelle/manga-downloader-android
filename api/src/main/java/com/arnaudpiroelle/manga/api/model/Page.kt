@@ -11,4 +11,6 @@ enum class PostProcessType {
     MOSAIC
 }
 
-data class Page(var url: String, var postProcess: PostProcessType = PostProcessType.NONE)
+data class Page(var url: String, var postProcess: PostProcessType = PostProcessType.NONE) {
+    fun getExtension() = url.substringAfterLast(".", "jpg")
+}

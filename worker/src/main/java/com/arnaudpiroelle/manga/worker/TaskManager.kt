@@ -53,7 +53,7 @@ class TaskManager(private val workerManager: WorkManager) {
             .build()
 
     private fun createAddMangaWork(mangaId: Long) = OneTimeWorkRequestBuilder<AddMangaWorker>()
-            //.setBackoffCriteria(BackoffPolicy.LINEAR, 5, MINUTES)
+            .setBackoffCriteria(BackoffPolicy.LINEAR, 1, MINUTES)
             .setInputData(Data.Builder()
                     .putLong(INPUT_MANGA_ID, mangaId)
                     .build())

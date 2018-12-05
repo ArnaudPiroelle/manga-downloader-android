@@ -4,6 +4,7 @@ import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.api.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.api.model.Manga
 import com.arnaudpiroelle.manga.data.core.db.dao.MangaDao
+import com.arnaudpiroelle.manga.data.model.Manga.Status.ADDED
 import com.arnaudpiroelle.manga.ui.core.BaseViewModel
 import com.arnaudpiroelle.manga.ui.manga.add.ProviderSpinnerAdapter.Provider
 import com.arnaudpiroelle.manga.worker.TaskManager
@@ -44,7 +45,7 @@ class AddMangaViewModel(
     private fun selectManga(manga: Manga) {
         launch {
             withContext(IO) {
-                val mangaId = mangaDao.insert(com.arnaudpiroelle.manga.data.model.Manga(name = manga.name, alias = manga.alias, provider = manga.provider))
+                val mangaId = mangaDao.insert(com.arnaudpiroelle.manga.data.model.Manga(name = manga.name, alias = manga.alias, provider = manga.provider, thumbnail = "", status = ADDED))
 
                 taskManager.scheduleAddManga(mangaId)
             }

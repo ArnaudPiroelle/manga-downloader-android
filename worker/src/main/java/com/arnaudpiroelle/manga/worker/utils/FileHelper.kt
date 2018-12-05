@@ -1,9 +1,9 @@
 package com.arnaudpiroelle.manga.worker.utils
 
 import android.os.Environment.getExternalStorageDirectory
+import com.arnaudpiroelle.manga.api.model.Page
 import com.arnaudpiroelle.manga.data.model.Chapter
 import com.arnaudpiroelle.manga.data.model.Manga
-import com.arnaudpiroelle.manga.data.model.Page
 import java.io.File
 
 open class FileHelper(private val preferencesHelper: PreferencesHelper) {
@@ -18,7 +18,7 @@ open class FileHelper(private val preferencesHelper: PreferencesHelper) {
         }
     }
 
-    fun getMangaFolder(manga: Manga): File {
+    private fun getMangaFolder(manga: Manga): File {
         return File(getEbooksFolder(), manga.cleanName())
     }
 

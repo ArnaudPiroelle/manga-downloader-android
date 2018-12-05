@@ -4,14 +4,8 @@ import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.arnaudpiroelle.manga.api.core.provider.ProviderRegistry
-import com.arnaudpiroelle.manga.api.model.PostProcessType
-import com.arnaudpiroelle.manga.data.core.db.dao.ChapterDao
 import com.arnaudpiroelle.manga.data.core.db.dao.MangaDao
-import com.arnaudpiroelle.manga.data.core.db.dao.PageDao
-import com.arnaudpiroelle.manga.data.model.Chapter
-import com.arnaudpiroelle.manga.data.model.Chapter.Status.CREATED
-import com.arnaudpiroelle.manga.data.model.Chapter.Status.SKIPPED
-import com.arnaudpiroelle.manga.data.model.Page
+import com.arnaudpiroelle.manga.data.model.Manga
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
 import timber.log.Timber
@@ -19,8 +13,6 @@ import timber.log.Timber
 class AddMangaWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams), KoinComponent {
 
     private val mangaDao: MangaDao by inject()
-    private val chapterDao: ChapterDao by inject()
-    private val pageDao: PageDao by inject()
     private val providerRegistry: ProviderRegistry by inject()
 
     override fun doWork(): Result {
@@ -44,45 +36,25 @@ class AddMangaWorker(context: Context, workerParams: WorkerParameters) : Worker(
 
         try {
             val chapters = provider.findChapters(manga.alias)
+            val firstChapter = chapters.firstOrNull()
 
-            chapters.forEachIndexed { index, chapter ->
-                val existingChapter = chapterDao.getByNumber(mangaId, chapter.chapterNumber)
+            if (firstChapter != null) {
+                val pages = provider.findPages(manga.alias, firstChapter.chapterNumber)
+                val firstPage = pages.firstOrNull()
 
-                val chapterToProcess = if (existingChapter == null) {
-                    val newChapter = Chapter(name = chapter.name, number = chapter.chapterNumber, mangaId = manga.id, status = CREATED)
-                    val chapterId = chapterDao.insert(newChapter)
-                    newChapter.copy(id = chapterId)
-                } else {
-                    pageDao.removeAllFor(chapterId = existingChapter.id)
-                    existingChapter
-                }
-
-                val pages = provider.findPages(manga.alias, chapterToProcess.number)
-                        .map {
-                            val postProcess = when (it.postProcess) {
-                                PostProcessType.NONE -> Page.PostProcess.NONE
-                                PostProcessType.MOSAIC -> Page.PostProcess.MOSAIC
-                            }
-                            Page(chapterId = chapterToProcess.id, url = it.url, postProcess = postProcess)
-                        }
-
-                pageDao.insertAll(pages)
-                chapterDao.update(chapterToProcess.copy(status = SKIPPED))
-
-                if (index == 0) {
-                    val thumbnail = pages.first().url
-                    mangaDao.update(manga.copy(thumbnail = thumbnail, enable = true))
+                if (firstPage != null) {
+                    mangaDao.update(manga.copy(thumbnail = firstPage.url, status = Manga.Status.INITIALIZED))
                 }
             }
 
             Timber.d("AddMangaWorker ended with success")
+
+            return Result.SUCCESS
         } catch (e: Exception) {
             Timber.d("AddMangaWorker ended with error")
 
-            //TODO: return RETRY
+            return Result.RETRY
         }
-
-        return Result.SUCCESS
     }
 
     companion object {
