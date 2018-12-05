@@ -25,8 +25,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
 
     api "io.reactivex.rxjava2:rxjava:${versions.rx}"
-    api 'com.squareup.okhttp3:okhttp:3.10.0'
-    api 'com.squareup.okhttp3:logging-interceptor:3.10.0'
+    api 'com.squareup.okhttp3:okhttp:3.11.0'
+    api 'com.squareup.okhttp3:logging-interceptor:3.11.0'
 
     testImplementation 'junit:junit:4.12'
 

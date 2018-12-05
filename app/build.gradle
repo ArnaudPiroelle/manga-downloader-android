@@ -83,7 +83,7 @@ dependencies {
     kapt "androidx.lifecycle:lifecycle-compiler:${versions.androidx.lifecycle}"
     implementation "androidx.constraintlayout:constraintlayout:${versions.androidx.constraint_layout}"
 
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.0-RC1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.0'
 
     implementation "com.google.android.material:material:${versions.material_design}"
     implementation "android.arch.navigation:navigation-fragment-ktx:${versions.androidx.navigation}"
@@ -110,11 +110,11 @@ dependencies {
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
 
     testImplementation 'junit:junit:4.12'
-    testImplementation "org.robolectric:robolectric:3.8"
+    testImplementation "org.robolectric:robolectric:4.0.2"
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
-    implementation "org.koin:koin-androidx-scope:1.0.1"
-    implementation "org.koin:koin-androidx-viewmodel:1.0.1"
+    implementation "org.koin:koin-androidx-scope:1.0.2"
+    implementation "org.koin:koin-androidx-viewmodel:1.0.2"
 
     implementation 'com.reddit:indicator-fast-scroll:1.1.0-beta1'
 }

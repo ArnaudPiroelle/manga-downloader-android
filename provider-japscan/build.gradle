@@ -28,7 +28,7 @@ dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
     implementation 'org.jsoup:jsoup:1.11.3'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.0-RC1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.0'
 
 
     testImplementation 'junit:junit:4.12'

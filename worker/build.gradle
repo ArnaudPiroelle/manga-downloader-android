@@ -28,7 +28,7 @@ dependencies {
     implementation project(':api')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
-    implementation "org.koin:koin-androidx-scope:1.0.1"
+    implementation "org.koin:koin-androidx-scope:1.0.2"
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
     api "android.arch.work:work-runtime-ktx:${versions.androidx.worker}"
