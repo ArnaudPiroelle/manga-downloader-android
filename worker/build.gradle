@@ -8,7 +8,7 @@ android {
         minSdkVersion buildConfig.minSdk
         targetSdkVersion buildConfig.targetSdk
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     }
 
@@ -32,9 +32,10 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
     api "android.arch.work:work-runtime-ktx:${versions.androidx.worker}"
+    api 'androidx.core:core:1.1.0-alpha02'
 
     testImplementation 'junit:junit:4.12'
 
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'androidx.test:runner:1.1.1-alpha01'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1-alpha01'
 }
