@@ -6,6 +6,7 @@ import com.arnaudpiroelle.manga.worker.task.AddMangaWorker.Companion.INPUT_MANGA
 import com.arnaudpiroelle.manga.worker.task.CheckNewChaptersWorker
 import com.arnaudpiroelle.manga.worker.task.DownloadChapterWorker
 import com.arnaudpiroelle.manga.worker.task.DownloadChapterWorker.Companion.INPUT_CHAPTER_ID
+import java.util.concurrent.TimeUnit.HOURS
 import java.util.concurrent.TimeUnit.MINUTES
 
 class TaskManager(private val workerManager: WorkManager) {
@@ -27,7 +28,7 @@ class TaskManager(private val workerManager: WorkManager) {
     }
 
     fun schedulePeriodicCheckNewChapters() {
-        val request = PeriodicWorkRequestBuilder<CheckNewChaptersWorker>(15, MINUTES)
+        val request = PeriodicWorkRequestBuilder<CheckNewChaptersWorker>(1, HOURS)
                 //.setBackoffCriteria(BackoffPolicy.LINEAR, 5, MINUTES)
                 .setConstraints(Constraints.Builder()
                         .setRequiredNetworkType(NetworkType.CONNECTED)
