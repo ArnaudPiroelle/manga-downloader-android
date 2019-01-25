@@ -8,6 +8,7 @@ import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.core.utils.bind
+import com.arnaudpiroelle.manga.core.utils.distinctUntilChanged
 import com.arnaudpiroelle.manga.core.utils.map
 import com.arnaudpiroelle.manga.core.utils.setActionBar
 import com.arnaudpiroelle.manga.data.model.Manga
@@ -66,12 +67,12 @@ class MangaListingFragment : Fragment(), MangaListingAdapter.Callback {
         super.onPause()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.menu_manga_listing, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_manga_listing, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
             R.id.action_download -> {
                 viewModel.handle(StartSyncAction)
                 true

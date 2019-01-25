@@ -67,7 +67,6 @@ class BottomNavigationDrawerFragment : BottomSheetDialogFragment() {
                 .setExitAnim(R.anim.nav_default_exit_anim)
                 .setPopEnterAnim(R.anim.nav_default_pop_enter_anim)
                 .setPopExitAnim(R.anim.nav_default_pop_exit_anim)
-                .setClearTask(true)
 
         val options = builder.build()
         try {

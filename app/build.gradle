@@ -79,46 +79,42 @@ dependencies {
 
     implementation "androidx.appcompat:appcompat:${versions.androidx.appcompat}"
     implementation "androidx.preference:preference:${versions.androidx.preference}"
+
     implementation "androidx.lifecycle:lifecycle-extensions:${versions.androidx.lifecycle}"
-    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
     kapt "androidx.lifecycle:lifecycle-compiler:${versions.androidx.lifecycle}"
+
     implementation "androidx.constraintlayout:constraintlayout:${versions.androidx.constraint_layout}"
 
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.0'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
 
     implementation "com.google.android.material:material:${versions.material_design}"
+
     implementation "android.arch.navigation:navigation-fragment-ktx:${versions.androidx.navigation}"
     implementation "android.arch.navigation:navigation-ui-ktx:${versions.androidx.navigation}"
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
-
-    implementation 'com.github.codekidX:storage-chooser:2.0.4.2'
+    implementation "com.github.codekidX:storage-chooser:${versions.storage_chooser}"
 
     implementation "androidx.room:room-runtime:${versions.androidx.room}"
-    implementation "androidx.room:room-rxjava2:${versions.androidx.room}"
     kapt "androidx.room:room-compiler:${versions.androidx.room}"
 
-    implementation "io.reactivex.rxjava2:rxjava:${versions.rx}"
-    implementation "io.reactivex.rxjava2:rxandroid:${versions.rxandroid}"
+    implementation "com.github.hotchemi:permissionsdispatcher:${versions.permission_dispatcher}"
+    kapt "com.github.hotchemi:permissionsdispatcher-processor:${versions.permission_dispatcher}"
 
-    implementation "com.github.hotchemi:permissionsdispatcher:4.0.0-alpha1"
-    kapt "com.github.hotchemi:permissionsdispatcher-processor:4.0.0-alpha1"
+    implementation "com.github.bumptech.glide:glide:${versions.glide}"
+    kapt "com.github.bumptech.glide:compiler:${versions.glide}"
 
-    implementation 'com.github.bumptech.glide:glide:4.8.0'
-    kapt 'com.github.bumptech.glide:compiler:4.8.0'
+    implementation "com.facebook.stetho:stetho:${versions.stetho}"
+    implementation "com.facebook.stetho:stetho-okhttp3:${versions.stetho}"
 
-    implementation 'com.facebook.stetho:stetho:1.5.0'
-    implementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
+    testImplementation "junit:junit:${versions.junit}"
+    testImplementation "org.robolectric:robolectric:${versions.robolectric}"
+    implementation "com.jakewharton.timber:timber:${versions.timber}"
 
-    testImplementation 'junit:junit:4.12'
-    testImplementation "org.robolectric:robolectric:4.0.2"
-    implementation 'com.jakewharton.timber:timber:4.7.1'
+    implementation "org.koin:koin-androidx-scope:${versions.koin}"
+    implementation "org.koin:koin-androidx-viewmodel:${versions.koin}"
 
-    implementation "org.koin:koin-androidx-scope:1.0.2"
-    implementation "org.koin:koin-androidx-viewmodel:1.0.2"
-
-    implementation 'com.reddit:indicator-fast-scroll:1.1.0-beta1'
+    implementation "com.reddit:indicator-fast-scroll:${versions.reddit_indicator}"
 }
 
 String propOrDef(String propertyName, String defaultValue) {

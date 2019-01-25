@@ -20,17 +20,17 @@ class AddMangaWorker(context: Context, workerParams: WorkerParameters) : Worker(
         val mangaId = inputData.getLong(INPUT_MANGA_ID, -1L)
         if (mangaId == -1L) {
             Timber.d("Field mangaId is mandatory. Worker ended with failure")
-            return Result.SUCCESS
+            return Result.success()
         }
         val manga = mangaDao.getById(mangaId)
         if (manga == null) {
             Timber.e("Manga not existing. DownloadChapterWorker ended with failure")
-            return Result.SUCCESS
+            return Result.success()
         }
         val provider = providerRegistry.find(manga.provider)
         if (provider == null) {
             Timber.e("Provider not existing. DownloadChapterWorker ended with failure")
-            return Result.SUCCESS
+            return Result.success()
         }
 
 
@@ -49,11 +49,11 @@ class AddMangaWorker(context: Context, workerParams: WorkerParameters) : Worker(
 
             Timber.d("AddMangaWorker ended with success")
 
-            return Result.SUCCESS
+            return Result.success()
         } catch (e: Exception) {
             Timber.d("AddMangaWorker ended with error")
 
-            return Result.RETRY
+            return Result.retry()
         }
     }
 

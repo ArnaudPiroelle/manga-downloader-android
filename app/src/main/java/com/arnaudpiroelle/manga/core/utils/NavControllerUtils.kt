@@ -1,5 +1,6 @@
 package com.arnaudpiroelle.manga.core.utils
 
+import android.os.Bundle
 import android.text.TextUtils
 import androidx.appcompat.graphics.drawable.DrawerArrowDrawable
 import androidx.appcompat.widget.Toolbar
@@ -11,16 +12,16 @@ import java.lang.ref.WeakReference
 
 
 fun BottomAppBar.setupNavController(navController: NavController) {
-    navController.addOnNavigatedListener(ToolbarOnNavigatedListener(this))
+    navController.addOnDestinationChangedListener(ToolbarOnNavigatedListener(this))
 }
 
-class ToolbarOnNavigatedListener(toolbar: Toolbar) : NavController.OnNavigatedListener {
+class ToolbarOnNavigatedListener(toolbar: Toolbar) : NavController.OnDestinationChangedListener {
     private val toolbarWeakReference = WeakReference(toolbar)
 
-    override fun onNavigated(controller: NavController, destination: NavDestination) {
+    override fun onDestinationChanged(controller: NavController, destination: NavDestination, arguments: Bundle?) {
         val toolbar = toolbarWeakReference.get()
         if (toolbar == null) {
-            controller.removeOnNavigatedListener(this)
+            controller.removeOnDestinationChangedListener(this)
             return
         }
 

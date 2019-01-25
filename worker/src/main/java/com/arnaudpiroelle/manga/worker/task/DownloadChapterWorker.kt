@@ -37,22 +37,22 @@ class DownloadChapterWorker(context: Context, workerParams: WorkerParameters) : 
         val chapterId = inputData.getLong(INPUT_CHAPTER_ID, -1L)
         if (chapterId == -1L) {
             Timber.e("Field chapterId is mandatory. DownloadChapterWorker ended with failure")
-            return Result.SUCCESS
+            return Result.success()
         }
         val chapter = chapterDao.getById(chapterId)
         if (chapter == null) {
             Timber.e("Chapter not existing. DownloadChapterWorker ended with failure")
-            return Result.SUCCESS
+            return Result.success()
         }
         val manga = mangaDao.getById(chapter.mangaId)
         if (manga == null) {
             Timber.e("Manga not existing. DownloadChapterWorker ended with failure")
-            return Result.SUCCESS
+            return Result.success()
         }
         val provider = providerRegistry.find(manga.provider)
         if (provider == null) {
             Timber.e("Provider not existing. DownloadChapterWorker ended with failure")
-            return Result.SUCCESS
+            return Result.success()
         }
 
         try {
@@ -61,7 +61,7 @@ class DownloadChapterWorker(context: Context, workerParams: WorkerParameters) : 
 
                 val pages = provider.findPages(manga.alias, chapter.number)
                 if (pages.isEmpty()) {
-                    return Result.SUCCESS
+                    return Result.success()
                 }
 
                 chapterDao.update(chapter.copy(status = Chapter.Status.DOWNLOADING))
@@ -106,7 +106,7 @@ class DownloadChapterWorker(context: Context, workerParams: WorkerParameters) : 
             notificationCenter.notify(DownloadEnded(chapter.id, manga.name, chapter.number, Chapter.Status.ERROR))
         }
 
-        return Result.SUCCESS
+        return Result.success()
     }
 
     private fun postProcess(provider: MangaProvider, postProcess: PostProcessType, page: File) {

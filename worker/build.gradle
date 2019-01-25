@@ -23,19 +23,19 @@ android {
 
 
 dependencies {
-
     implementation project(':data')
     implementation project(':api')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
-    implementation "org.koin:koin-androidx-scope:1.0.2"
-    implementation 'com.jakewharton.timber:timber:4.7.1'
+
+    implementation "org.koin:koin-androidx-scope:${versions.koin}"
+
+    implementation "com.jakewharton.timber:timber:${versions.timber}"
 
     api "android.arch.work:work-runtime-ktx:${versions.androidx.worker}"
-    api 'androidx.core:core:1.1.0-alpha02'
 
-    testImplementation 'junit:junit:4.12'
+    testImplementation "junit:junit:${versions.junit}"
 
-    androidTestImplementation 'androidx.test:runner:1.1.1-alpha01'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1-alpha01'
+    androidTestImplementation "androidx.test:runner:${versions.androidx.test}"
+    androidTestImplementation "androidx.test.espresso:espresso-core:${versions.androidx.espresso}"
 }

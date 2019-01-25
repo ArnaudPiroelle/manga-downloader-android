@@ -6,8 +6,9 @@ import com.arnaudpiroelle.manga.ui.drawer.BottomNavigationDrawerFragment
 
 
 fun Fragment.setActionBar(bar: Toolbar) {
-    if (activity?.menuInflater != null) {
-        onCreateOptionsMenu(bar.menu, activity?.menuInflater)
+    val menuInflater = activity?.menuInflater
+    if (menuInflater != null) {
+        onCreateOptionsMenu(bar.menu, menuInflater)
         bar.setOnMenuItemClickListener { item -> onOptionsItemSelected(item) }
     }
 

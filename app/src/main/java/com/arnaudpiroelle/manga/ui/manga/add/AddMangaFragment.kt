@@ -14,6 +14,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.api.model.Manga
+import com.arnaudpiroelle.manga.core.utils.bind
+import com.arnaudpiroelle.manga.core.utils.distinctUntilChanged
 import com.arnaudpiroelle.manga.core.utils.map
 import com.arnaudpiroelle.manga.ui.manga.add.AddMangaContext.Action.*
 import com.arnaudpiroelle.manga.ui.manga.add.AddMangaContext.ActionError

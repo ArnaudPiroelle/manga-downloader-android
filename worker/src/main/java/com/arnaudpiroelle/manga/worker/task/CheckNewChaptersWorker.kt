@@ -45,7 +45,7 @@ class CheckNewChaptersWorker(context: Context, workerParams: WorkerParameters) :
         }
 
         notificationCenter.notify(SyncEnded)
-        return Result.SUCCESS
+        return Result.success()
     }
 
     private fun checkManga(manga: Manga) {
