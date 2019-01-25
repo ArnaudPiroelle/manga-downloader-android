@@ -4,7 +4,7 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-abstract class BaseViewModel<A : Action, S : State>(private val initialState: S) : ViewModel() {
+abstract class BaseViewModel<A : BaseAction, S : BaseState>(private val initialState: S) : ViewModel() {
     val state = MutableLiveData<S>()
 
     abstract fun handle(action: A)
@@ -17,5 +17,5 @@ abstract class BaseViewModel<A : Action, S : State>(private val initialState: S)
     }
 }
 
-interface Action
-interface State
+interface BaseAction
+interface BaseState

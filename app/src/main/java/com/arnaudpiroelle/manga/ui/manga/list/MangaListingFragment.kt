@@ -8,10 +8,11 @@ import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.core.utils.bind
-import com.arnaudpiroelle.manga.core.utils.distinctUntilChanged
 import com.arnaudpiroelle.manga.core.utils.map
 import com.arnaudpiroelle.manga.core.utils.setActionBar
 import com.arnaudpiroelle.manga.data.model.Manga
+import com.arnaudpiroelle.manga.ui.manga.list.MangaListingContext.Action.DismissNotificationAction
+import com.arnaudpiroelle.manga.ui.manga.list.MangaListingContext.Action.StartSyncAction
 import com.arnaudpiroelle.manga.ui.manga.list.MangaListingFragmentDirections.actionShowDetails
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_listing_manga.*

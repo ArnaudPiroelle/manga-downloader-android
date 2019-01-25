@@ -14,11 +14,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.api.model.Manga
-import com.arnaudpiroelle.manga.core.utils.bind
-import com.arnaudpiroelle.manga.core.utils.distinctUntilChanged
 import com.arnaudpiroelle.manga.core.utils.map
+import com.arnaudpiroelle.manga.ui.manga.add.AddMangaContext.Action.*
+import com.arnaudpiroelle.manga.ui.manga.add.AddMangaContext.ActionError
+import com.arnaudpiroelle.manga.ui.manga.add.AddMangaContext.WizardStatus
+import com.arnaudpiroelle.manga.ui.manga.add.AddMangaContext.WizardStatus.FINISHED
 import com.arnaudpiroelle.manga.ui.manga.add.ProviderSpinnerAdapter.Provider
-import com.arnaudpiroelle.manga.ui.manga.add.WizardStatus.FINISHED
 import com.google.android.material.snackbar.Snackbar
 import com.reddit.indicatorfastscroll.FastScrollItemIndicator
 import com.reddit.indicatorfastscroll.FastScrollerView
@@ -163,6 +164,7 @@ class AddMangaFragment : Fragment(), SearchView.OnQueryTextListener, ProviderMan
         when (status) {
             FINISHED -> findNavController().navigateUp()
             else -> {
+
             }
         }
     }
