@@ -10,6 +10,8 @@ import com.arnaudpiroelle.manga.data.core.db.dao.ChapterDao
 import com.arnaudpiroelle.manga.data.core.db.dao.MangaDao
 import com.arnaudpiroelle.manga.data.model.Chapter
 import com.arnaudpiroelle.manga.data.model.Manga
+import com.arnaudpiroelle.manga.worker.notification.NotificationCenter
+import com.arnaudpiroelle.manga.worker.notification.NotificationCenter.Notification.*
 import com.arnaudpiroelle.manga.worker.utils.FileHelper
 import com.arnaudpiroelle.manga.worker.utils.PreferencesHelper
 import okio.Okio
@@ -22,6 +24,7 @@ import java.util.zip.ZipOutputStream
 
 class DownloadChapterWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams), KoinComponent {
 
+    private val notificationCenter: NotificationCenter by inject()
     private val mangaDao: MangaDao by inject()
     private val chapterDao: ChapterDao by inject()
     private val providerRegistry: ProviderRegistry by inject()
@@ -54,6 +57,8 @@ class DownloadChapterWorker(context: Context, workerParams: WorkerParameters) : 
 
         try {
             if (chapter.status == Chapter.Status.WANTED || chapter.status == Chapter.Status.ERROR) {
+                notificationCenter.notify(DownloadStarted(chapter.name))
+
                 val pages = provider.findPages(manga.alias, chapter.number)
                 if (pages.isEmpty()) {
                     return Result.SUCCESS
@@ -62,6 +67,8 @@ class DownloadChapterWorker(context: Context, workerParams: WorkerParameters) : 
                 chapterDao.update(chapter.copy(status = Chapter.Status.DOWNLOADING))
 
                 pages.forEachIndexed { index, page ->
+                    notificationCenter.notify(DownloadProgress(index, pages.size, chapter.name))
+
                     val pageFile = fileHelper.getPageFile(manga, chapter, page, index)
                     val response = provider.findPage(page.url)
 
@@ -79,18 +86,26 @@ class DownloadChapterWorker(context: Context, workerParams: WorkerParameters) : 
 
                 chapterDao.update(chapter.copy(status = Chapter.Status.DOWNLOADED))
 
+                notificationCenter.notify(DownloadEnded(chapter.id, manga.name, chapter.number, Chapter.Status.DOWNLOADED))
+
                 Timber.d("DownloadChapterWorker ended with success")
             } else {
                 Timber.w("Chapter ${chapter.name} not wanted anymore. It will be skipped.")
             }
         } catch (e: Exception) {
             Timber.e(e, "DownloadChapterWorker ended with error")
+
             val chapterFolder = fileHelper.getChapterFolder(manga, chapter)
             val chapterFile = fileHelper.getChapterCBZFile(manga, chapter)
+
             chapterFolder.deleteRecursively()
             chapterFile.deleteRecursively()
+
             chapterDao.update(chapter.copy(status = Chapter.Status.ERROR))
+
+            notificationCenter.notify(DownloadEnded(chapter.id, manga.name, chapter.number, Chapter.Status.ERROR))
         }
+
         return Result.SUCCESS
     }
 
@@ -99,13 +114,14 @@ class DownloadChapterWorker(context: Context, workerParams: WorkerParameters) : 
     }
 
     private fun compressChapter(manga: Manga, chapter: Chapter) {
+        notificationCenter.notify(DownloadCompressStarted(chapter.name))
+
         val chapterFile = fileHelper.getChapterCBZFile(manga, chapter)
         val chapterFolder = fileHelper.getChapterFolder(manga, chapter)
 
         if (chapterFile.exists()) {
             chapterFile.delete()
         }
-        println(chapterFile)
         chapterFile.createNewFile()
 
         FileOutputStream(chapterFile).use { dest ->
@@ -113,7 +129,12 @@ class DownloadChapterWorker(context: Context, workerParams: WorkerParameters) : 
                 val buffer = 1024
                 val data = ByteArray(buffer)
 
-                for (file in chapterFolder.listFiles()) {
+                val listFiles = chapterFolder.listFiles()
+                val filesSize = listFiles.size
+                listFiles.forEachIndexed { index, file ->
+
+                    notificationCenter.notify(DownloadCompressProgress(index, filesSize, chapter.name))
+
                     FileInputStream(file).use { fi ->
                         BufferedInputStream(fi, buffer).use { origin ->
 

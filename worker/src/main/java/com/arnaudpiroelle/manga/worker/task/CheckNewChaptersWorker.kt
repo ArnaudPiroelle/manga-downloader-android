@@ -9,12 +9,15 @@ import com.arnaudpiroelle.manga.data.core.db.dao.MangaDao
 import com.arnaudpiroelle.manga.data.model.Chapter
 import com.arnaudpiroelle.manga.data.model.Manga
 import com.arnaudpiroelle.manga.worker.TaskManager
+import com.arnaudpiroelle.manga.worker.notification.NotificationCenter
+import com.arnaudpiroelle.manga.worker.notification.NotificationCenter.Notification.*
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
 import timber.log.Timber
 
 class CheckNewChaptersWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams), KoinComponent {
 
+    private val notificationCenter: NotificationCenter by inject()
     private val mangaDao: MangaDao by inject()
     private val chapterDao: ChapterDao by inject()
     private val providerRegistry: ProviderRegistry by inject()
@@ -23,9 +26,15 @@ class CheckNewChaptersWorker(context: Context, workerParams: WorkerParameters) :
     override fun doWork(): Result {
         Timber.d("CheckNewChaptersWorker started")
 
+        notificationCenter.notify(SyncStarted)
         try {
             val mangas = mangaDao.getAll()
-            mangas.forEach(this::checkManga)
+            val totalMangas = mangas.size
+            mangas.forEachIndexed { index, manga ->
+                notificationCenter.notify(SyncProgress(index, totalMangas, manga.name))
+
+                checkManga(manga)
+            }
 
             val chapters = chapterDao.getByStatus(Chapter.Status.WANTED)
             taskManager.scheduleDownloadChapter(chapters.map { it.id })
@@ -34,6 +43,8 @@ class CheckNewChaptersWorker(context: Context, workerParams: WorkerParameters) :
         } catch (e: Exception) {
             Timber.e(e, "CheckNewChaptersWorker ended with error")
         }
+
+        notificationCenter.notify(SyncEnded)
         return Result.SUCCESS
     }
 
