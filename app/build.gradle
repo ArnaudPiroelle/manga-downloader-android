@@ -80,6 +80,8 @@ dependencies {
     implementation "androidx.appcompat:appcompat:${versions.androidx.appcompat}"
     implementation "androidx.preference:preference:${versions.androidx.preference}"
     implementation "androidx.lifecycle:lifecycle-extensions:${versions.androidx.lifecycle}"
+    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
     kapt "androidx.lifecycle:lifecycle-compiler:${versions.androidx.lifecycle}"
     implementation "androidx.constraintlayout:constraintlayout:${versions.androidx.constraint_layout}"
 
