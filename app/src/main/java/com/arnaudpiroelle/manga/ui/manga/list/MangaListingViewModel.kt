@@ -4,7 +4,7 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.data.core.db.dao.MangaDao
-import com.arnaudpiroelle.manga.ui.core.BaseViewModel
+import com.arnaudpiroelle.manga.ui.common.BaseViewModel
 import com.arnaudpiroelle.manga.ui.manga.list.MangaListingContext.Action
 import com.arnaudpiroelle.manga.ui.manga.list.MangaListingContext.Action.DismissNotificationAction
 import com.arnaudpiroelle.manga.ui.manga.list.MangaListingContext.Action.StartSyncAction

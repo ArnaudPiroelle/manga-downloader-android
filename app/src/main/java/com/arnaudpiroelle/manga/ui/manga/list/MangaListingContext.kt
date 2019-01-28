@@ -1,8 +1,8 @@
 package com.arnaudpiroelle.manga.ui.manga.list
 
 import androidx.annotation.StringRes
-import com.arnaudpiroelle.manga.ui.core.BaseAction
-import com.arnaudpiroelle.manga.ui.core.BaseState
+import com.arnaudpiroelle.manga.ui.common.BaseAction
+import com.arnaudpiroelle.manga.ui.common.BaseState
 
 
 interface MangaListingContext {

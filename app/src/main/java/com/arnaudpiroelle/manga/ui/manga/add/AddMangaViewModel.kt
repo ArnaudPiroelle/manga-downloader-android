@@ -5,7 +5,7 @@ import com.arnaudpiroelle.manga.api.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.api.model.Manga
 import com.arnaudpiroelle.manga.data.core.db.dao.MangaDao
 import com.arnaudpiroelle.manga.data.model.Manga.Status.ADDED
-import com.arnaudpiroelle.manga.ui.core.BaseViewModel
+import com.arnaudpiroelle.manga.ui.common.BaseViewModel
 import com.arnaudpiroelle.manga.ui.manga.add.AddMangaContext.*
 import com.arnaudpiroelle.manga.ui.manga.add.AddMangaContext.Action.*
 import com.arnaudpiroelle.manga.ui.manga.add.ProviderSpinnerAdapter.Provider

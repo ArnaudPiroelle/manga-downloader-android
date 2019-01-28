@@ -2,8 +2,8 @@ package com.arnaudpiroelle.manga.ui.manga.add
 
 import androidx.annotation.StringRes
 import com.arnaudpiroelle.manga.api.model.Manga
-import com.arnaudpiroelle.manga.ui.core.BaseAction
-import com.arnaudpiroelle.manga.ui.core.BaseState
+import com.arnaudpiroelle.manga.ui.common.BaseAction
+import com.arnaudpiroelle.manga.ui.common.BaseState
 
 interface AddMangaContext {
 

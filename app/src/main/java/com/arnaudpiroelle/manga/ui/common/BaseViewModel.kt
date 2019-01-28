@@ -1,4 +1,4 @@
-package com.arnaudpiroelle.manga.ui.core
+package com.arnaudpiroelle.manga.ui.common
 
 import androidx.annotation.MainThread
 import androidx.lifecycle.MutableLiveData
