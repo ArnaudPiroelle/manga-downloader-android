@@ -1,13 +1,13 @@
-package com.arnaudpiroelle.manga.data.core.db
+package com.arnaudpiroelle.manga.data
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.arnaudpiroelle.manga.data.core.db.converter.ChapterStatusConverter
-import com.arnaudpiroelle.manga.data.core.db.converter.MangaStatusConverter
-import com.arnaudpiroelle.manga.data.core.db.dao.ChapterDao
-import com.arnaudpiroelle.manga.data.core.db.dao.HistoryDao
-import com.arnaudpiroelle.manga.data.core.db.dao.MangaDao
+import com.arnaudpiroelle.manga.data.converter.ChapterStatusConverter
+import com.arnaudpiroelle.manga.data.converter.MangaStatusConverter
+import com.arnaudpiroelle.manga.data.dao.ChapterDao
+import com.arnaudpiroelle.manga.data.dao.HistoryDao
+import com.arnaudpiroelle.manga.data.dao.MangaDao
 import com.arnaudpiroelle.manga.data.model.Chapter
 import com.arnaudpiroelle.manga.data.model.History
 import com.arnaudpiroelle.manga.data.model.Manga

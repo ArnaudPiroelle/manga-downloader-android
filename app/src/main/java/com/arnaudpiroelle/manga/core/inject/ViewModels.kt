@@ -8,6 +8,6 @@ import org.koin.dsl.module.module
 
 val viewModels = module {
     viewModel { MangaListingViewModel(get(), get()) }
-    viewModel { AddMangaViewModel(get(), get(), get()) }
+    viewModel { AddMangaViewModel(get(), get(), get(), get()) }
     viewModel { HistoriesViewModel(get()) }
 }

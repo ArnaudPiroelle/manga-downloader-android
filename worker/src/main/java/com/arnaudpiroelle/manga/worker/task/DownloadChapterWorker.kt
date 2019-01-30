@@ -6,8 +6,8 @@ import androidx.work.WorkerParameters
 import com.arnaudpiroelle.manga.api.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.api.model.PostProcessType
 import com.arnaudpiroelle.manga.api.provider.MangaProvider
-import com.arnaudpiroelle.manga.data.core.db.dao.ChapterDao
-import com.arnaudpiroelle.manga.data.core.db.dao.MangaDao
+import com.arnaudpiroelle.manga.data.dao.ChapterDao
+import com.arnaudpiroelle.manga.data.dao.MangaDao
 import com.arnaudpiroelle.manga.data.model.Chapter
 import com.arnaudpiroelle.manga.data.model.Manga
 import com.arnaudpiroelle.manga.worker.notification.NotificationCenter

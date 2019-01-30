@@ -1,7 +1,6 @@
 package com.arnaudpiroelle.manga.data
 
 import androidx.room.Room
-import com.arnaudpiroelle.manga.data.core.db.AppDatabase
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module.module
 

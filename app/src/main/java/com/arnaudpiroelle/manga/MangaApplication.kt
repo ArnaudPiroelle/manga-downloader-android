@@ -4,8 +4,8 @@ import android.app.Application
 import com.arnaudpiroelle.manga.api.Mangas
 import com.arnaudpiroelle.manga.core.inject.androidModule
 import com.arnaudpiroelle.manga.core.inject.applicationModule
+import com.arnaudpiroelle.manga.core.inject.interactors
 import com.arnaudpiroelle.manga.core.inject.viewModels
-import com.arnaudpiroelle.manga.data.dataModule
 import com.arnaudpiroelle.manga.provider.japscan.JapScan
 import com.arnaudpiroelle.manga.worker.TaskManager
 import com.arnaudpiroelle.manga.worker.notification.NotificationCenter
@@ -26,9 +26,9 @@ class MangaApplication : Application(), KoinComponent {
             Timber.plant(Timber.DebugTree())
         }
 
-        Mangas.with(this, JapScan())
+        Mangas.with(JapScan())
 
-        startKoin(this, listOf(androidModule, applicationModule, viewModels, dataModule, workerModule))
+        startKoin(this, listOf(androidModule, applicationModule, viewModels, com.arnaudpiroelle.manga.data.dataModule, workerModule, interactors))
 
         val taskManager: TaskManager = get()
         val notificationCenter: NotificationCenter = get()

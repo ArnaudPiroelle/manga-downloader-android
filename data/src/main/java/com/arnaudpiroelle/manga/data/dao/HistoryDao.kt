@@ -1,4 +1,4 @@
-package com.arnaudpiroelle.manga.data.core.db.dao
+package com.arnaudpiroelle.manga.data.dao
 
 import androidx.paging.DataSource
 import androidx.room.Dao

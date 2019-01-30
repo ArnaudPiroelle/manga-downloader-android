@@ -3,7 +3,7 @@ package com.arnaudpiroelle.manga.ui.manga.list
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.arnaudpiroelle.manga.R
-import com.arnaudpiroelle.manga.data.core.db.dao.MangaDao
+import com.arnaudpiroelle.manga.data.dao.MangaDao
 import com.arnaudpiroelle.manga.ui.common.BaseViewModel
 import com.arnaudpiroelle.manga.ui.manga.list.MangaListingContext.Action
 import com.arnaudpiroelle.manga.ui.manga.list.MangaListingContext.Action.DismissNotificationAction
@@ -20,7 +20,7 @@ class MangaListingViewModel(private val mangaDao: MangaDao, private val taskMana
             .build()
 
 
-    override fun handle(action: Action) {
+    override suspend fun onHandle(action: Action) {
         when (action) {
             StartSyncAction -> startSyncJob()
             DismissNotificationAction -> dismissNotifications()

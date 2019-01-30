@@ -1,13 +1,12 @@
 package com.arnaudpiroelle.manga.api
 
-import android.app.Application
 import com.arnaudpiroelle.manga.api.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.api.provider.MangaProvider
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 
 object Mangas {
-    fun with(context: Application, vararg plugins: Plugin) {
+    fun with(vararg plugins: Plugin) {
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BASIC
 

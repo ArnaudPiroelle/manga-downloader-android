@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.arnaudpiroelle.manga.api.core.provider.ProviderRegistry
-import com.arnaudpiroelle.manga.data.core.db.dao.MangaDao
+import com.arnaudpiroelle.manga.data.dao.MangaDao
 import com.arnaudpiroelle.manga.data.model.Manga
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject

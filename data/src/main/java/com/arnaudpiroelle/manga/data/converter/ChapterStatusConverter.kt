@@ -1,4 +1,4 @@
-package com.arnaudpiroelle.manga.data.core.db.converter
+package com.arnaudpiroelle.manga.data.converter
 
 import androidx.room.TypeConverter
 import com.arnaudpiroelle.manga.data.model.Chapter
