@@ -5,17 +5,19 @@ import java.util.*
 
 object ProviderRegistry {
 
-    private var registry: MutableMap<String, MangaProvider> = HashMap()
+    private var registry: MutableMap<String, Provider> = HashMap()
 
     fun register(name: String, mangaProvider: MangaProvider) {
-        registry[name] = mangaProvider
+        registry[name] = ProviderRegistry.Provider(name, mangaProvider)
     }
 
     fun find(providerName: String): MangaProvider? {
-        return registry[providerName]
+        return registry[providerName]?.mangaProvider
     }
 
-    fun list(): Map<String, MangaProvider> {
+    fun list(): Map<String, Provider> {
         return registry
     }
+
+    data class Provider(val name: String, val mangaProvider: MangaProvider)
 }

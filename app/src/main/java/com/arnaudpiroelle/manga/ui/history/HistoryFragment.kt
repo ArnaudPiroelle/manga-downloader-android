@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.core.utils.setActionBar
 import kotlinx.android.synthetic.main.fragment_listing_history.*
@@ -34,14 +35,34 @@ class HistoryFragment : Fragment() {
         title.setText(R.string.title_history)
         setActionBar(bar)
 
-        list_history.layoutManager = LinearLayoutManager(activity)
+        val linearLayoutManager = LinearLayoutManager(activity)
+        list_history.layoutManager = linearLayoutManager
         list_history.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.HORIZONTAL))
         list_history.adapter = adapter
+
+        list_history.addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener {
+            override fun onChildViewDetachedFromWindow(view: View) {
+                checkScroll()
+            }
+
+            override fun onChildViewAttachedToWindow(view: View) {
+                checkScroll()
+            }
+        })
 
         viewModel.histories.observe(this, Observer {
             adapter.submitList(it)
         })
 
+    }
+
+    private fun checkScroll() {
+        val adapter = list_history.adapter
+        val layoutManager = list_history.layoutManager as LinearLayoutManager
+        val totalItems = adapter?.itemCount ?: 0
+        val findLastCompletelyVisibleItemPosition = layoutManager.findLastCompletelyVisibleItemPosition()
+
+        list_history.isNestedScrollingEnabled = findLastCompletelyVisibleItemPosition != totalItems - 1
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

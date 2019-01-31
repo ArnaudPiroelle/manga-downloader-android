@@ -1,11 +1,14 @@
 package com.arnaudpiroelle.manga.ui.manga.add
 
 import com.arnaudpiroelle.manga.R
+import com.arnaudpiroelle.manga.api.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.api.model.Manga
+import com.arnaudpiroelle.manga.interactors.AddMangaInteractor
+import com.arnaudpiroelle.manga.interactors.GetProviderMangasInteractor
+import com.arnaudpiroelle.manga.interactors.GetProvidersInteractor
 import com.arnaudpiroelle.manga.ui.common.BaseViewModel
 import com.arnaudpiroelle.manga.ui.manga.add.AddMangaContext.*
 import com.arnaudpiroelle.manga.ui.manga.add.AddMangaContext.Action.*
-import com.arnaudpiroelle.manga.ui.manga.add.ProviderSpinnerAdapter.Provider
 import com.arnaudpiroelle.manga.worker.TaskManager
 
 class AddMangaViewModel(
@@ -28,7 +31,7 @@ class AddMangaViewModel(
         updateState { state -> state.copy(providers = providers) }
     }
 
-    private suspend fun selectProvider(provider: Provider) {
+    private suspend fun selectProvider(provider: ProviderRegistry.Provider) {
         updateState { state -> state.copy(isLoading = true, error = null) }
 
         try {

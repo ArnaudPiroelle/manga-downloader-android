@@ -27,7 +27,7 @@ buildscript {
             'coroutines'           : '1.0.0',
             'ktlint'               : '0.28.0',
             'mockito'              : '2.18.3',
-            'material_design'      : '1.0.0',
+            'material_design'      : '1.1.0-alpha03',
             'rxlint'               : '1.6.1',
             'koin'                 : '1.0.2',
             'okhttp'               : '3.11.0',

@@ -10,6 +10,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_manga"
+        android:nestedScrollingEnabled="false"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
@@ -21,25 +22,17 @@
         tools:listitem="@layout/item_view_manga"
         tools:spanCount="3" />
 
-    <FrameLayout
-        android:id="@+id/shadow_bar"
-        android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:layout_gravity="bottom"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/bab_fake_shadow"
-        android:padding="50dp"
-        android:theme="@style/Widget.MaterialComponents.BottomAppBar.Colored" />
-
     <include layout="@layout/include_bottombar" />
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_manga"
+        style="@style/Widget.MaterialComponents.FloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_add_white_24dp"
         android:visibility="gone"
-        app:layout_anchor="@+id/bar" />
+        android:layout_marginBottom="28dp"
+        app:layout_anchor="@+id/bar"
+        app:srcCompat="@drawable/ic_add_white_24dp" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

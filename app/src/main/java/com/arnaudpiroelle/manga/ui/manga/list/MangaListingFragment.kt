@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.core.utils.bind
 import com.arnaudpiroelle.manga.core.utils.distinctUntilChanged
@@ -44,15 +45,35 @@ class MangaListingFragment : Fragment(), MangaListingAdapter.Callback {
         title.setText(R.string.title_mymangas)
         setActionBar(bar)
 
-        list_manga.layoutManager = GridLayoutManager(activity, 3)
+        val gridLayoutManager = GridLayoutManager(activity, 3)
+        list_manga.layoutManager = gridLayoutManager
         list_manga.adapter = adapter
 
         add_manga.setOnClickListener {
             navController.navigate(R.id.action_add_manga)
         }
 
+        list_manga.addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener {
+            override fun onChildViewDetachedFromWindow(view: View) {
+                checkScroll()
+            }
+
+            override fun onChildViewAttachedToWindow(view: View) {
+                checkScroll()
+            }
+        })
+
         viewModel.mangas.bind(this, this::onMangasChanged)
         viewModel.state.map { it.notificationResId }.distinctUntilChanged().bind(this, this::onNotificationChanged)
+    }
+
+    private fun checkScroll() {
+        val adapter = list_manga.adapter
+        val layoutManager = list_manga.layoutManager as GridLayoutManager
+        val totalItems = adapter?.itemCount ?: 0
+        val findLastCompletelyVisibleItemPosition = layoutManager.findLastCompletelyVisibleItemPosition()
+
+        list_manga.isNestedScrollingEnabled = findLastCompletelyVisibleItemPosition != totalItems - 1
     }
 
     override fun onResume() {

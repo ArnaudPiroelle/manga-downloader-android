@@ -76,6 +76,7 @@ dependencies {
     api project(':data')
     api project(':provider-japscan')
     api project(':worker')
+    api project(':interactors')
 
     implementation "androidx.appcompat:appcompat:${versions.androidx.appcompat}"
     implementation "androidx.preference:preference:${versions.androidx.preference}"

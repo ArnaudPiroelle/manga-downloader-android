@@ -1,4 +1,4 @@
-package com.arnaudpiroelle.manga.ui.manga.add
+package com.arnaudpiroelle.manga.interactors
 
 import com.arnaudpiroelle.manga.api.model.Manga
 import com.arnaudpiroelle.manga.data.dao.MangaDao

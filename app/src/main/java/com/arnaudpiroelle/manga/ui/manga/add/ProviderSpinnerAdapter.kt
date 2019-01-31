@@ -5,19 +5,19 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import com.arnaudpiroelle.manga.R
-import com.arnaudpiroelle.manga.api.provider.MangaProvider
+import com.arnaudpiroelle.manga.api.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.core.utils.inflate
 
 
-class ProviderSpinnerAdapter() : BaseAdapter() {
+class ProviderSpinnerAdapter : BaseAdapter() {
 
-    private var mItems: List<Provider> = arrayListOf()
+    private var mItems: List<ProviderRegistry.Provider> = arrayListOf()
 
     override fun getCount(): Int {
         return mItems.size
     }
 
-    override fun getItem(position: Int): Provider {
+    override fun getItem(position: Int): ProviderRegistry.Provider {
         return mItems[position]
     }
 
@@ -59,11 +59,8 @@ class ProviderSpinnerAdapter() : BaseAdapter() {
         return if (position >= 0 && position < mItems.size) mItems[position].name else ""
     }
 
-    fun update(datas: List<Provider>) {
+    fun update(datas: List<ProviderRegistry.Provider>) {
         mItems = datas
         notifyDataSetChanged()
     }
-
-    data class Provider(val name: String, val mangaProvider: MangaProvider)
-
 }
