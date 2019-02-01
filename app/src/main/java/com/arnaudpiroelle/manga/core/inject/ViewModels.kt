@@ -6,7 +6,7 @@ import com.arnaudpiroelle.manga.ui.manga.list.MangaListingViewModel
 import org.koin.androidx.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
 
-val viewModels = module {
+val viewModels = module(createOnStart = true) {
     viewModel { MangaListingViewModel(get(), get()) }
     viewModel { AddMangaViewModel(get(), get(), get(), get()) }
     viewModel { HistoriesViewModel(get()) }

@@ -4,7 +4,7 @@ import androidx.room.Room
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module.module
 
-val dataModule = module {
+val dataModule = module(createOnStart = true) {
     single { Room.databaseBuilder(androidContext(), AppDatabase::class.java, "mangas").build() }
     single { get<AppDatabase>().mangaDao() }
     single { get<AppDatabase>().chapterDao() }

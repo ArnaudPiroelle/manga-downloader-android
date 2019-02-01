@@ -8,7 +8,7 @@ import android.net.ConnectivityManager
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module.module
 
-val androidModule = module {
+val androidModule = module(createOnStart = true) {
     single { androidContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
     single { androidContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager }
     single { androidContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager }
