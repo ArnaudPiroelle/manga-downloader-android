@@ -4,14 +4,11 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 abstract class BaseViewModel<A : BaseAction, S : BaseState>(private val initialState: S) : ViewModel(), CoroutineScope {
-    private val job = Job()
+    private val job = SupervisorJob()
     private val internalState = MutableLiveData<S>().apply { value = initialState }
 
     override val coroutineContext: CoroutineContext = Dispatchers.Main + job
@@ -25,7 +22,7 @@ abstract class BaseViewModel<A : BaseAction, S : BaseState>(private val initialS
     }
 
     override fun onCleared() {
-        job.cancel()
+        coroutineContext.cancelChildren()
     }
 
     @MainThread
