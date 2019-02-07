@@ -75,6 +75,7 @@ android {
 dependencies {
     api project(':data')
     api project(':provider-japscan')
+    api project(':provider-mock')
     api project(':worker')
     api project(':interactors')
 
@@ -116,6 +117,10 @@ dependencies {
     implementation "org.koin:koin-androidx-viewmodel:${versions.koin}"
 
     implementation "com.reddit:indicator-fast-scroll:${versions.reddit_indicator}"
+
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:${versions.leak_canary}"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${versions.leak_canary}"
+    debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:${versions.leak_canary}"
 }
 
 String propOrDef(String propertyName, String defaultValue) {

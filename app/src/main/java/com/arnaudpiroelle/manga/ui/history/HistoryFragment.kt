@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.core.utils.setActionBar
 import kotlinx.android.synthetic.main.fragment_listing_history.*
@@ -17,7 +16,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class HistoryFragment : Fragment() {
 
     private val viewModel: HistoriesViewModel by viewModel()
-    private val adapter by lazy { HistoryAdapter() }
+    private val adapter = HistoryAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,20 +39,16 @@ class HistoryFragment : Fragment() {
         list_history.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.HORIZONTAL))
         list_history.adapter = adapter
 
-        list_history.addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener {
-            override fun onChildViewDetachedFromWindow(view: View) {
-                checkScroll()
-            }
-
-            override fun onChildViewAttachedToWindow(view: View) {
-                checkScroll()
-            }
-        })
-
         viewModel.histories.observe(this, Observer {
             adapter.submitList(it)
         })
 
+    }
+
+    override fun onDestroyView() {
+        list_history.adapter = null
+
+        super.onDestroyView()
     }
 
     private fun checkScroll() {

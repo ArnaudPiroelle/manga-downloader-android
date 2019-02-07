@@ -38,7 +38,8 @@ buildscript {
             'stetho'               : '1.5.0',
             'robolectric'          : '4.0.2',
             'reddit_indicator'     : '1.1.0-beta1',
-            'storage_chooser'      : '2.0.4.2'
+            'storage_chooser'      : '2.0.4.2',
+            'leak_canary'          : '1.6.3'
     ]
 
     ext.buildConfig = [

@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.core.utils.bind
 import com.arnaudpiroelle.manga.core.utils.distinctUntilChanged
@@ -53,16 +52,6 @@ class MangaListingFragment : Fragment(), MangaListingAdapter.Callback {
             navController.navigate(R.id.action_add_manga)
         }
 
-        list_manga.addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener {
-            override fun onChildViewDetachedFromWindow(view: View) {
-                checkScroll()
-            }
-
-            override fun onChildViewAttachedToWindow(view: View) {
-                checkScroll()
-            }
-        })
-
         viewModel.mangas.bind(this, this::onMangasChanged)
         viewModel.state.map { it.notificationResId }.distinctUntilChanged().bind(this, this::onNotificationChanged)
     }
@@ -88,6 +77,11 @@ class MangaListingFragment : Fragment(), MangaListingAdapter.Callback {
         super.onPause()
     }
 
+    override fun onDestroyView() {
+        list_manga.adapter = null
+
+        super.onDestroyView()
+    }
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_manga_listing, menu)
     }
