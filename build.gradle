@@ -3,7 +3,7 @@ buildscript {
     ext.versions = [
             'android_gradle'       : '3.3.0',
             'androidx'             : [
-                    'appcompat'        : '1.1.0-alpha01',
+                    'appcompat'        : '1.1.0-alpha02',
                     'preference'       : '1.0.0',
                     'browser'          : '1.0.0',
                     'constraint_layout': '2.0.0-alpha3',
@@ -18,7 +18,7 @@ buildscript {
                     'test'             : '1.1.0',
                     'espresso'         : '3.1.1',
                     'worker'           : '1.0.0-beta03',
-                    'navigation'       : '1.0.0-alpha11'
+                    'navigation'       : '1.0.0-rc01'
             ],
             'epoxy'                : '3.0.0-rc1',
             'fabric'               : '1.25.4',

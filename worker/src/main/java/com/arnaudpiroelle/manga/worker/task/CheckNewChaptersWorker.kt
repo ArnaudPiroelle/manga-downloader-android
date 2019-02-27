@@ -36,7 +36,11 @@ class CheckNewChaptersWorker(context: Context, workerParams: WorkerParameters) :
                 checkManga(manga)
             }
 
-            val chapters = chapterDao.getByStatus(Chapter.Status.WANTED)
+            val wantedChapters= chapterDao.getByStatus(Chapter.Status.WANTED)
+            val errorChapters= chapterDao.getByStatus(Chapter.Status.ERROR)
+            val chapters = listOf(wantedChapters, errorChapters).flatten()
+
+            println(chapters)
             taskManager.scheduleDownloadChapter(chapters.map { it.id })
 
             Timber.d("CheckNewChaptersWorker ended with success")
