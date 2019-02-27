@@ -1,1 +1,1 @@
-include ':app', ':provider-japscan', ':api', ':data', ':worker', ':interactors', ':provider-mock'
+include ':app', ':provider-japscan', ':api', ':data', ':worker', ':interactors', ':provider-mock', ':provider-japscan-proxy'

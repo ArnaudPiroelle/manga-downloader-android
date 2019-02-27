@@ -74,8 +74,7 @@ android {
 
 dependencies {
     api project(':data')
-    api project(':provider-japscan')
-    api project(':provider-mock')
+    api project(':provider-japscan-proxy')
     api project(':worker')
     api project(':interactors')
 
