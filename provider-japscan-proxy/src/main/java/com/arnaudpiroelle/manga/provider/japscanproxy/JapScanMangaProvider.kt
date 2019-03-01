@@ -1,9 +1,6 @@
 package com.arnaudpiroelle.manga.provider.japscanproxy
 
-import com.arnaudpiroelle.manga.api.model.Chapter
-import com.arnaudpiroelle.manga.api.model.Manga
-import com.arnaudpiroelle.manga.api.model.Page
-import com.arnaudpiroelle.manga.api.model.PostProcessType
+import com.arnaudpiroelle.manga.api.model.*
 import com.arnaudpiroelle.manga.api.provider.MangaProvider
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -29,9 +26,21 @@ class JapScanMangaProvider(val okHttpClient: OkHttpClient) : MangaProvider {
 
     }
 
-    override fun findChapters(mangaAlias: String): List<Chapter> {
+    override fun findDetails(mangaAlias: String): MangaDetails {
         val request = Request.Builder()
                 .url("${BuildConfig.JAPSCAN_PROXY_BASE_URL}/mangas/$mangaAlias")
+                .build()
+
+        val response = okHttpClient.newCall(request).execute()
+        val string = response.body()?.string()
+
+        println(string)
+        return gson.fromJson(string, MangaDetails::class.java)
+    }
+
+    override fun findChapters(mangaAlias: String): List<Chapter> {
+        val request = Request.Builder()
+                .url("${BuildConfig.JAPSCAN_PROXY_BASE_URL}/mangas/$mangaAlias/chapters")
                 .build()
 
         val response = okHttpClient.newCall(request).execute()
@@ -42,7 +51,7 @@ class JapScanMangaProvider(val okHttpClient: OkHttpClient) : MangaProvider {
 
     override fun findPages(mangaAlias: String, chapterNumber: String): List<Page> {
         val request = Request.Builder()
-                .url("${BuildConfig.JAPSCAN_PROXY_BASE_URL}/mangas/$mangaAlias/$chapterNumber")
+                .url("${BuildConfig.JAPSCAN_PROXY_BASE_URL}/mangas/$mangaAlias/chapters/$chapterNumber")
                 .build()
 
         val response = okHttpClient.newCall(request).execute()

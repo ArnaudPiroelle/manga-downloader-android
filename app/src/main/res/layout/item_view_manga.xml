@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:fontFamily="@font/google_sans"
-                android:lines="2"
+                android:maxLines="2"
                 android:textColor="@color/text_body"
                 tools:text="@sample/mangas.json/data/name" />
         </LinearLayout>

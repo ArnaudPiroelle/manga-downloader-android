@@ -8,7 +8,6 @@ import com.arnaudpiroelle.manga.core.inject.viewModels
 import com.arnaudpiroelle.manga.data.dataModule
 import com.arnaudpiroelle.manga.interactors.interactors
 import com.arnaudpiroelle.manga.provider.japscanproxy.JapScan
-import com.arnaudpiroelle.manga.worker.TaskManager
 import com.arnaudpiroelle.manga.worker.notification.NotificationCenter
 import com.arnaudpiroelle.manga.worker.workerModule
 import com.facebook.stetho.Stetho
@@ -37,10 +36,7 @@ class MangaApplication : Application(), KoinComponent {
 
         startKoin(this, listOf(androidModule, applicationModule, viewModels, dataModule, workerModule, interactors))
 
-        val taskManager: TaskManager = get()
         val notificationCenter: NotificationCenter = get()
-
-        taskManager.schedulePeriodicCheckNewChapters()
         notificationCenter.createChannelNotification()
     }
 }

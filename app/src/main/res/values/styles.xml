@@ -11,7 +11,7 @@
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
         <item name="android:navigationBarColor">@color/highlight_light</item>
-        <item name="android:statusBarColor">@android:color/white</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
 
         <item name="android:fontFamily">@font/google_sans</item>
         <item name="preferenceTheme">@style/AppTheme.Preferences</item>

@@ -28,7 +28,7 @@ class MangaListingViewModel(private val mangaDao: MangaDao, private val taskMana
     }
 
     private fun startSyncJob() {
-        taskManager.scheduleManualCheckNewChapters()
+        taskManager.schedulePeriodicCheckNewChapters()
         updateState { state -> state.copy(notificationResId = R.string.notify_sync_started) }
     }
 

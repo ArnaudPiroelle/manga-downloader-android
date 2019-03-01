@@ -1,5 +1,6 @@
 package com.arnaudpiroelle.manga.data.dao
 
+import androidx.paging.DataSource
 import androidx.room.*
 import com.arnaudpiroelle.manga.data.model.Chapter
 import com.arnaudpiroelle.manga.data.model.Chapter.Status
@@ -27,5 +28,8 @@ interface ChapterDao {
 
     @Query("SELECT * FROM chapters where mangaId = :mangaId and number = :number and status = :status")
     fun getByNumberAndStatus(mangaId: Long, number: String, status: Status): Chapter?
+
+    @Query("SELECT * FROM chapters WHERE mangaId = :mangaId ORDER BY id DESC")
+    fun observeAll(mangaId: Long): DataSource.Factory<Int, Chapter>
 
 }

@@ -4,7 +4,8 @@
     android:id="@+id/manga_listing_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    android:fitsSystemWindows="true">
 
     <include layout="@layout/include_title" />
 
@@ -13,24 +14,25 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:layout_marginTop="4dp"
         android:paddingStart="4dp"
+        android:paddingTop="?android:attr/actionBarSize"
         android:paddingEnd="4dp"
         android:paddingBottom="90dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         tools:listitem="@layout/item_view_manga"
         tools:spanCount="3" />
 
     <include layout="@layout/include_bottombar" />
 
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_manga"
         style="@style/Widget.MaterialComponents.FloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:layout_marginBottom="28dp"
+        android:visibility="gone"
         app:layout_anchor="@+id/bar"
         app:srcCompat="@drawable/ic_add_white_24dp" />
 

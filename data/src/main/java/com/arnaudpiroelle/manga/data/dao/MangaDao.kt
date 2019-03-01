@@ -29,6 +29,9 @@ interface MangaDao {
     @Delete
     fun delete(manga: Manga)
 
+    @Query("DELETE FROM mangas WHERE id = :mangaId")
+    fun deleteById(mangaId: Long)
+
     @Update
     fun update(manga: Manga)
 

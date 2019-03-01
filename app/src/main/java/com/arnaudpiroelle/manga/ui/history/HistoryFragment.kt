@@ -10,7 +10,6 @@ import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.core.utils.setActionBar
 import kotlinx.android.synthetic.main.fragment_listing_history.*
 import kotlinx.android.synthetic.main.include_bottombar.*
-import kotlinx.android.synthetic.main.include_title.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HistoryFragment : Fragment() {
@@ -31,7 +30,7 @@ class HistoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        title.setText(R.string.title_history)
+        //title.setText(R.string.title_history)
         setActionBar(bar)
 
         val linearLayoutManager = LinearLayoutManager(activity)

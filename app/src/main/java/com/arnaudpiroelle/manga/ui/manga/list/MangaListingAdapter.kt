@@ -7,7 +7,7 @@ import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.core.utils.inflate
 import com.arnaudpiroelle.manga.data.model.Manga
 
-class MangaListingAdapter(val callback: Callback) : PagedListAdapter<Manga, MangaViewHolder>(MangaDiff) {
+class MangaListingAdapter(private val callback: Callback) : PagedListAdapter<Manga, MangaViewHolder>(MangaDiff) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MangaViewHolder {
         return MangaViewHolder(parent.inflate(R.layout.item_view_manga, false))
     }
@@ -17,7 +17,7 @@ class MangaListingAdapter(val callback: Callback) : PagedListAdapter<Manga, Mang
     }
 
     interface Callback {
-        fun onMangaSelected(manga: Manga)
+        fun onMangaClick(manga: Manga)
     }
 }
 

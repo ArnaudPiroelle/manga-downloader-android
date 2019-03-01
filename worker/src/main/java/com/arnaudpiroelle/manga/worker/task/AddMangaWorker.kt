@@ -35,17 +35,28 @@ class AddMangaWorker(context: Context, workerParams: WorkerParameters) : Worker(
 
 
         try {
+            val details = provider.findDetails(manga.alias)
             val chapters = provider.findChapters(manga.alias)
             val firstChapter = chapters.firstOrNull()
 
-            if (firstChapter != null) {
+            val thumbnail = if (firstChapter != null) {
                 val pages = provider.findPages(manga.alias, firstChapter.chapterNumber)
-                val firstPage = pages.firstOrNull()
-
-                if (firstPage != null) {
-                    mangaDao.update(manga.copy(thumbnail = firstPage.url, status = Manga.Status.INITIALIZED))
-                }
+                pages.firstOrNull()?.url ?: ""
+            } else {
+                ""
             }
+
+            val copy = manga.copy(
+                    thumbnail = thumbnail,
+                    status = Manga.Status.INITIALIZED,
+                    author = details.author,
+                    kind = details.kind,
+                    origin = details.origin,
+                    summary = details.summary,
+                    type = details.type,
+                    year = details.year
+            )
+            mangaDao.update(copy)
 
             Timber.d("AddMangaWorker ended with success")
 

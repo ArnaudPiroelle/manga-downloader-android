@@ -19,7 +19,7 @@ class MangaViewHolder(view: View) : RecyclerView.ViewHolder(view) {
                     .into(itemView.manga_thumbnail)
 
             itemView.setOnClickListener {
-                callback.onMangaSelected(manga)
+                callback.onMangaClick(manga)
             }
         }
 

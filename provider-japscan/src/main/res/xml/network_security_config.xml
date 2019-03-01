@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<network-security-config>
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">www.japscan.cc</domain>
-        <domain includeSubdomains="true">blue15cdn.net</domain>
-    </domain-config>
-</network-security-config>
