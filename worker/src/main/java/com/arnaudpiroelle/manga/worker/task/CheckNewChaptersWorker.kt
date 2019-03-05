@@ -11,6 +11,7 @@ import com.arnaudpiroelle.manga.data.model.Manga
 import com.arnaudpiroelle.manga.worker.TaskManager
 import com.arnaudpiroelle.manga.worker.notification.NotificationCenter
 import com.arnaudpiroelle.manga.worker.notification.NotificationCenter.Notification.*
+import com.arnaudpiroelle.manga.worker.utils.FileHelper
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
 import timber.log.Timber
@@ -22,6 +23,7 @@ class CheckNewChaptersWorker(context: Context, workerParams: WorkerParameters) :
     private val chapterDao: ChapterDao by inject()
     private val providerRegistry: ProviderRegistry by inject()
     private val taskManager: TaskManager by inject()
+    private val fileHelper: FileHelper by inject()
 
     override fun doWork(): Result {
         Timber.d("CheckNewChaptersWorker started")
@@ -71,9 +73,15 @@ class CheckNewChaptersWorker(context: Context, workerParams: WorkerParameters) :
         chapters.forEachIndexed { index, chapter ->
             val existingChapter = chapterDao.getByNumber(manga.id, chapter.chapterNumber)
             if (existingChapter == null) {
-                val newStatus = Chapter.Status.SKIPPED
-                val newChapter = Chapter(name = chapter.name, number = chapter.chapterNumber, mangaId = manga.id, status = newStatus)
-                chapterDao.insert(newChapter)
+                val newChapter = Chapter(name = chapter.name, number = chapter.chapterNumber, mangaId = manga.id, status = Chapter.Status.SKIPPED)
+
+                val cbzFile = fileHelper.getChapterCBZFile(manga, newChapter)
+                val newStatus = if (cbzFile.exists()) {
+                    Chapter.Status.DOWNLOADED
+                } else {
+                    Chapter.Status.SKIPPED
+                }
+                chapterDao.insert(newChapter.copy(status = newStatus))
             }
 
         }
@@ -86,7 +94,15 @@ class CheckNewChaptersWorker(context: Context, workerParams: WorkerParameters) :
             val existingChapter = chapterDao.getByNumber(manga.id, chapter.chapterNumber)
             if (existingChapter == null) {
                 val newChapter = Chapter(name = chapter.name, number = chapter.chapterNumber, mangaId = manga.id, status = Chapter.Status.WANTED)
-                chapterDao.insert(newChapter)
+
+                val cbzFile = fileHelper.getChapterCBZFile(manga, newChapter)
+                val newStatus = if (cbzFile.exists()) {
+                    Chapter.Status.DOWNLOADED
+                } else {
+                    Chapter.Status.WANTED
+                }
+
+                chapterDao.insert(newChapter.copy(status = newStatus))
             }
         }
     }
