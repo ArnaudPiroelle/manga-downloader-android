@@ -36,8 +36,8 @@ class CheckNewChaptersWorker(context: Context, workerParams: WorkerParameters) :
                 checkManga(manga)
             }
 
-            val wantedChapters= chapterDao.getByStatus(Chapter.Status.WANTED)
-            val errorChapters= chapterDao.getByStatus(Chapter.Status.ERROR)
+            val wantedChapters = chapterDao.getByStatus(Chapter.Status.WANTED)
+            val errorChapters = chapterDao.getByStatus(Chapter.Status.ERROR)
             val chapters = listOf(wantedChapters, errorChapters).flatten()
 
             println(chapters)
@@ -71,12 +71,7 @@ class CheckNewChaptersWorker(context: Context, workerParams: WorkerParameters) :
         chapters.forEachIndexed { index, chapter ->
             val existingChapter = chapterDao.getByNumber(manga.id, chapter.chapterNumber)
             if (existingChapter == null) {
-                val newStatus = if (index == chapters.lastIndex) {
-                    Chapter.Status.WANTED
-                } else {
-                    Chapter.Status.SKIPPED
-                }
-
+                val newStatus = Chapter.Status.SKIPPED
                 val newChapter = Chapter(name = chapter.name, number = chapter.chapterNumber, mangaId = manga.id, status = newStatus)
                 chapterDao.insert(newChapter)
             }
