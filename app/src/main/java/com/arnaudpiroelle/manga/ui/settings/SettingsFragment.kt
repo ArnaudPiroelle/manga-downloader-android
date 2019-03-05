@@ -8,6 +8,7 @@ import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.core.utils.setActionBar
 import com.arnaudpiroelle.manga.worker.utils.PreferencesHelper
 import kotlinx.android.synthetic.main.include_bottombar.*
+import kotlinx.android.synthetic.main.include_title.*
 import org.koin.android.ext.android.inject
 
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -16,7 +17,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onResume() {
         super.onResume()
 
-        //title.setText(R.string.title_settings)
+        title.setText(R.string.title_settings)
         setActionBar(bar)
     }
 

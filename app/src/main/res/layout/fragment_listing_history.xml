@@ -3,12 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/history_listing_content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <include layout="@layout/include_title" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_history"
+        android:overScrollMode="never"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"

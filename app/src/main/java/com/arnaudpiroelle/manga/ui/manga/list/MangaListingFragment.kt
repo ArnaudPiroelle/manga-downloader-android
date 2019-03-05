@@ -18,6 +18,7 @@ import com.arnaudpiroelle.manga.ui.manga.list.MangaListingFragmentDirections.act
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_listing_manga.*
 import kotlinx.android.synthetic.main.include_bottombar.*
+import kotlinx.android.synthetic.main.include_title.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -40,7 +41,7 @@ class MangaListingFragment : Fragment(), MangaListingAdapter.Callback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //title.setText(R.string.title_mymangas)
+        title.setText(R.string.title_mymangas)
         setActionBar(bar)
 
         val gridLayoutManager = GridLayoutManager(activity, 3)
