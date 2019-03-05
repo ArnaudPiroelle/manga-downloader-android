@@ -4,9 +4,11 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.arnaudpiroelle.manga.data.dao.ChapterDao
 import com.arnaudpiroelle.manga.data.dao.MangaDao
+import com.arnaudpiroelle.manga.data.model.Chapter
+import com.arnaudpiroelle.manga.data.model.Chapter.Status.WANTED
 import com.arnaudpiroelle.manga.ui.common.BaseViewModel
 import com.arnaudpiroelle.manga.ui.manga.details.MangaDetailsContext.Action
-import com.arnaudpiroelle.manga.ui.manga.details.MangaDetailsContext.Action.LoadMangaInformations
+import com.arnaudpiroelle.manga.ui.manga.details.MangaDetailsContext.Action.*
 import com.arnaudpiroelle.manga.ui.manga.details.MangaDetailsContext.State
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -23,7 +25,21 @@ class MangaDetailsViewModel(private val mangaDao: MangaDao, private val chapterD
     override suspend fun onHandle(action: Action) {
         when (action) {
             is LoadMangaInformations -> loadMangaInformations()
-            is Action.RemoveMangaAction -> removeManga(action.mangaId)
+            is RemoveMangaAction -> removeManga(action.mangaId)
+            is ChangeChapterStatusAction -> changeChapterStatus(action.item)
+            is ChangeAllChaptersStatusAction -> changeAllChaptersStatus()
+        }
+    }
+
+    private suspend fun changeAllChaptersStatus() {
+        withContext(Dispatchers.IO) {
+            chapterDao.setAllChaptersStatusAs(mangaId, WANTED)
+        }
+    }
+
+    private suspend fun changeChapterStatus(item: Chapter) {
+        withContext(Dispatchers.IO) {
+            chapterDao.update(item.copy(status = WANTED))
         }
     }
 

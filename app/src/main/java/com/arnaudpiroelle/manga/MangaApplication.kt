@@ -10,12 +10,15 @@ import com.arnaudpiroelle.manga.interactors.interactors
 import com.arnaudpiroelle.manga.provider.japscanproxy.JapScan
 import com.arnaudpiroelle.manga.worker.notification.NotificationCenter
 import com.arnaudpiroelle.manga.worker.workerModule
+import com.bumptech.glide.annotation.GlideModule
+import com.bumptech.glide.module.AppGlideModule
 import com.facebook.stetho.Stetho
 import com.squareup.leakcanary.LeakCanary
 import org.koin.android.ext.android.startKoin
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.get
 import timber.log.Timber
+
 
 class MangaApplication : Application(), KoinComponent {
 
@@ -40,3 +43,6 @@ class MangaApplication : Application(), KoinComponent {
         notificationCenter.createChannelNotification()
     }
 }
+
+@GlideModule
+class MyAppGlideModule : AppGlideModule()

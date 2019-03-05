@@ -17,6 +17,14 @@
     <color name="task_status_in_progress">#275591</color>
     <color name="task_status_done">#00FF00</color>
     <color name="task_status_error">#f44336</color>
-    <color name="text_body">#191919</color>
+    <color name="text_body">#01081f</color>
+
+    <color name="status_bar_scrim_translucent">#26FFFFFF</color>
+
+    <color name="error_status">#f4a29a</color>
+    <color name="wanted_status">#fad275</color>
+    <color name="downloaded_status">#bde0c2</color>
+    <color name="downloading_status">#e2b1e9</color>
+    <color name="skipped_status">#b4d5e2</color>
 
 </resources>

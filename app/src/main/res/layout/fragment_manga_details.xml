@@ -10,149 +10,104 @@
     app:layoutDescription="@xml/details_scene"
     tools:showPaths="true">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbar"
-        android:layout_width="match_parent"
-        android:layout_height="140dp"
+    <ImageView
+        android:id="@+id/details_backdrop"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="#FF0000"
+        android:elevation="0dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="@id/details_appbar_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/status_bar_anchor"
-        app:liftOnScroll="true">
-
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fitsSystemWindows="false"
-            android:minHeight="?actionBarSize"
-            app:layout_collapseMode="pin"
-            app:navigationIcon="@drawable/ic_arrow_back"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/thumbnail_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:elevation="20dp"
-        app:cardCornerRadius="4dp"
-        app:layout_constraintBottom_toBottomOf="@+id/appbar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appbar"
-        app:liftOnScroll="true">
-
-        <ImageView
-            android:id="@+id/thumbnail"
-            android:layout_width="100dp"
-            android:layout_height="150dp"
-            android:background="#D0D0D0"
-            android:scaleType="centerCrop" />
-    </androidx.cardview.widget.CardView>
-
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
-        android:textAppearance="@style/TextAppearance.ToolbarTitle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/thumbnail_container"
-        app:layout_constraintTop_toBottomOf="@+id/appbar"
-        tools:text="One Piece" />
-
-    <TextView
-        android:id="@+id/origin"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:text="Japon"
-        app:layout_constraintStart_toStartOf="@+id/title"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
-
-    <TextView
-        android:id="@+id/year"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:text="2018"
-        app:layout_constraintStart_toEndOf="@+id/origin"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
-
-    <TextView
-        android:id="@+id/type"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:text="Shōnen"
-        app:layout_constraintStart_toEndOf="@+id/year"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
-
-
-    <TextView
-        android:id="@+id/authors"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Romain Lemaire"
-        app:layout_constraintStart_toStartOf="@+id/title"
-        app:layout_constraintTop_toBottomOf="@+id/year" />
-
-    <LinearLayout
-        android:id="@+id/summary_container"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/authors">
-
-        <TextView
-            android:id="@+id/summary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="3"
-            tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." />
-
-
-        <TextView
-            android:id="@+id/plus_summary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:padding="4dp"
-            android:text="Plus"
-            android:textColor="@color/text_body"
-            android:textSize="12sp" />
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
-        android:id="@+id/status_bar_anchor"
+        android:id="@+id/details_backdrop_scrim"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="@id/details_backdrop"
+        app:layout_constraintEnd_toEndOf="@id/details_backdrop"
+        app:layout_constraintStart_toStartOf="@id/details_backdrop"
+        app:layout_constraintTop_toTopOf="@id/details_backdrop" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/details_poster_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#C9C9C9"
+        android:transformPivotX="0px"
+        android:transformPivotY="0px"
+        android:transitionName="poster">
+
+        <ImageView
+            android:id="@+id/details_poster"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+
+    </androidx.cardview.widget.CardView>
+
+    <View
+        android:id="@+id/details_gap_filler"
         android:layout_width="match_parent"
-        android:layout_height="0px" />
+        android:layout_height="2px"
+        android:background="?android:attr/colorBackground"
+        app:layout_constraintBottom_toTopOf="@id/chapters_list" />
+
+    <app.tivi.ui.widget.TopRoundedBackgroundView
+        android:id="@+id/details_appbar_background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:backgroundColor="?android:attr/colorBackground"
+        app:radius="16dp" />
+
+    <TextView
+        android:id="@+id/details_title"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:ellipsize="end"
+        android:lineSpacingMultiplier="0.85"
+        android:textAppearance="?attr/textAppearanceHeadline6" />
+
+    <TextView
+        android:id="@+id/details_subtitle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:ellipsize="end"
+        android:lines="2"
+        android:textColor="@color/text_body"
+        tools:text="Drama // Fantasy" />
+
+    <com.arnaudpiroelle.manga.ui.widgets.TintingToolbar
+        android:id="@+id/details_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:layout_constraintTop_toBottomOf="@id/details_status_bar_anchor"
+        app:navigationIcon="?attr/homeAsUpIndicator" />
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chapters_list"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:background="@android:color/white"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/summary_container"
+        app:layout_constraintTop_toBottomOf="@id/details_appbar_background"
         tools:listitem="@layout/item_view_chapter" />
+
+    <View
+        android:id="@+id/details_status_bar_anchor"
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:elevation="0dp"
+        android:background="@color/status_bar_scrim_translucent"/>
 
 
 </androidx.constraintlayout.motion.widget.MotionLayout>

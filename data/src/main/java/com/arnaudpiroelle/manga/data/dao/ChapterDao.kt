@@ -17,6 +17,9 @@ interface ChapterDao {
     @Update
     fun update(chapter: Chapter)
 
+    @Query("UPDATE chapters SET status = :status where mangaId = :mangaId")
+    fun setAllChaptersStatusAs(mangaId: Long, status: Status)
+
     @Query("SELECT * from chapters where id = :id")
     fun getById(id: Long): Chapter?
 
