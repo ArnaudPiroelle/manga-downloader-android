@@ -70,7 +70,7 @@ class CheckNewChaptersWorker(context: Context, workerParams: WorkerParameters) :
     }
 
     private fun fetchInitializedManga(manga: Manga, chapters: List<com.arnaudpiroelle.manga.api.model.Chapter>) {
-        chapters.forEachIndexed { index, chapter ->
+        chapters.forEachIndexed { _, chapter ->
             val existingChapter = chapterDao.getByNumber(manga.id, chapter.chapterNumber)
             if (existingChapter == null) {
                 val newChapter = Chapter(name = chapter.name, number = chapter.chapterNumber, mangaId = manga.id, status = Chapter.Status.SKIPPED)
@@ -82,6 +82,8 @@ class CheckNewChaptersWorker(context: Context, workerParams: WorkerParameters) :
                     Chapter.Status.SKIPPED
                 }
                 chapterDao.insert(newChapter.copy(status = newStatus))
+            } else {
+                chapterDao.update(existingChapter.copy(name = chapter.name))
             }
 
         }
@@ -103,6 +105,8 @@ class CheckNewChaptersWorker(context: Context, workerParams: WorkerParameters) :
                 }
 
                 chapterDao.insert(newChapter.copy(status = newStatus))
+            } else {
+                chapterDao.update(existingChapter.copy(name = chapter.name))
             }
         }
     }
