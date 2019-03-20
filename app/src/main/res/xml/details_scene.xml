@@ -22,28 +22,20 @@
                     app:customFloatValue="1" />
             </KeyAttribute>
 
-            <KeyPosition
-                app:framePosition="20"
-                app:keyPositionType="deltaRelative"
-                app:percentX="0.5"
-                app:percentY="0.8"
+            <KeyAttribute
+                android:alpha="0"
+                app:framePosition="40"
+                android:scaleX="1"
+                android:scaleY="1"
                 app:target="@id/details_poster_container" />
-
-            <!-- This looks weird. We need a quick change from elevated to not-so-elevated at 20% so we set 2 key
-                 attributes, one at 20% and other at 25%. -->
 
             <KeyAttribute
-                android:elevation="0dp"
-                app:framePosition="20"
+                android:alpha="0"
+                app:framePosition="60"
+                android:scaleX="0"
+                android:scaleY="0"
                 app:target="@id/details_poster_container" />
 
-
-            <KeyPosition
-                app:framePosition="40"
-                app:keyPositionType="deltaRelative"
-                app:percentX="1"
-                app:percentY="0.6"
-                app:target="@id/details_poster_container" />
 
             <!-- Only elevate the appbar background over the last 25% -->
             <KeyAttribute
@@ -200,13 +192,16 @@
 
         <Constraint
             android:id="@id/details_poster_container"
-            android:layout_width="72dp"
+            android:layout_width="80dp"
             android:layout_height="0dp"
             android:layout_marginStart="16dp"
-            android:elevation="0dp"
+            android:elevation="4dp"
+            android:alpha="0"
+            android:scaleX="0"
+            android:scaleY="0"
             app:layout_constraintDimensionRatio="h,1:1.5"
-            app:layout_constraintStart_toStartOf="@id/details_title"
-            app:layout_constraintTop_toBottomOf="@id/details_status_bar_anchor" />
+            app:layout_constraintStart_toStartOf="@id/chapters_list"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Constraint
             android:id="@id/details_status_bar_anchor"

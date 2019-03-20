@@ -38,8 +38,7 @@
         android:layout_height="0dp"
         android:background="#C9C9C9"
         android:transformPivotX="0px"
-        android:transformPivotY="0px"
-        android:transitionName="poster">
+        android:transformPivotY="0px">
 
         <ImageView
             android:id="@+id/details_poster"
@@ -106,8 +105,8 @@
         android:id="@+id/details_status_bar_anchor"
         android:layout_width="match_parent"
         android:layout_height="0px"
-        android:elevation="0dp"
-        android:background="@color/status_bar_scrim_translucent"/>
+        android:background="@color/status_bar_scrim_translucent"
+        android:elevation="0dp" />
 
 
 </androidx.constraintlayout.motion.widget.MotionLayout>
