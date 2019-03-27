@@ -14,13 +14,7 @@ class ChapterViewHolder(view: View, private val callback: Callback?) : RecyclerV
 
         } else {
 
-            val name = if (volumeRegex.matches(item.number)) {
-                computeVolumeName(item)
-            } else {
-                computeChapterName(item)
-            }
-
-            itemView.chapter_name.text = name
+            itemView.chapter_name.text = item.name
             itemView.chapter_status.text = item.status.name
             val color = when (item.status) {
                 Chapter.Status.WANTED -> R.color.wanted_status
@@ -33,20 +27,6 @@ class ChapterViewHolder(view: View, private val callback: Callback?) : RecyclerV
             itemView.chapter_status.setOnClickListener {
                 callback?.onChapterStatusClicked(item)
             }
-        }
-    }
-
-    private fun computeVolumeName(item: Chapter): String {
-        val (number) = volumeRegex.matchEntire(item.number)?.destructured ?: return item.number
-        return "Volume $number"
-    }
-
-    private fun computeChapterName(item: Chapter): String {
-        val values = item.name.split(":")
-        return if (values.size > 1) {
-            "Chap. ${item.number} : ${values[1]}"
-        } else {
-            "Chap. ${item.number}"
         }
     }
 
