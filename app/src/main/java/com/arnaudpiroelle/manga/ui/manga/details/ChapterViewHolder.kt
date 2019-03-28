@@ -34,7 +34,4 @@ class ChapterViewHolder(view: View, private val callback: Callback?) : RecyclerV
         fun onChapterStatusClicked(item: Chapter)
     }
 
-    companion object {
-        val volumeRegex = "volume-([0-9]+)".toRegex()
-    }
 }

@@ -14,7 +14,7 @@
         <shape>
             <solid
                 android:width="2dp"
-                android:color="#0a78e3" />
+                android:color="#FFFFFF" />
             <corners android:radius="4dp" />
         </shape>
     </item>

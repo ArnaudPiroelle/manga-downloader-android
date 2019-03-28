@@ -8,6 +8,7 @@ import com.arnaudpiroelle.manga.core.utils.inflate
 import com.arnaudpiroelle.manga.data.model.Chapter
 
 class MangaDetailsAdapter(private val callback: ChapterViewHolder.Callback) : PagedListAdapter<Chapter, ChapterViewHolder>(ChapterDiff) {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChapterViewHolder {
         return ChapterViewHolder(parent.inflate(R.layout.item_view_chapter, false), callback)
     }
@@ -15,6 +16,7 @@ class MangaDetailsAdapter(private val callback: ChapterViewHolder.Callback) : Pa
     override fun onBindViewHolder(holder: ChapterViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
+
 }
 
 object ChapterDiff : DiffUtil.ItemCallback<Chapter>() {

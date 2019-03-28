@@ -32,7 +32,6 @@
 
     <string name="prefs_header_storages">Storage</string>
 
-
     <string name="pref_compress_chapters_title">Compress chapters</string>
     <string name="pref_compress_chapters_summary">Compress each chapter into a CBZ file</string>
     <string name="message_hint">Hey!</string>
@@ -52,4 +51,5 @@
     <string name="retry">Retry</string>
     <string name="no_results">No results</string>
     <string name="notify_sync_started">Synchronisation started</string>
+    <string name="add_manga">Add new manga</string>
 </resources>
