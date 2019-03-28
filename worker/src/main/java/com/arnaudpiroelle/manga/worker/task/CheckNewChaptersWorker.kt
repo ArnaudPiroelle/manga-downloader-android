@@ -63,32 +63,9 @@ class CheckNewChaptersWorker(context: Context, workerParams: WorkerParameters) :
 
         val chapters = provider.findChapters(manga.alias)
         when (manga.status) {
-            Manga.Status.INITIALIZED -> fetchInitializedManga(manga, chapters)
             Manga.Status.ENABLED -> fetchNewChapters(manga, chapters)
             else -> Timber.d("Manga has ADDED or DISABLED status. It will be ignored.")
         }
-    }
-
-    private fun fetchInitializedManga(manga: Manga, chapters: List<com.arnaudpiroelle.manga.api.model.Chapter>) {
-        chapters.forEachIndexed { _, chapter ->
-            val existingChapter = chapterDao.getByNumber(manga.id, chapter.chapterNumber)
-            if (existingChapter == null) {
-                val newChapter = Chapter(name = chapter.name, number = chapter.chapterNumber, mangaId = manga.id, status = Chapter.Status.SKIPPED)
-
-                val cbzFile = fileHelper.getChapterCBZFile(manga, newChapter)
-                val newStatus = if (cbzFile.exists()) {
-                    Chapter.Status.DOWNLOADED
-                } else {
-                    Chapter.Status.SKIPPED
-                }
-                chapterDao.insert(newChapter.copy(status = newStatus))
-            } else {
-                chapterDao.update(existingChapter.copy(name = chapter.name))
-            }
-
-        }
-
-        mangaDao.update(manga.copy(status = Manga.Status.ENABLED))
     }
 
     private fun fetchNewChapters(manga: Manga, chapters: List<com.arnaudpiroelle.manga.api.model.Chapter>) {
