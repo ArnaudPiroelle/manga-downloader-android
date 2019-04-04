@@ -10,7 +10,7 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField 'String', 'JAPSCAN_PROXY_BASE_URL', '"http://seed.arnaudpiroelle.com:3000"'
+        buildConfigField 'String', 'JAPSCAN_PROXY_BASE_URL', '"https://japscan-proxy.herokuapp.com"'
     }
 
     buildTypes {
