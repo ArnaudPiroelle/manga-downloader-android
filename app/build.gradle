@@ -104,8 +104,8 @@ dependencies {
     implementation "androidx.room:room-runtime:${versions.androidx.room}"
     kapt "androidx.room:room-compiler:${versions.androidx.room}"
 
-    implementation "com.github.hotchemi:permissionsdispatcher:${versions.permission_dispatcher}"
-    kapt "com.github.hotchemi:permissionsdispatcher-processor:${versions.permission_dispatcher}"
+    implementation "org.permissionsdispatcher:permissionsdispatcher:${versions.permission_dispatcher}"
+    kapt "org.permissionsdispatcher:permissionsdispatcher-processor:${versions.permission_dispatcher}"
 
     implementation "com.github.bumptech.glide:glide:${versions.glide}"
     kapt "com.github.bumptech.glide:compiler:${versions.glide}"

@@ -34,7 +34,7 @@ buildscript {
             'junit'                : '4.12',
             'jsoup'                : '1.11.3',
             'timber'               : '4.7.1',
-            'permission_dispatcher': '4.0.0-alpha1',
+            'permission_dispatcher': '4.3.0',
             'stetho'               : '1.5.0',
             'robolectric'          : '4.0.2',
             'reddit_indicator'     : '1.1.0-beta1',
