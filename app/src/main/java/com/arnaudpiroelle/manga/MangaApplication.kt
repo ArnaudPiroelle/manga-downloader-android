@@ -13,7 +13,6 @@ import com.arnaudpiroelle.manga.worker.workerModule
 import com.bumptech.glide.annotation.GlideModule
 import com.bumptech.glide.module.AppGlideModule
 import com.facebook.stetho.Stetho
-import com.squareup.leakcanary.LeakCanary
 import org.koin.android.ext.android.startKoin
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.get
@@ -25,16 +24,11 @@ class MangaApplication : Application(), KoinComponent {
     override fun onCreate() {
         super.onCreate()
 
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            return
-        }
-
         if (BuildConfig.DEBUG) {
             Stetho.initializeWithDefaults(this)
             Timber.plant(Timber.DebugTree())
         }
 
-        LeakCanary.install(this)
         Mangas.with(JapScan())
 
         startKoin(this, listOf(androidModule, applicationModule, viewModels, dataModule, workerModule, interactors))

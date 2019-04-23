@@ -55,7 +55,7 @@
         android:background="?android:attr/colorBackground"
         app:layout_constraintBottom_toTopOf="@id/chapters_list" />
 
-    <app.tivi.ui.widget.TopRoundedBackgroundView
+    <com.arnaudpiroelle.manga.ui.widgets.TopRoundedBackgroundView
         android:id="@+id/details_appbar_background"
         android:layout_width="0dp"
         android:layout_height="0dp"

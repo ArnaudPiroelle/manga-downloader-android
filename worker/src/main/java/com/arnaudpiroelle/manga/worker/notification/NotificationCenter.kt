@@ -42,6 +42,7 @@ class NotificationCenter(
 
     private fun notifyDownloadEnded(id: Long, name: String, number: String, status: Chapter.Status) {
         //TODO: Fix summary notification
+        //TODO: Add status handler
 
         val summaryNotification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_SYNC)
                 .setContentTitle("Group")

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package app.tivi.ui.widget
+package com.arnaudpiroelle.manga.ui.widgets
 
 import android.content.Context
 import android.graphics.Color
@@ -60,7 +60,7 @@ class TopRoundedBackgroundView : View {
         }
 
     private fun syncCutSize() {
-        val shapeModel = shapeDrawable.shapeAppearanceModel ?: ShapeAppearanceModel()
+        val shapeModel = shapeDrawable.shapeAppearanceModel
         val newCutSize = lerp(0f, maxRadius, cutProgress)
 
         if (newCutSize != shapeModel.topLeftCorner?.cornerSize) {
