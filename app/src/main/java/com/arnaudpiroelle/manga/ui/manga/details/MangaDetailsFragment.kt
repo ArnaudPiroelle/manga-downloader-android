@@ -53,7 +53,7 @@ class MangaDetailsFragment : Fragment(), ChapterViewHolder.Callback {
             container.forEachConstraintSet {
                 it.constrainHeight(R.id.details_status_bar_anchor, insets.systemWindowInsetTop)
             }
-            container.rebuildMotion()
+            container.rebuildScene()
             // Just return insets
             insets
         }

@@ -147,6 +147,7 @@ class JapScanMangaProvider(val okHttpClient: OkHttpClient) : MangaProvider {
 
                 newBitmap2.recycle()
             }
+            else -> {}
         }
     }
 
