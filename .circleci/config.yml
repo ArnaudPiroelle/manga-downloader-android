@@ -6,9 +6,18 @@ executors:
       - image: circleci/android:api-28-alpha
     working_directory: ~/work
     environment:
-      JAVA_TOOL_OPTIONS: "-Xmx1536m"
       GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
       TERM: dumb
+
+commands:
+  store-artifacts:
+    description: "It stores Lint & Test artifacts"
+    parameters:
+      artifact-path:
+        type: string
+    steps:
+      - store_artifacts:
+          path: <<parameters.artifact-path>>
 
 jobs:
   build_and_test:
@@ -20,7 +29,12 @@ jobs:
           command: ./gradlew dependencies
       - run:
           name: Assemble apk for application and tests
-          command: ./gradlew :app:assembleDebug :app:assembleDebugAndroidTest
+          command: ./gradlew check :app:assembleDebug :app:assembleDebugAndroidTest
+      - run:
+          name: Gather Lint results
+          command: scripts/copy_lint_results.sh
+      - store-artifacts:
+          artifact-path: ci_results/lint
       - persist_to_workspace:
           root: .
           paths:
