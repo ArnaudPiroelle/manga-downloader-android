@@ -45,14 +45,14 @@ android {
             isMinifyEnabled = false
             isTestCoverageEnabled = true
 
-//            signingConfig signingConfigs . release
+            signingConfig = signingConfigs.getByName("release")
         }
 
         getByName("release") {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
 
-//            signingConfig signingConfigs . release
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 
