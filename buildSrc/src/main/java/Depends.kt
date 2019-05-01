@@ -37,7 +37,7 @@ object Depends {
     const val AppCompat = "androidx.appcompat:appcompat:1.1.0-alpha05"
     const val Preference = "androidx.preference:preference:1.0.0"
     const val Palette = "androidx.palette:palette:1.0.0"
-    const val ConstraintLayout = "androidx.constraintlayout:constraintlayout:2.0.0-alpha5"
+    const val ConstraintLayout = "androidx.constraintlayout:constraintlayout:2.0.0-alpha3"
     const val MaterialDesign = "com.google.android.material:material:1.1.0-alpha05"
     const val NavigationFragment = "android.arch.navigation:navigation-fragment-ktx:${Versions.navigationVersion}"
     const val NavigationUi = "android.arch.navigation:navigation-ui-ktx:${Versions.navigationVersion}"

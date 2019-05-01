@@ -12,18 +12,13 @@ Buy your manga;)
 ## Technical stack
 * Koin
 * OkHttp
-* RxJava2
 * Room
-* Jsoup
 * PermissionDispatcher
 * Kotlin
 
 ## TODO
-* Use LiveData
-* Use Coroutines
-* Use ViewModel
-* Use AutoBinding ?
-* Use Navigation Controller
+* Move to Coroutine Workers
+* Upgrade ConstraintLayout to alpha05
 
 ## Change logs
 

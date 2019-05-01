@@ -16,7 +16,7 @@
         <KeyFrameSet>
             <KeyAttribute
                 app:framePosition="0"
-                app:motionTarget="@+id/details_appbar_background">
+                app:target="@+id/details_appbar_background">
                 <CustomAttribute
                     app:attributeName="cutProgress"
                     app:customFloatValue="1" />
@@ -27,39 +27,39 @@
                 android:scaleX="1"
                 android:scaleY="1"
                 app:framePosition="40"
-                app:motionTarget="@+id/details_poster_container" />
+                app:target="@+id/details_poster_container" />
 
             <KeyAttribute
                 android:alpha="0"
                 android:scaleX="0"
                 android:scaleY="0"
                 app:framePosition="60"
-                app:motionTarget="@+id/details_poster_container" />
+                app:target="@+id/details_poster_container" />
 
 
             <!-- Only elevate the appbar background over the last 25% -->
             <KeyAttribute
                 android:elevation="0dp"
                 app:framePosition="75"
-                app:motionTarget="@+id/details_appbar_background" />
+                app:target="@+id/details_appbar_background" />
 
             <!-- We want the subtitle to fade out quickly, within the starting 75% -->
             <KeyAttribute
                 android:alpha="0"
                 app:framePosition="75"
-                app:motionTarget="@+id/details_subtitle" />
+                app:target="@+id/details_subtitle" />
 
             <!-- We only want to transition to opaque over the last 40% -->
             <KeyAttribute
                 app:framePosition="60"
-                app:motionTarget="@+id/details_status_bar_anchor">
+                app:target="@+id/details_status_bar_anchor">
                 <CustomAttribute
                     app:attributeName="backgroundColor"
                     app:customColorValue="@color/status_bar_scrim_translucent" />
             </KeyAttribute>
             <KeyAttribute
                 app:framePosition="45"
-                app:motionTarget="@+id/details_appbar_background">
+                app:target="@+id/details_appbar_background">
                 <CustomAttribute
                     app:attributeName="cutProgress"
                     app:customFloatValue="1" />
@@ -67,7 +67,7 @@
 
             <KeyAttribute
                 app:framePosition="75"
-                app:motionTarget="@+id/details_appbar_background">
+                app:target="@+id/details_appbar_background">
                 <CustomAttribute
                     app:attributeName="cutProgress"
                     app:customFloatValue="0" />
