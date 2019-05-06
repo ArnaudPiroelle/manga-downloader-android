@@ -7,60 +7,38 @@ import android.graphics.Rect
 import com.arnaudpiroelle.manga.api.model.*
 import com.arnaudpiroelle.manga.api.provider.MangaProvider
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 import java.io.File
 import java.io.FileOutputStream
 
-class JapScanMangaProvider(val okHttpClient: OkHttpClient) : MangaProvider {
+class JapScanMangaProvider(private val okHttpClient: OkHttpClient) : MangaProvider {
 
     private val gson = Gson()
+    private val retrofit = Retrofit.Builder()
+            .client(okHttpClient)
+            .baseUrl(BuildConfig.JAPSCAN_PROXY_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addCallAdapterFactory(CoroutineCallAdapterFactory())
+            .build()
+    private val japScanProxyApiService: JapScanProxyApiService = retrofit.create()
 
-    override fun findMangas(): List<Manga> {
-        val request = Request.Builder()
-                .url("${BuildConfig.JAPSCAN_PROXY_BASE_URL}/mangas/")
-                .build()
+    override suspend fun findMangas() = japScanProxyApiService.findMangas().await()
+            .map { Manga(it.name, it.alias, "JapScan") }
 
-        val response = okHttpClient.newCall(request).execute()
-        val fooType = object : TypeToken<List<JapScanManga>>() {}
-        val mangas: List<JapScanManga> = gson.fromJson(response.body()?.string(), fooType.type)
-
-        return mangas.map { Manga(it.name, it.alias, "JapScan") }
-
+    override suspend fun findDetails(mangaAlias: String): MangaDetails {
+        val details = japScanProxyApiService.findDetails(mangaAlias).await()
+        return MangaDetails(details.origin, details.year, details.type, details.kind, details.author, details.summary)
     }
 
-    override fun findDetails(mangaAlias: String): MangaDetails {
-        val request = Request.Builder()
-                .url("${BuildConfig.JAPSCAN_PROXY_BASE_URL}/mangas/$mangaAlias")
-                .build()
+    override suspend fun findChapters(mangaAlias: String) = japScanProxyApiService.findChapters(mangaAlias).await()
+            .map { Chapter(it.name, it.manga, it.number) }
 
-        val response = okHttpClient.newCall(request).execute()
-        val string = response.body()?.string()
-
-        println(string)
-        return gson.fromJson(string, MangaDetails::class.java)
-    }
-
-    override fun findChapters(mangaAlias: String): List<Chapter> {
-        val request = Request.Builder()
-                .url("${BuildConfig.JAPSCAN_PROXY_BASE_URL}/mangas/$mangaAlias/chapters")
-                .build()
-
-        val response = okHttpClient.newCall(request).execute()
-        val fooType = object : TypeToken<List<JapScanChapter>>() {}
-        val chapters: List<JapScanChapter> = gson.fromJson(response.body()?.string(), fooType.type)
-        return chapters.map { Chapter(it.name, it.manga, it.number) }
-    }
-
-    override fun findPages(mangaAlias: String, chapterNumber: String): List<Page> {
-        val request = Request.Builder()
-                .url("${BuildConfig.JAPSCAN_PROXY_BASE_URL}/mangas/$mangaAlias/chapters/$chapterNumber")
-                .build()
-
-        val response = okHttpClient.newCall(request).execute()
-        val pagesDesc: JapScanPages = gson.fromJson(response.body()?.string(), JapScanPages::class.java)
+    override suspend fun findPages(mangaAlias: String, chapterNumber: String): List<Page> {
+        val pagesDesc = japScanProxyApiService.findPages(mangaAlias, chapterNumber).await()
         val postProcess = when (pagesDesc.postProcess) {
             "MOSAIC" -> PostProcessType.MOSAIC
             else -> PostProcessType.NONE
@@ -68,15 +46,9 @@ class JapScanMangaProvider(val okHttpClient: OkHttpClient) : MangaProvider {
         return pagesDesc.pages.map { Page(BuildConfig.JAPSCAN_PROXY_BASE_URL + it, postProcess) }
     }
 
-    override fun findPage(pageUrl: String): Response {
-        val request = Request.Builder()
-                .url(pageUrl)
-                .build()
+    override suspend fun findPage(pageUrl: String) = japScanProxyApiService.findPage(pageUrl).await()
 
-        return okHttpClient.newCall(request).execute()
-    }
-
-    override fun postProcess(postProcessType: PostProcessType, page: File) {
+    override suspend fun postProcess(postProcessType: PostProcessType, page: File) {
         when (postProcessType) {
             PostProcessType.MOSAIC -> {
                 val source = BitmapFactory.decodeFile(page.absolutePath)
@@ -147,11 +119,8 @@ class JapScanMangaProvider(val okHttpClient: OkHttpClient) : MangaProvider {
 
                 newBitmap2.recycle()
             }
-            else -> {}
+            else -> {
+            }
         }
     }
-
-    data class JapScanManga(val name: String, val alias: String, val thumbnail: String)
-    data class JapScanChapter(val name: String, val manga: String, val number: String)
-    data class JapScanPages(val postProcess: String, val pages: List<String>)
 }

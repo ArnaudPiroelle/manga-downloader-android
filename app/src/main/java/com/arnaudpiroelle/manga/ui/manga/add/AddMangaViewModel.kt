@@ -38,6 +38,7 @@ class AddMangaViewModel(
             val items = getProviderMangasInteractor(provider)
             updateState { state -> state.copy(isLoading = false, results = items) }
         } catch (e: Exception) {
+            e.printStackTrace()
             updateState { state -> state.copy(isLoading = false, error = ActionError(R.string.error_occured, SelectProviderAction(provider))) }
         }
     }

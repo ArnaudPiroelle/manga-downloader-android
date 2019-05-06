@@ -1,7 +1,7 @@
 package com.arnaudpiroelle.manga.worker.task
 
 import android.content.Context
-import androidx.work.Worker
+import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.arnaudpiroelle.manga.api.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.data.dao.ChapterDao
@@ -13,14 +13,14 @@ import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
 import timber.log.Timber
 
-class AddMangaWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams), KoinComponent {
+class AddMangaWorker(context: Context, workerParams: WorkerParameters) : CoroutineWorker(context, workerParams), KoinComponent {
 
     private val mangaDao: MangaDao by inject()
     private val chapterDao: ChapterDao by inject()
     private val providerRegistry: ProviderRegistry by inject()
     private val fileHelper: FileHelper by inject()
 
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
         Timber.d("AddMangaWorker started")
         val mangaId = inputData.getLong(INPUT_MANGA_ID, -1L)
         if (mangaId == -1L) {
