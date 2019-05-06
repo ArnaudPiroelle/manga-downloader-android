@@ -29,6 +29,9 @@ dependencies {
     implementation(Depends.KotlinStdLib)
     implementation(Depends.KotlinCoroutines)
     implementation(Depends.Gson)
+    implementation(Depends.Retrofit)
+    implementation(Depends.RetrofitGsonConverter)
+    implementation(Depends.RetrofitCoroutinesAdapter)
 
     testImplementation(Depends.JUnit)
 

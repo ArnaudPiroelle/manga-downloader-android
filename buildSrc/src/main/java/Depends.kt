@@ -10,6 +10,7 @@ object Depends {
         const val permissionDispatcherVersion = "4.3.0"
         const val glideVersion = "4.8.0"
         const val stethoVersion = "1.5.0"
+        const val retrofitVersion = "2.5.0"
     }
 
     // Gradle Plugins
@@ -50,6 +51,9 @@ object Depends {
     const val StethoOkhttp = "com.facebook.stetho:stetho-okhttp3:${Versions.stethoVersion}"
     const val IndicatorFastScroll = "com.reddit:indicator-fast-scroll:1.1.0-beta1"
     const val LeakCanary = "com.squareup.leakcanary:leakcanary-android:2.0-alpha-1"
+    const val Retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofitVersion}"
+    const val RetrofitGsonConverter = "com.squareup.retrofit2:converter-gson:${Versions.retrofitVersion}"
+    const val RetrofitCoroutinesAdapter = "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2"
 
     // Tests
     const val JUnit = "junit:junit:4.12"

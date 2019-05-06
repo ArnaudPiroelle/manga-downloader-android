@@ -1,7 +1,7 @@
 package com.arnaudpiroelle.manga.worker.task
 
 import android.content.Context
-import androidx.work.Worker
+import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.arnaudpiroelle.manga.api.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.data.dao.ChapterDao
@@ -16,7 +16,7 @@ import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
 import timber.log.Timber
 
-class CheckNewChaptersWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams), KoinComponent {
+class CheckNewChaptersWorker(context: Context, workerParams: WorkerParameters) : CoroutineWorker(context, workerParams), KoinComponent {
 
     private val notificationCenter: NotificationCenter by inject()
     private val mangaDao: MangaDao by inject()
@@ -25,7 +25,7 @@ class CheckNewChaptersWorker(context: Context, workerParams: WorkerParameters) :
     private val taskManager: TaskManager by inject()
     private val fileHelper: FileHelper by inject()
 
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
         Timber.d("CheckNewChaptersWorker started")
 
         notificationCenter.notify(SyncStarted)
@@ -42,7 +42,6 @@ class CheckNewChaptersWorker(context: Context, workerParams: WorkerParameters) :
             val errorChapters = chapterDao.getByStatus(Chapter.Status.ERROR)
             val chapters = listOf(wantedChapters, errorChapters).flatten()
 
-            println(chapters)
             taskManager.scheduleDownloadChapter(chapters.map { it.id })
 
             Timber.d("CheckNewChaptersWorker ended with success")
@@ -54,7 +53,7 @@ class CheckNewChaptersWorker(context: Context, workerParams: WorkerParameters) :
         return Result.success()
     }
 
-    private fun checkManga(manga: Manga) {
+    private suspend fun checkManga(manga: Manga) {
         val provider = providerRegistry.find(manga.provider)
         if (provider == null) {
             Timber.w("Provider not existing. Manga will be ignored")

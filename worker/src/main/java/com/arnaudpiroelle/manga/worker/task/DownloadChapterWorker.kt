@@ -1,7 +1,7 @@
 package com.arnaudpiroelle.manga.worker.task
 
 import android.content.Context
-import androidx.work.Worker
+import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.arnaudpiroelle.manga.api.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.api.model.PostProcessType
@@ -22,7 +22,7 @@ import java.io.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
-class DownloadChapterWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams), KoinComponent {
+class DownloadChapterWorker(context: Context, workerParams: WorkerParameters) : CoroutineWorker(context, workerParams), KoinComponent {
 
     private val notificationCenter: NotificationCenter by inject()
     private val mangaDao: MangaDao by inject()
@@ -31,7 +31,7 @@ class DownloadChapterWorker(context: Context, workerParams: WorkerParameters) : 
     private val fileHelper: FileHelper by inject()
     private val preferencesHelper: PreferencesHelper by inject()
 
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
         Timber.d("DownloadChapterWorker started")
 
         val chapterId = inputData.getLong(INPUT_CHAPTER_ID, -1L)
@@ -109,7 +109,7 @@ class DownloadChapterWorker(context: Context, workerParams: WorkerParameters) : 
         return Result.success()
     }
 
-    private fun postProcess(provider: MangaProvider, postProcess: PostProcessType, page: File) {
+    private suspend fun postProcess(provider: MangaProvider, postProcess: PostProcessType, page: File) {
         provider.postProcess(postProcess, page)
     }
 
