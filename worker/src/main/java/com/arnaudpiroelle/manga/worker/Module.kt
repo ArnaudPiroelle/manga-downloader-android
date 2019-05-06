@@ -6,7 +6,7 @@ import com.arnaudpiroelle.manga.worker.notification.NotificationCenter
 import com.arnaudpiroelle.manga.worker.utils.FileHelper
 import com.arnaudpiroelle.manga.worker.utils.PreferencesHelper
 import org.koin.android.ext.koin.androidContext
-import org.koin.dsl.module.module
+import org.koin.dsl.module
 
 val workerModule = module {
     single { WorkManager.getInstance() }

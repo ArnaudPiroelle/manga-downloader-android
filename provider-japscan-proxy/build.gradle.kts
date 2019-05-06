@@ -28,6 +28,7 @@ dependencies {
 
     implementation(Depends.KotlinStdLib)
     implementation(Depends.KotlinCoroutines)
+    implementation(Depends.KoinScope)
     implementation(Depends.Gson)
     implementation(Depends.Retrofit)
     implementation(Depends.RetrofitGsonConverter)
