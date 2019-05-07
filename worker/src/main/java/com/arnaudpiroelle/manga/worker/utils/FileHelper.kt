@@ -6,7 +6,12 @@ import com.arnaudpiroelle.manga.data.model.Chapter
 import com.arnaudpiroelle.manga.data.model.Manga
 import java.io.File
 
-open class FileHelper(private val preferencesHelper: PreferencesHelper) {
+fun String.isFromExternalStorage(): Boolean {
+    val externalStoragePath = getExternalStorageDirectory().path
+    return startsWith(externalStoragePath)
+}
+
+class FileHelper(private val preferencesHelper: PreferencesHelper) {
 
     private fun getEbooksFolder(): File {
         val outputFolder = preferencesHelper.getOutputFolder()
