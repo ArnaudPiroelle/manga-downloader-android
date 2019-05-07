@@ -94,9 +94,6 @@ dependencies {
     implementation(Depends.RoomRuntime)
     kapt(Depends.RoomCompiler)
 
-    implementation(Depends.PermissionDispatcherRuntime)
-    kapt(Depends.PermissionDispatcherProcessor)
-
     implementation(Depends.GlideRuntime)
     kapt(Depends.GlideCompiler)
 
