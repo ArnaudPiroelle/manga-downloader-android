@@ -72,7 +72,7 @@ class DownloadChapterWorker(context: Context, workerParams: WorkerParameters) : 
                     val pageFile = fileHelper.getPageFile(manga, chapter, page, index)
                     val response = provider.findPage(page.url)
 
-                    val source = response.body()!!.source()
+                    val source = response.source()
                     val sink = Okio.buffer(Okio.sink(pageFile))
                     sink.writeAll(source)
                     sink.close()

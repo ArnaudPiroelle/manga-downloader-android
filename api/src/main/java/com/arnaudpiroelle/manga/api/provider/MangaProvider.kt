@@ -2,6 +2,7 @@ package com.arnaudpiroelle.manga.api.provider
 
 import com.arnaudpiroelle.manga.api.model.*
 import okhttp3.Response
+import okhttp3.ResponseBody
 import java.io.File
 
 interface MangaProvider {
@@ -13,7 +14,7 @@ interface MangaProvider {
 
     suspend fun findPages(mangaAlias: String, chapterNumber: String): List<Page>
 
-    suspend fun findPage(pageUrl: String): Response
+    suspend fun findPage(pageUrl: String): ResponseBody
 
     suspend fun postProcess(postProcessType: PostProcessType, page: File)
 }
