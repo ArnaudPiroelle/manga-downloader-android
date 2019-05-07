@@ -15,8 +15,8 @@ import com.arnaudpiroelle.manga.worker.notification.NotificationCenter.Notificat
 import com.arnaudpiroelle.manga.worker.utils.FileHelper
 import com.arnaudpiroelle.manga.worker.utils.PreferencesHelper
 import okio.Okio
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import timber.log.Timber
 import java.io.*
 import java.util.zip.ZipEntry

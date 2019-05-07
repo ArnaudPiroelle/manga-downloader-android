@@ -12,8 +12,8 @@ import com.arnaudpiroelle.manga.worker.TaskManager
 import com.arnaudpiroelle.manga.worker.notification.NotificationCenter
 import com.arnaudpiroelle.manga.worker.notification.NotificationCenter.Notification.*
 import com.arnaudpiroelle.manga.worker.utils.FileHelper
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import timber.log.Timber
 
 class CheckNewChaptersWorker(context: Context, workerParams: WorkerParameters) : CoroutineWorker(context, workerParams), KoinComponent {

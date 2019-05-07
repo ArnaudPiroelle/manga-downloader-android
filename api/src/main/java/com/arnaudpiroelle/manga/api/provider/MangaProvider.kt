@@ -1,20 +1,28 @@
 package com.arnaudpiroelle.manga.api.provider
 
+import com.arnaudpiroelle.manga.api.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.api.model.*
-import okhttp3.Response
 import okhttp3.ResponseBody
 import java.io.File
 
-interface MangaProvider {
-    suspend fun findMangas(): List<Manga>
+@Suppress("LeakingThis")
+abstract class MangaProvider(registry: ProviderRegistry) {
 
-    suspend fun findDetails(mangaAlias: String): MangaDetails
+    init {
+        registry.register(getName(), this)
+    }
 
-    suspend fun findChapters(mangaAlias: String): List<Chapter>
+    abstract fun getName(): String
 
-    suspend fun findPages(mangaAlias: String, chapterNumber: String): List<Page>
+    abstract suspend fun findMangas(): List<Manga>
 
-    suspend fun findPage(pageUrl: String): ResponseBody
+    abstract suspend fun findDetails(mangaAlias: String): MangaDetails
 
-    suspend fun postProcess(postProcessType: PostProcessType, page: File)
+    abstract suspend fun findChapters(mangaAlias: String): List<Chapter>
+
+    abstract suspend fun findPages(mangaAlias: String, chapterNumber: String): List<Page>
+
+    abstract suspend fun findPage(pageUrl: String): ResponseBody
+
+    abstract suspend fun postProcess(postProcessType: PostProcessType, page: File)
 }

@@ -4,27 +4,17 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Rect
+import com.arnaudpiroelle.manga.api.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.api.model.*
 import com.arnaudpiroelle.manga.api.provider.MangaProvider
-import com.google.gson.Gson
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 import java.io.File
 import java.io.FileOutputStream
 
-class JapScanMangaProvider(private val okHttpClient: OkHttpClient) : MangaProvider {
+class JapScanMangaProvider(
+        registry: ProviderRegistry,
+        private val japScanProxyApiService: JapScanProxyApiService) : MangaProvider(registry) {
 
-    private val gson = Gson()
-    private val retrofit = Retrofit.Builder()
-            .client(okHttpClient)
-            .baseUrl(BuildConfig.JAPSCAN_PROXY_BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .addCallAdapterFactory(CoroutineCallAdapterFactory())
-            .build()
-    private val japScanProxyApiService: JapScanProxyApiService = retrofit.create()
+    override fun getName() = "JapScan"
 
     override suspend fun findMangas() = japScanProxyApiService.findMangas().await()
             .map { Manga(it.name, it.alias, "JapScan") }

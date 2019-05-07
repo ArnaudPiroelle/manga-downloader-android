@@ -4,8 +4,8 @@ import com.arnaudpiroelle.manga.ui.history.HistoriesViewModel
 import com.arnaudpiroelle.manga.ui.manga.add.AddMangaViewModel
 import com.arnaudpiroelle.manga.ui.manga.details.MangaDetailsViewModel
 import com.arnaudpiroelle.manga.ui.manga.list.MangaListingViewModel
-import org.koin.androidx.viewmodel.ext.koin.viewModel
-import org.koin.dsl.module.module
+import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.dsl.module
 
 val viewModels = module {
     viewModel { MangaListingViewModel(get(), get()) }
