@@ -67,7 +67,7 @@ class CheckNewChaptersWorker(context: Context, workerParams: WorkerParameters) :
         }
     }
 
-    private fun fetchNewChapters(manga: Manga, chapters: List<com.arnaudpiroelle.manga.api.model.Chapter>) {
+    private suspend fun fetchNewChapters(manga: Manga, chapters: List<com.arnaudpiroelle.manga.api.model.Chapter>) {
         chapters.forEachIndexed { _, chapter ->
             val existingChapter = chapterDao.getByNumber(manga.id, chapter.chapterNumber)
             if (existingChapter == null) {

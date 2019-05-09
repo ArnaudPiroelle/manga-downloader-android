@@ -12,8 +12,6 @@ import com.arnaudpiroelle.manga.ui.common.BaseViewModel
 import com.arnaudpiroelle.manga.ui.manga.details.MangaDetailsContext.Action
 import com.arnaudpiroelle.manga.ui.manga.details.MangaDetailsContext.Action.*
 import com.arnaudpiroelle.manga.ui.manga.details.MangaDetailsContext.State
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class MangaDetailsViewModel(private val mangaDao: MangaDao, private val chapterDao: ChapterDao, private val historyDao: HistoryDao, private val mangaId: Long) : BaseViewModel<Action, State>(State()) {
 
@@ -34,21 +32,15 @@ class MangaDetailsViewModel(private val mangaDao: MangaDao, private val chapterD
     }
 
     private suspend fun changeAllChaptersStatus() {
-        withContext(Dispatchers.IO) {
-            chapterDao.setAllChaptersStatusAs(mangaId, WANTED)
-        }
+        chapterDao.setAllChaptersStatusAs(mangaId, WANTED)
     }
 
     private suspend fun changeChapterStatus(item: Chapter) {
-        withContext(Dispatchers.IO) {
-            chapterDao.update(item.copy(status = WANTED))
-        }
+        chapterDao.update(item.copy(status = WANTED))
     }
 
     private suspend fun loadMangaInformations() {
-        val manga = withContext(Dispatchers.IO) {
-            mangaDao.getById(mangaId)
-        }
+        val manga = mangaDao.getById(mangaId)
 
         if (manga != null) {
             updateState { state ->
@@ -66,17 +58,15 @@ class MangaDetailsViewModel(private val mangaDao: MangaDao, private val chapterD
     }
 
     private suspend fun removeManga(mangaId: Long) {
-        withContext(Dispatchers.IO) {
-            val manga = mangaDao.getById(mangaId)
-            manga?.let {
-                historyDao.insert(History(
-                        label = it.name,
-                        sublabel = "Removed"
-                ))
-            }
-
-            mangaDao.deleteById(mangaId)
+        val manga = mangaDao.getById(mangaId)
+        manga?.let {
+            historyDao.insert(History(
+                    label = it.name,
+                    sublabel = "Removed"
+            ))
         }
+
+        mangaDao.deleteById(mangaId)
 
         updateState { state -> state.copy(removed = true) }
     }

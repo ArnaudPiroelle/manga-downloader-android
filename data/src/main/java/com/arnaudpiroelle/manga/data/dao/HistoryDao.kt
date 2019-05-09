@@ -10,13 +10,13 @@ import com.arnaudpiroelle.manga.data.model.History
 @Dao
 interface HistoryDao {
     @Query("SELECT * FROM history")
-    fun getAll(): List<History>
+    suspend fun getAll(): List<History>
 
     @Query("DELETE FROM history")
-    fun deleteAll()
+    suspend fun deleteAll()
 
     @Insert
-    fun insertAll(vararg histories: History)
+    suspend fun insertAll(vararg histories: History)
 
     @Query("SELECT * FROM history")
     fun observeAll(): DataSource.Factory<Int, History>

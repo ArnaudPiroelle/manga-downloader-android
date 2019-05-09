@@ -8,32 +8,32 @@ import com.arnaudpiroelle.manga.data.model.Manga
 interface MangaDao {
 
     @Query("SELECT * FROM mangas")
-    fun getAll(): List<Manga>
+    suspend fun getAll(): List<Manga>
 
     @Query("SELECT * FROM mangas WHERE status = :status")
-    fun getAll(status: Manga.Status): List<Manga>
+    suspend fun getAll(status: Manga.Status): List<Manga>
 
 
     @Query("SELECT * FROM mangas where provider = :provider")
-    fun getMangaForProvider(provider: String): List<Manga>
+    suspend fun getMangaForProvider(provider: String): List<Manga>
 
     @Query("SELECT * FROM mangas where id = :id")
-    fun getById(id: Long): Manga?
+    suspend fun getById(id: Long): Manga?
 
     @Query("SELECT * FROM mangas where alias = :alias")
-    fun getByAlias(alias: String): Manga?
+    suspend fun getByAlias(alias: String): Manga?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(manga: Manga): Long
+    suspend fun insert(manga: Manga): Long
 
     @Delete
-    fun delete(manga: Manga)
+    suspend fun delete(manga: Manga)
 
     @Query("DELETE FROM mangas WHERE id = :mangaId")
-    fun deleteById(mangaId: Long)
+    suspend fun deleteById(mangaId: Long)
 
     @Update
-    fun update(manga: Manga)
+    suspend fun update(manga: Manga)
 
     @Query("SELECT * FROM mangas ORDER BY name")
     fun observeAll(): DataSource.Factory<Int, Manga>

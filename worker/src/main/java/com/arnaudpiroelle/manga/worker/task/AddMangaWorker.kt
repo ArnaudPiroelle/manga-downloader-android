@@ -75,7 +75,7 @@ class AddMangaWorker(context: Context, workerParams: WorkerParameters) : Corouti
         }
     }
 
-    private fun fetchInitializedManga(manga: Manga, chapters: List<com.arnaudpiroelle.manga.api.model.Chapter>) {
+    private suspend fun fetchInitializedManga(manga: Manga, chapters: List<com.arnaudpiroelle.manga.api.model.Chapter>) {
         chapters.forEachIndexed { _, chapter ->
             val existingChapter = chapterDao.getByNumber(manga.id, chapter.chapterNumber)
             if (existingChapter == null) {
