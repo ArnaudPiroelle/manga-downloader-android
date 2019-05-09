@@ -7,8 +7,10 @@ import com.arnaudpiroelle.manga.api.core.provider.ProviderRegistry
 import com.arnaudpiroelle.manga.api.model.PostProcessType
 import com.arnaudpiroelle.manga.api.provider.MangaProvider
 import com.arnaudpiroelle.manga.data.dao.ChapterDao
+import com.arnaudpiroelle.manga.data.dao.HistoryDao
 import com.arnaudpiroelle.manga.data.dao.MangaDao
 import com.arnaudpiroelle.manga.data.model.Chapter
+import com.arnaudpiroelle.manga.data.model.History
 import com.arnaudpiroelle.manga.data.model.Manga
 import com.arnaudpiroelle.manga.worker.notification.NotificationCenter
 import com.arnaudpiroelle.manga.worker.notification.NotificationCenter.Notification.*
@@ -27,6 +29,7 @@ class DownloadChapterWorker(context: Context, workerParams: WorkerParameters) : 
     private val notificationCenter: NotificationCenter by inject()
     private val mangaDao: MangaDao by inject()
     private val chapterDao: ChapterDao by inject()
+    private val historyDao: HistoryDao by inject()
     private val providerRegistry: ProviderRegistry by inject()
     private val fileHelper: FileHelper by inject()
     private val preferencesHelper: PreferencesHelper by inject()
@@ -85,7 +88,10 @@ class DownloadChapterWorker(context: Context, workerParams: WorkerParameters) : 
                 }
 
                 chapterDao.update(chapter.copy(status = Chapter.Status.DOWNLOADED))
-
+                historyDao.insert(History(
+                        label = "${manga.name} (${manga.provider})",
+                        sublabel = "Chap. ${chapter.number}: Downloaded"
+                ))
                 notificationCenter.notify(DownloadEnded(chapter.id, manga.name, chapter.number, Chapter.Status.DOWNLOADED))
 
                 Timber.d("DownloadChapterWorker ended with success")
@@ -102,7 +108,10 @@ class DownloadChapterWorker(context: Context, workerParams: WorkerParameters) : 
             chapterFile.deleteRecursively()
 
             chapterDao.update(chapter.copy(status = Chapter.Status.ERROR))
-
+            historyDao.insert(History(
+                    label = "${manga.name} (${manga.provider})",
+                    sublabel = "Chap. ${chapter.number}: Error"
+            ))
             notificationCenter.notify(DownloadEnded(chapter.id, manga.name, chapter.number, Chapter.Status.ERROR))
         }
 
