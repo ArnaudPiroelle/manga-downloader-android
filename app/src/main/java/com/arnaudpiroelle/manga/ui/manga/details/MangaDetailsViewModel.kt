@@ -70,7 +70,7 @@ class MangaDetailsViewModel(private val mangaDao: MangaDao, private val chapterD
             val manga = mangaDao.getById(mangaId)
             manga?.let {
                 historyDao.insert(History(
-                        label = "${it.name} (${it.provider})",
+                        label = it.name,
                         sublabel = "Removed"
                 ))
             }
