@@ -92,7 +92,7 @@ class DownloadChapterWorker(context: Context, workerParams: WorkerParameters) : 
                         label = "${chapter.name} (Downloaded)",
                         sublabel = manga.name
                 ))
-                notificationCenter.notify(DownloadEnded(chapter.id, manga.name, chapter.number, Chapter.Status.DOWNLOADED))
+                notificationCenter.notify(DownloadEnded(chapter.id, manga.name, chapter.name, Chapter.Status.DOWNLOADED))
 
                 Timber.d("DownloadChapterWorker ended with success")
             } else {
@@ -112,7 +112,7 @@ class DownloadChapterWorker(context: Context, workerParams: WorkerParameters) : 
                     label = "${chapter.name} (Error)",
                     sublabel = manga.name
             ))
-            notificationCenter.notify(DownloadEnded(chapter.id, manga.name, chapter.number, Chapter.Status.ERROR))
+            notificationCenter.notify(DownloadEnded(chapter.id, manga.name, chapter.name, Chapter.Status.ERROR))
         }
 
         return Result.success()
