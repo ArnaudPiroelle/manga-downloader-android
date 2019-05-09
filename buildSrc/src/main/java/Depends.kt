@@ -35,6 +35,7 @@ object Depends {
     const val PagingRuntime = "androidx.paging:paging-runtime:2.1.0"
     const val RoomRuntime = "androidx.room:room-runtime:${Versions.roomVersion}"
     const val RoomCompiler = "androidx.room:room-compiler:${Versions.roomVersion}"
+    const val RoomCoroutines = "androidx.room:room-ktx:${Versions.roomVersion}"
     const val AppCompat = "androidx.appcompat:appcompat:1.1.0-alpha05"
     const val Preference = "androidx.preference:preference:1.0.0"
     const val Palette = "androidx.palette:palette:1.0.0"

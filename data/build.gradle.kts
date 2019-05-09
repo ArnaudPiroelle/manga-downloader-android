@@ -40,6 +40,7 @@ dependencies {
     api(Depends.PagingRuntime)
 
     api(Depends.RoomRuntime)
+    api(Depends.RoomCoroutines)
     kapt(Depends.RoomCompiler)
 
     testImplementation(Depends.JUnit)
