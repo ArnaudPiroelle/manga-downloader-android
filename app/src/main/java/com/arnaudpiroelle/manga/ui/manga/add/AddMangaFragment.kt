@@ -111,6 +111,11 @@ class AddMangaFragment : Fragment(), SearchView.OnQueryTextListener, ProviderMan
         viewModel.handle(LoadProvidersAction)
     }
 
+    override fun onDestroyView() {
+        list_provider_mangas.adapter = null
+        super.onDestroyView()
+    }
+
     override fun onQueryTextSubmit(query: String?): Boolean {
         return false
     }
