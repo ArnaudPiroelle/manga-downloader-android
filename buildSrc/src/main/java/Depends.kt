@@ -7,14 +7,13 @@ object Depends {
         const val roomVersion = "2.1.0-alpha07"
         const val koinVersion = "2.0.0-GA"
         const val navigationVersion = "1.0.0"
-        const val permissionDispatcherVersion = "4.3.0"
         const val glideVersion = "4.8.0"
         const val stethoVersion = "1.5.0"
         const val retrofitVersion = "2.5.0"
     }
 
     // Gradle Plugins
-    const val AndroidGradlePlugin = "com.android.tools.build:gradle:3.5.0-alpha13"
+    const val AndroidGradlePlugin = "com.android.tools.build:gradle:3.5.0-beta01"
     const val KotlinGradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlinVersion}"
     const val FabricGradlePlugin = "io.fabric.tools:gradle:1.25.4"
     const val NavigationGradlePlugin = "android.arch.navigation:navigation-safe-args-gradle-plugin:${Versions.navigationVersion}"
