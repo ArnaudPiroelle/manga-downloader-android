@@ -18,6 +18,7 @@
     <color name="task_status_done">#00FF00</color>
     <color name="task_status_error">#f44336</color>
     <color name="text_body">#01081f</color>
+    <color name="text_body_2">#878787</color>
 
     <color name="status_bar_scrim_translucent">#26FFFFFF</color>
 

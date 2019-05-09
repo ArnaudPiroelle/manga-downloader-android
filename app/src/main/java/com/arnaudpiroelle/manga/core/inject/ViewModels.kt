@@ -11,5 +11,5 @@ val viewModels = module {
     viewModel { MangaListingViewModel(get(), get()) }
     viewModel { AddMangaViewModel(get(), get(), get(), get()) }
     viewModel { HistoriesViewModel(get()) }
-    viewModel { (mangaId: Long) -> MangaDetailsViewModel(get(), get(), mangaId) }
+    viewModel { (mangaId: Long) -> MangaDetailsViewModel(get(), get(), get(), mangaId) }
 }

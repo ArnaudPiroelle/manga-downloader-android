@@ -3,9 +3,11 @@ package com.arnaudpiroelle.manga.ui.manga.details
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.arnaudpiroelle.manga.data.dao.ChapterDao
+import com.arnaudpiroelle.manga.data.dao.HistoryDao
 import com.arnaudpiroelle.manga.data.dao.MangaDao
 import com.arnaudpiroelle.manga.data.model.Chapter
 import com.arnaudpiroelle.manga.data.model.Chapter.Status.WANTED
+import com.arnaudpiroelle.manga.data.model.History
 import com.arnaudpiroelle.manga.ui.common.BaseViewModel
 import com.arnaudpiroelle.manga.ui.manga.details.MangaDetailsContext.Action
 import com.arnaudpiroelle.manga.ui.manga.details.MangaDetailsContext.Action.*
@@ -13,7 +15,7 @@ import com.arnaudpiroelle.manga.ui.manga.details.MangaDetailsContext.State
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class MangaDetailsViewModel(private val mangaDao: MangaDao, private val chapterDao: ChapterDao, private val mangaId: Long) : BaseViewModel<Action, State>(State()) {
+class MangaDetailsViewModel(private val mangaDao: MangaDao, private val chapterDao: ChapterDao, private val historyDao: HistoryDao, private val mangaId: Long) : BaseViewModel<Action, State>(State()) {
 
     val chapters = LivePagedListBuilder(chapterDao.observeAll(mangaId), PagedList.Config.Builder()
             .setPageSize(10)
@@ -65,6 +67,14 @@ class MangaDetailsViewModel(private val mangaDao: MangaDao, private val chapterD
 
     private suspend fun removeManga(mangaId: Long) {
         withContext(Dispatchers.IO) {
+            val manga = mangaDao.getById(mangaId)
+            manga?.let {
+                historyDao.insert(History(
+                        label = it.name,
+                        sublabel = "Removed"
+                ))
+            }
+
             mangaDao.deleteById(mangaId)
         }
 

@@ -52,4 +52,5 @@
     <string name="no_results">No results</string>
     <string name="notify_sync_started">Synchronisation started</string>
     <string name="add_manga">Add new manga</string>
+    <string name="just_now">Just now</string>
 </resources>

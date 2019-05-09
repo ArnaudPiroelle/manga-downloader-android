@@ -1,5 +1,6 @@
 package com.arnaudpiroelle.manga.ui.history
 
+import android.text.format.DateUtils.*
 import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
@@ -9,8 +10,7 @@ import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.core.utils.inflate
 import com.arnaudpiroelle.manga.data.model.History
 import kotlinx.android.synthetic.main.item_view_history.view.*
-import java.text.SimpleDateFormat
-import java.util.*
+
 
 class HistoryAdapter : PagedListAdapter<History, HistoryAdapter.HistoryViewHolder>(HistoryDiff) {
 
@@ -29,12 +29,24 @@ class HistoryAdapter : PagedListAdapter<History, HistoryAdapter.HistoryViewHolde
             }
 
             itemView.history_label.text = history.label
-            itemView.history_date.text = simpleDateFormat.format(history.date)
+            itemView.history_sublabel.text = history.sublabel
+            itemView.history_date.text = getRelativeTimeDisplayString(history.date.time, System.currentTimeMillis())
         }
 
-        companion object {
-            private val simpleDateFormat = SimpleDateFormat("dd/MM/yy hh:mm", Locale.getDefault())
+        private fun getRelativeTimeDisplayString(referenceTime: Long, now: Long): CharSequence {
+            val difference = now - referenceTime
+
+            return if (difference in 0..MINUTE_IN_MILLIS) {
+                itemView.context.getString(R.string.just_now)
+            } else {
+                getRelativeTimeSpanString(
+                        referenceTime,
+                        now,
+                        MINUTE_IN_MILLIS,
+                        FORMAT_ABBREV_RELATIVE)
+            }
         }
+
     }
 
 }

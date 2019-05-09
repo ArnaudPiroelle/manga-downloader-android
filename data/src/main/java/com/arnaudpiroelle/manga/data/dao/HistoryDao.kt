@@ -3,6 +3,7 @@ package com.arnaudpiroelle.manga.data.dao
 import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.arnaudpiroelle.manga.data.model.History
 
@@ -19,4 +20,7 @@ interface HistoryDao {
 
     @Query("SELECT * FROM history")
     fun observeAll(): DataSource.Factory<Int, History>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(history: History): Long
 }
