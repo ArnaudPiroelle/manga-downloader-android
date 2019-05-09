@@ -7,6 +7,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.arnaudpiroelle.manga.data.model.Chapter
+import com.arnaudpiroelle.manga.data.model.Chapter.Status.DOWNLOADED
 import com.arnaudpiroelle.manga.worker.R
 import com.arnaudpiroelle.manga.worker.notification.NotificationCenter.Notification.*
 
@@ -40,33 +41,39 @@ class NotificationCenter(
         }
     }
 
-    private fun notifyDownloadEnded(id: Long, name: String, number: String, status: Chapter.Status) {
-        //TODO: Fix summary notification
-        //TODO: Add status handler
-
+    private fun notifyDownloadEnded(id: Long, mangaName: String, chapterName: String, status: Chapter.Status) {
         val summaryNotification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_SYNC)
                 .setContentTitle("Group")
                 .setContentText("New mangas")
                 .setSmallIcon(android.R.drawable.stat_notify_sync)
-                .setStyle(NotificationCompat.InboxStyle()
-                        .addLine("Alex Faarborg Check this out")
-                        .addLine("Jeff Chang Launch Party")
-                        .setBigContentTitle("2 new messages")
-                        .setSummaryText("janedoe@example.com"))
+                .setStyle(NotificationCompat.InboxStyle())
                 .setGroup("NewDownloads")
                 .setGroupSummary(true)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
                 .build()
 
-        val notificationBuilder = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_SYNC)
-                .setSmallIcon(android.R.drawable.stat_sys_download_done)
-                .setContentTitle(name)
-                .setSubText("New chapter available")
-                .setContentText("$name $number downloaded")
-                .setGroup("NewDownloads")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        val notification = when (status) {
+            DOWNLOADED -> NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_SYNC)
+                    .setSmallIcon(android.R.drawable.stat_sys_download_done)
+                    .setContentTitle(mangaName)
+                    .setSubText("New chapter available")
+                    .setContentText(chapterName)
+                    .setGroup("NewDownloads")
+                    .setPriority(NotificationCompat.PRIORITY_LOW)
+                    .build()
+            else -> NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_SYNC)
+                    .setSmallIcon(android.R.drawable.stat_sys_download_done)
+                    .setContentTitle(mangaName)
+                    .setSubText("Download failed")
+                    .setContentText(chapterName)
+                    .setGroup("NewDownloads")
+                    .setPriority(NotificationCompat.PRIORITY_LOW)
+                    .build()
+        }
+
 
         notificationManagerCompat.cancel(NOTIFICATION_PROGRESS_ID)
-        notificationManagerCompat.notify(id.toInt() * NOTIFICATION_PADDING_ID, notificationBuilder.build())
+        notificationManagerCompat.notify(id.toInt() * NOTIFICATION_PADDING_ID, notification)
         notificationManagerCompat.notify(NOTIFICATION_DOWNLOAD_SUMMARY_ID, summaryNotification)
     }
 
