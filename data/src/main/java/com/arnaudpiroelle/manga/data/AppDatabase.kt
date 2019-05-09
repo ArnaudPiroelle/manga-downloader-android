@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.arnaudpiroelle.manga.data.converter.ChapterStatusConverter
+import com.arnaudpiroelle.manga.data.converter.DateConverter
 import com.arnaudpiroelle.manga.data.converter.MangaStatusConverter
 import com.arnaudpiroelle.manga.data.dao.ChapterDao
 import com.arnaudpiroelle.manga.data.dao.HistoryDao
@@ -19,11 +20,12 @@ import com.arnaudpiroelle.manga.data.model.Manga
             Chapter::class,
             History::class
         ],
-        version = 1)
+        version = 2)
 @TypeConverters(
         value = [
             ChapterStatusConverter::class,
-            MangaStatusConverter::class
+            MangaStatusConverter::class,
+            DateConverter::class
         ])
 abstract class AppDatabase : RoomDatabase() {
     abstract fun mangaDao(): MangaDao
