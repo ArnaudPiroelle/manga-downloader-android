@@ -89,8 +89,8 @@ class DownloadChapterWorker(context: Context, workerParams: WorkerParameters) : 
 
                 chapterDao.update(chapter.copy(status = Chapter.Status.DOWNLOADED))
                 historyDao.insert(History(
-                        label = "${manga.name} (${manga.provider})",
-                        sublabel = "Chap. ${chapter.number}: Downloaded"
+                        label = "${chapter.name} (Downloaded)",
+                        sublabel = manga.name
                 ))
                 notificationCenter.notify(DownloadEnded(chapter.id, manga.name, chapter.number, Chapter.Status.DOWNLOADED))
 
@@ -109,8 +109,8 @@ class DownloadChapterWorker(context: Context, workerParams: WorkerParameters) : 
 
             chapterDao.update(chapter.copy(status = Chapter.Status.ERROR))
             historyDao.insert(History(
-                    label = "${manga.name} (${manga.provider})",
-                    sublabel = "Chap. ${chapter.number}: Error"
+                    label = "${chapter.name} (Error)",
+                    sublabel = manga.name
             ))
             notificationCenter.notify(DownloadEnded(chapter.id, manga.name, chapter.number, Chapter.Status.ERROR))
         }

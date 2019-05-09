@@ -20,7 +20,7 @@ class AddMangaInteractor(private val mangaDao: MangaDao, private val historyDao:
         )
 
         historyDao.insert(History(
-                label = "${manga.name} (${manga.provider})",
+                label = manga.name,
                 sublabel = "Added"
         ))
 
