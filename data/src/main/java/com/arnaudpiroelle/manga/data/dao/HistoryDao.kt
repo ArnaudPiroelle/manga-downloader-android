@@ -18,9 +18,9 @@ interface HistoryDao {
     @Insert
     suspend fun insertAll(vararg histories: History)
 
-    @Query("SELECT * FROM history")
+    @Query("SELECT * FROM history ORDER BY date DESC")
     fun observeAll(): DataSource.Factory<Int, History>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(history: History): Long
+    suspend fun insert(history: History): Long
 }
