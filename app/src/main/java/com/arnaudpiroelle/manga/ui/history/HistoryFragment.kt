@@ -7,7 +7,12 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arnaudpiroelle.manga.R
+import com.arnaudpiroelle.manga.core.utils.bind
+import com.arnaudpiroelle.manga.core.utils.distinctUntilChanged
+import com.arnaudpiroelle.manga.core.utils.map
 import com.arnaudpiroelle.manga.core.utils.setActionBar
+import com.arnaudpiroelle.manga.ui.history.HistoryContext.Action.CleanHistoryAction
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_listing_history.*
 import kotlinx.android.synthetic.main.include_bottombar.*
 import kotlinx.android.synthetic.main.include_title.*
@@ -39,6 +44,8 @@ class HistoryFragment : Fragment() {
         list_history.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.HORIZONTAL))
         list_history.adapter = adapter
 
+        viewModel.state.map { it.visualNotification }.distinctUntilChanged().bind(this, this::onVisualNotificationChanged)
+
         viewModel.histories.observe(this, Observer {
             adapter.submitList(it)
         })
@@ -67,10 +74,16 @@ class HistoryFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_clean_history -> {
-                viewModel.cleanHistory()
+                viewModel.handle(CleanHistoryAction)
                 true
             }
             else -> false
+        }
+    }
+
+    private fun onVisualNotificationChanged(visualNotification: HistoryContext.VisualNotification?) {
+        if (visualNotification != null) {
+            Snackbar.make(bar, visualNotification.resId, Snackbar.LENGTH_SHORT).show()
         }
     }
 
