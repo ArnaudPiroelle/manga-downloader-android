@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/item_view_background"
-    android:gravity="center_vertical"
+    android:background="@android:color/white"
     android:orientation="vertical"
     android:padding="@dimen/padding">
 
@@ -14,6 +13,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_marginEnd="16dp"
         android:maxLines="2"
         android:textColor="@color/text_body"
         app:layout_constraintEnd_toStartOf="@+id/history_date"
@@ -27,8 +27,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginTop="4dp"
-        android:maxLines="2"
         android:layout_marginBottom="8dp"
+        android:maxLines="2"
         android:textColor="@color/text_body_2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/history_date"
@@ -40,12 +40,14 @@
     <TextView
         android:id="@+id/history_date"
         android:layout_width="100dp"
-        android:maxLines="1"
         android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:gravity="end"
         android:textColor="@color/text_body_2"
-        app:layout_constraintBottom_toBottomOf="@+id/history_label"
+        app:layout_constraintBottom_toTopOf="@+id/history_sublabel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
         tools:text="3 hours ago" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
