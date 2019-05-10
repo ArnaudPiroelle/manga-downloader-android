@@ -13,6 +13,9 @@ fun Fragment.setActionBar(bar: Toolbar) {
     }
 
     bar.setNavigationOnClickListener {
-        BottomNavigationDrawerFragment().show(childFragmentManager, "drawer")
+        val fragment = childFragmentManager.findFragmentByTag("drawer")
+        if (fragment == null) {
+            BottomNavigationDrawerFragment().show(childFragmentManager, "drawer")
+        }
     }
 }
