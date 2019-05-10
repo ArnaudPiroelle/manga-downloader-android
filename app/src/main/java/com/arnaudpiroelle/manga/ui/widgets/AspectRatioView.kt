@@ -1,4 +1,4 @@
-package com.arnaudpiroelle.manga.core.widget
+package com.arnaudpiroelle.manga.ui.widgets
 
 import android.content.Context
 import android.util.AttributeSet
