@@ -1,22 +1,22 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/history_listing_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <include layout="@layout/include_title" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_history"
-        android:overScrollMode="never"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="4dp"
         android:clipToPadding="false"
-        android:nestedScrollingEnabled="false"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        android:paddingTop="?android:attr/actionBarSize"
         tools:listitem="@layout/item_view_history" />
+
+    <include layout="@layout/include_title" />
 
     <include layout="@layout/include_bottombar" />
 
