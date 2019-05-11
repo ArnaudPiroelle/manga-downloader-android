@@ -1,4 +1,5 @@
 # Manga Download for Android
+[![CircleCI](https://circleci.com/gh/ArnaudPiroelle/manga-downloader-android/tree/develop.svg?style=svg)](https://circleci.com/gh/ArnaudPiroelle/manga-downloader-android/tree/develop)
 
 This application allow you to download automatically your manga chapters.
 
