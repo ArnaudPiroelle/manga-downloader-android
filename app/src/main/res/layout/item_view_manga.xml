@@ -1,59 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/row_height"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
     android:drawSelectorOnTop="true"
-    android:foreground="?attr/selectableItemBackground">
+    android:elevation="2dp"
+    android:foreground="?attr/selectableItemBackground"
+    android:orientation="vertical"
+    app:cardCornerRadius="4dp">
 
-    <TextView
-        android:id="@+id/edit_button"
-        android:layout_width="100dp"
-        android:layout_height="match_parent"
-        android:background="#00FF55"
-        android:gravity="center"
-        android:text="@string/manga_edit_button"
-        android:textColor="@android:color/white"
-        android:visibility="gone" />
-
-
-    <TextView
-        android:id="@+id/remove_button"
-        android:layout_width="100dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="end"
-        android:background="#FF0055"
-        android:gravity="center"
-        android:text="@string/manga_remove_button"
-        android:textColor="@android:color/white"
-        android:visibility="gone" />
-
-    <LinearLayout
-        android:id="@+id/content"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/white"
-        android:gravity="center_vertical"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/title"
+        <com.arnaudpiroelle.manga.ui.widgets.AspectRatioView
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:aspectRatio="0.6379310345">
+
+            <ImageView
+                android:id="@+id/manga_thumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#D0D0D0"
+                android:scaleType="centerCrop"
+                tools:src="@sample/covers" />
+
+        </com.arnaudpiroelle.manga.ui.widgets.AspectRatioView>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:textSize="@dimen/text_size_big"
-            tools:text="Naruto" />
+            android:layout_below="@id/image"
+            android:layout_gravity="bottom"
+            android:padding="4dp">
 
-        <TextView
-            android:id="@+id/chapter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:textSize="@dimen/text_size_small"
-            tools:text="789" />
+            <TextView
+                android:id="@+id/manga_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="@font/google_sans"
+                android:maxLines="2"
+                android:textColor="@color/text_body"
+                tools:text="@sample/mangas.json/data/name" />
+        </LinearLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
 
-
-</FrameLayout>
+</androidx.cardview.widget.CardView>

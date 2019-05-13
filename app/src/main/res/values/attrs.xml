@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="AspectRatioView">
+        <attr name="aspectRatio" format="float" />
+    </declare-styleable>
+
+    <declare-styleable name="TopRoundedBackgroundView">
+        <attr name="radius" format="dimension" />
+        <attr name="backgroundColor" format="color" />
+    </declare-styleable>
+</resources>

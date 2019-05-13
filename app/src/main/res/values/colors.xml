@@ -1,12 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primaryColor">#275591</color>
+    <color name="primaryColor">#FFFFFF</color>
     <color name="primaryColorDark">#20467b</color>
-    <color name="accentColor">#e95330</color>
+    <color name="accentColor">#346DF4</color>
+    <color name="indigo_dark">#303F9F</color>
+    <color name="highlight_light">#33ffffff</color> <!-- 20% white -->
+    <color name="status_bar">@android:color/white</color>
 
     <color name="window_background">#FFF5F5F5</color>
     <color name="item_view_background">#ffffff</color>
 
     <color name="item_remove">#f44336</color>
     <color name="item_modify">#fbc02d</color>
+
+    <color name="task_status_new">#fbc02d</color>
+    <color name="task_status_in_progress">#275591</color>
+    <color name="task_status_done">#00FF00</color>
+    <color name="task_status_error">#f44336</color>
+    <color name="text_body">#01081f</color>
+    <color name="text_body_2">#878787</color>
+
+    <color name="status_bar_scrim_translucent">#26FFFFFF</color>
+
+    <color name="error_status">#f4a29a</color>
+    <color name="wanted_status">#fad275</color>
+    <color name="downloaded_status">#bde0c2</color>
+    <color name="downloading_status">#e2b1e9</color>
+    <color name="skipped_status">#b4d5e2</color>
+
 </resources>

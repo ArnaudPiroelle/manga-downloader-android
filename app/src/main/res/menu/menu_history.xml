@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/action_clean_history"
-        android:icon="@drawable/ic_delete"
+        android:icon="@drawable/ic_delete_black_24dp"
         android:orderInCategory="100"
         android:title="@string/action_clean_history"
         app:showAsAction="ifRoom|withText" />

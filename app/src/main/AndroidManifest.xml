@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.arnaudpiroelle.manga">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -19,30 +20,18 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
-        android:theme="@style/AppTheme">
-
-        <activity android:name=".ui.manga.add.AddMangaActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.explorer.ExplorerActivity" />
-        </activity>
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
 
         <activity
-            android:name=".ui.explorer.ExplorerActivity"
-            android:label="MangaV2">
+            android:name=".ui.MainActivity"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".service.DownloadService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="1a5c05cd44da4d5bdb36a429aeb4ac44b61c679e" />
     </application>
 
 </manifest>

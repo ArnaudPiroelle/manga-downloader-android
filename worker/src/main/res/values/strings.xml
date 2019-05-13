@@ -1,0 +1,10 @@
+<resources>
+    <string name="pref_intervalpicker_key">pref_intervalpicker</string>
+    <string name="pref_intervalpicker_defaultvalue">1440</string>
+    <string name="pref_wifiswitch_key">pref_wifiswitch</string>
+    <string name="pref_output_folder_key">pref_output_folder</string>
+    <string name="pref_auto_update_key">pref_auto_update</string>
+    <string name="pref_compress_chapters_key">pref_compress_chapters</string>
+    <string name="notification_channel_sync_description">Downloads notifications</string>
+    <string name="notification_channel_sync_name">Synchronization</string>
+</resources>

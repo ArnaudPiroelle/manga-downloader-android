@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:id="@+id/navigation_mangas"
-        android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/nav_mymangas" />
+    <group android:checkableBehavior="single">
 
-    <item
-        android:id="@+id/navigation_history"
-        android:icon="@drawable/ic_history_black_24dp"
-        android:title="@string/nav_history" />
+        <item
+            android:id="@+id/navigation_mangas"
+            android:icon="@drawable/ic_dashboard_black_24dp"
+            android:title="@string/nav_mymangas" />
 
-    <item
-        android:id="@+id/navigation_settings"
-        android:icon="@drawable/ic_settings_black_24dp"
-        android:title="@string/nav_settings" />
+        <item
+            android:id="@+id/navigation_history"
+            android:icon="@drawable/ic_history_black_24dp"
+            android:title="@string/nav_history" />
 
+        <item
+            android:id="@+id/navigation_settings"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="@string/nav_settings" />
+
+
+    </group>
 
 </menu>

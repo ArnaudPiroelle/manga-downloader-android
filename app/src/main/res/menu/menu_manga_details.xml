@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_select_all_chapters"
+        android:icon="@drawable/ic_select_all_black_24dp"
+        android:title="All wanted"
+        app:showAsAction="ifRoom|withText"/>
+
+    <item
+        android:id="@+id/menu_remove_manga"
+        android:icon="@drawable/ic_delete"
+        android:title="Remove"
+        app:showAsAction="ifRoom|withText"/>
+</menu>

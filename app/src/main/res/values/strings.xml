@@ -24,23 +24,14 @@
 
     <string name="prefs_header_updates">Update</string>
 
-    <string name="pref_intervalpicker_key">pref_intervalpicker</string>
     <string name="pref_intervalpicker_title">Update interval</string>
-    <string name="pref_intervalpicker_defaultvalue">1440</string>
-
-    <string name="pref_wifiswitch_key">pref_wifiswitch</string>
     <string name="pref_wifiswitch_title">Only update on Wi-Fi</string>
     <string name="pref_wifiswitch_summary">Updating on Wi-Fi helps to reduce mobile data usage.</string>
-
-    <string name="pref_output_folder_key">pref_output_folder</string>
-
-    <string name="pref_auto_update_key">pref_auto_update</string>
     <string name="pref_auto_update_title">Download automatically</string>
     <string name="pref_auto_update_summary">Automatically download new chapters available</string>
 
     <string name="prefs_header_storages">Storage</string>
 
-    <string name="pref_compress_chapters_key">pref_compress_chapters</string>
     <string name="pref_compress_chapters_title">Compress chapters</string>
     <string name="pref_compress_chapters_summary">Compress each chapter into a CBZ file</string>
     <string name="message_hint">Hey!</string>
@@ -51,4 +42,17 @@
     <string name="check_manual_manga_availability">Manual check mangas availabilities</string>
     <string name="manga_edit_button">Edit</string>
     <string name="manga_remove_button">Remove</string>
+    <string name="nav_tasks">Tasks</string>
+    <string name="title_tasks">Tasks</string>
+    <string name="task_retrieve_chapters">Retrieve chapters</string>
+    <string name="task_download_chapter">Download chapter</string>
+    <string name="loading">Loading...</string>
+    <string name="error_occured">An error occured</string>
+    <string name="retry">Retry</string>
+    <string name="no_results">No results</string>
+    <string name="notify_sync_started">Synchronisation started</string>
+    <string name="add_manga">Add new manga</string>
+    <string name="just_now">Just now</string>
+
+    <string name="history_cleared">History has been cleared</string>
 </resources>

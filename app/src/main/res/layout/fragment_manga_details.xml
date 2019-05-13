@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    app:layoutDescription="@xml/details_scene"
+    tools:showPaths="true">
+
+    <ImageView
+        android:id="@+id/details_backdrop"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#FF0000"
+        android:elevation="0dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="@id/details_appbar_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/details_backdrop_scrim"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="@id/details_backdrop"
+        app:layout_constraintEnd_toEndOf="@id/details_backdrop"
+        app:layout_constraintStart_toStartOf="@id/details_backdrop"
+        app:layout_constraintTop_toTopOf="@id/details_backdrop" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/details_poster_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#C9C9C9"
+        android:transformPivotX="0px"
+        android:transformPivotY="0px">
+
+        <ImageView
+            android:id="@+id/details_poster"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+
+    </androidx.cardview.widget.CardView>
+
+    <View
+        android:id="@+id/details_gap_filler"
+        android:layout_width="match_parent"
+        android:layout_height="2px"
+        android:background="?android:attr/colorBackground"
+        app:layout_constraintBottom_toTopOf="@id/chapters_list" />
+
+    <com.arnaudpiroelle.manga.ui.widgets.TopRoundedBackgroundView
+        android:id="@+id/details_appbar_background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:backgroundColor="?android:attr/colorBackground"
+        app:radius="16dp" />
+
+    <TextView
+        android:id="@+id/details_title"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:ellipsize="end"
+        android:lineSpacingMultiplier="0.85"
+        android:textAppearance="?attr/textAppearanceHeadline6" />
+
+    <TextView
+        android:id="@+id/details_subtitle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:ellipsize="end"
+        android:lines="2"
+        android:textColor="@color/text_body"
+        tools:text="Drama // Fantasy" />
+
+    <com.arnaudpiroelle.manga.ui.widgets.TintingToolbar
+        android:id="@+id/details_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:layout_constraintTop_toBottomOf="@id/details_status_bar_anchor"
+        app:navigationIcon="?attr/homeAsUpIndicator" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chapters_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/white"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/details_appbar_background"
+        tools:listitem="@layout/item_view_chapter" />
+
+    <View
+        android:id="@+id/details_status_bar_anchor"
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:background="@color/status_bar_scrim_translucent"
+        android:elevation="0dp" />
+
+
+</androidx.constraintlayout.motion.widget.MotionLayout>

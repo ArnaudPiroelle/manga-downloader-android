@@ -1,27 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/row_height"
-    android:background="@color/item_view_background"
-    android:gravity="center_vertical"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
     android:orientation="vertical"
     android:padding="@dimen/padding">
 
     <TextView
         android:id="@+id/history_label"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:textSize="@dimen/text_size_big"
-        tools:text="Chapter 1 of Naruto downloaded" />
+        android:layout_marginEnd="16dp"
+        android:maxLines="2"
+        android:textColor="@color/text_body"
+        app:layout_constraintEnd_toStartOf="@+id/history_date"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Chap. 950: A super long title (Downloaded)" />
+
+    <TextView
+        android:id="@+id/history_sublabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="8dp"
+        android:maxLines="2"
+        android:textColor="@color/text_body_2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/history_date"
+        app:layout_constraintStart_toStartOf="@+id/history_label"
+        app:layout_constraintTop_toBottomOf="@+id/history_label"
+        app:layout_constraintVertical_bias="0.0"
+        tools:text="One Piece" />
 
     <TextView
         android:id="@+id/history_date"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:textSize="@dimen/text_size_small"
-        tools:text="21/06/2014" />
+        android:maxLines="1"
+        android:gravity="end"
+        android:textColor="@color/text_body_2"
+        app:layout_constraintBottom_toTopOf="@+id/history_sublabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:text="3 hours ago" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

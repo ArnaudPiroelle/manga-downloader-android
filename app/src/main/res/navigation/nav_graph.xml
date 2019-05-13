@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/myMangasFragment">
+
+    <fragment
+        android:id="@+id/myMangasFragment"
+        android:name="com.arnaudpiroelle.manga.ui.manga.list.MangaListingFragment"
+        android:label="@string/title_mymangas"
+        tools:layout="@layout/fragment_listing_manga">
+        <action
+            android:id="@+id/action_add_manga"
+            app:destination="@id/addMangaFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:launchSingleTop="false"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_show_details"
+            app:destination="@id/mangaDetailsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/addMangaFragment"
+        android:name="com.arnaudpiroelle.manga.ui.manga.add.AddMangaFragment"
+        android:label="AddMangaFragment" />
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.arnaudpiroelle.manga.ui.history.HistoryFragment"
+        android:label="HistoryFragment" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.arnaudpiroelle.manga.ui.settings.SettingsFragment"
+        android:label="SettingsFragment" />
+    <fragment
+        android:id="@+id/mangaDetailsFragment"
+        android:name="com.arnaudpiroelle.manga.ui.manga.details.MangaDetailsFragment"
+        android:label="MangaDetailsFragment">
+        <argument
+            android:name="manga_id"
+            app:argType="long" />
+    </fragment>
+
+</navigation>
