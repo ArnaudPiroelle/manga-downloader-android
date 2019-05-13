@@ -11,7 +11,7 @@ abstract class BaseViewModel<A : BaseAction, S : BaseState>(private val initialS
     private val job = SupervisorJob()
     private val internalState = MutableLiveData<S>().apply { value = initialState }
 
-    override val coroutineContext: CoroutineContext = Dispatchers.Main + job
+    override val coroutineContext: CoroutineContext = Dispatchers.IO + job
 
     val state = internalState as LiveData<S>
 
@@ -26,7 +26,7 @@ abstract class BaseViewModel<A : BaseAction, S : BaseState>(private val initialS
     }
 
     @MainThread
-    protected fun updateState(reducer: (S) -> S) {
+    protected fun updateState(reducer: (S) -> S) = launch(Dispatchers.Main){
         val currentState = state.value ?: initialState
 
         internalState.value = reducer(currentState)
