@@ -112,6 +112,9 @@ class AddMangaFragment : Fragment(), SearchView.OnQueryTextListener, ProviderMan
     }
 
     override fun onDestroyView() {
+        val menu = toolbar.menu
+        val searchView = menu.findItem(R.id.action_search).actionView as? SearchView
+        searchView?.isIconified = true
         list_provider_mangas.adapter = null
         super.onDestroyView()
     }
