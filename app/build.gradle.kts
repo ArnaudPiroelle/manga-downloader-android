@@ -115,3 +115,9 @@ dependencies {
 fun <T> propOrDef(propertyName: String, defaultValue: T): T {
     return if (hasProperty(propertyName)) property(propertyName) as T else defaultValue
 }
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}

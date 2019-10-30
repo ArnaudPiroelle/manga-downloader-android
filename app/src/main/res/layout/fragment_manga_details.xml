@@ -8,13 +8,14 @@
     android:layout_height="match_parent"
     android:background="@android:color/white"
     app:layoutDescription="@xml/details_scene"
+    app:layout_optimizationLevel="standard"
     tools:showPaths="true">
 
     <ImageView
         android:id="@+id/details_backdrop"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#FF0000"
+        android:background="#FFFFFF"
         android:elevation="0dp"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="@id/details_appbar_background"
@@ -32,21 +33,20 @@
         app:layout_constraintStart_toStartOf="@id/details_backdrop"
         app:layout_constraintTop_toTopOf="@id/details_backdrop" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/details_poster_container"
-        android:layout_width="0dp"
+    <ImageView
+        android:id="@+id/details_poster"
+        android:layout_width="80dp"
         android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="200dp"
         android:background="#C9C9C9"
-        android:transformPivotX="0px"
-        android:transformPivotY="0px">
+        android:elevation="4dp"
+        android:scaleType="centerCrop"
+        android:transformPivotY="0px"
+        app:layout_constraintDimensionRatio="h,1:1.5"
+        app:layout_constraintStart_toStartOf="@id/chapters_list"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/details_poster"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop" />
-
-    </androidx.cardview.widget.CardView>
 
     <View
         android:id="@+id/details_gap_filler"
@@ -83,7 +83,8 @@
         android:id="@+id/details_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:elevation="8dp"
+        android:theme="@style/ThemeOverlay.MaterialComponents.ActionBar"
         app:layout_constraintTop_toBottomOf="@id/details_status_bar_anchor"
         app:navigationIcon="?attr/homeAsUpIndicator" />
 
