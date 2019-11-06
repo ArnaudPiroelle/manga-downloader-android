@@ -17,6 +17,9 @@ interface ChapterDao {
     @Update
     suspend fun update(chapter: Chapter)
 
+    @Update
+    suspend fun updateAll(chapters: List<Chapter>)
+
     @Query("UPDATE chapters SET status = :status where mangaId = :mangaId")
     suspend fun setAllChaptersStatusAs(mangaId: Long, status: Status)
 
