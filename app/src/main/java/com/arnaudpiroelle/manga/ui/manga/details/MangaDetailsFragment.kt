@@ -74,6 +74,7 @@ class MangaDetailsFragment : Fragment(), ChapterViewHolder.Callback {
         viewModel.state.map { it.removed }.distinctUntilChanged().bind(this, this::onRemovedChanged)
 
         viewModel.handle(LoadMangaInformations)
+
     }
 
 
@@ -85,7 +86,7 @@ class MangaDetailsFragment : Fragment(), ChapterViewHolder.Callback {
             }
 
             override fun onTransitionChange(motionLayout: MotionLayout, startId: Int, endId: Int, progress: Float) {
-                details_poster_container.visibility = View.VISIBLE
+                details_poster.visibility = View.VISIBLE
             }
 
             override fun onTransitionTrigger(motionLayout: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
@@ -95,10 +96,10 @@ class MangaDetailsFragment : Fragment(), ChapterViewHolder.Callback {
             override fun onTransitionCompleted(motionLayout: MotionLayout, currentId: Int) {
                 when (currentId) {
                     R.id.end -> {
-                        details_poster_container.isGone = true
+                        details_poster.isGone = true
                     }
                     R.id.start -> {
-                        details_poster_container.isVisible = true
+                        details_poster.isVisible = true
                     }
                 }
             }

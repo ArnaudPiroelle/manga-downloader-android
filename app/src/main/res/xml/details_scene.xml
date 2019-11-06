@@ -5,6 +5,7 @@
     <Transition
         app:constraintSetEnd="@id/end"
         app:constraintSetStart="@id/start"
+        app:motionInterpolator="easeInOut"
         app:duration="200">
 
         <OnSwipe
@@ -16,7 +17,7 @@
         <KeyFrameSet>
             <KeyAttribute
                 app:framePosition="0"
-                app:target="@+id/details_appbar_background">
+                app:motionTarget="@+id/details_appbar_background">
                 <CustomAttribute
                     app:attributeName="cutProgress"
                     app:customFloatValue="1" />
@@ -27,39 +28,39 @@
                 android:scaleX="1"
                 android:scaleY="1"
                 app:framePosition="40"
-                app:target="@+id/details_poster_container" />
+                app:motionTarget="@+id/details_poster" />
 
             <KeyAttribute
                 android:alpha="0"
                 android:scaleX="0"
                 android:scaleY="0"
                 app:framePosition="60"
-                app:target="@+id/details_poster_container" />
+                app:motionTarget="@+id/details_poster" />
 
 
             <!-- Only elevate the appbar background over the last 25% -->
             <KeyAttribute
                 android:elevation="0dp"
                 app:framePosition="75"
-                app:target="@+id/details_appbar_background" />
+                app:motionTarget="@+id/details_appbar_background" />
 
             <!-- We want the subtitle to fade out quickly, within the starting 75% -->
             <KeyAttribute
                 android:alpha="0"
                 app:framePosition="75"
-                app:target="@+id/details_subtitle" />
+                app:motionTarget="@+id/details_subtitle" />
 
             <!-- We only want to transition to opaque over the last 40% -->
             <KeyAttribute
                 app:framePosition="60"
-                app:target="@+id/details_status_bar_anchor">
+                app:motionTarget="@+id/details_status_bar_anchor">
                 <CustomAttribute
                     app:attributeName="backgroundColor"
                     app:customColorValue="@color/status_bar_scrim_translucent" />
             </KeyAttribute>
             <KeyAttribute
                 app:framePosition="45"
-                app:target="@+id/details_appbar_background">
+                app:motionTarget="@+id/details_appbar_background">
                 <CustomAttribute
                     app:attributeName="cutProgress"
                     app:customFloatValue="1" />
@@ -67,7 +68,7 @@
 
             <KeyAttribute
                 app:framePosition="75"
-                app:target="@+id/details_appbar_background">
+                app:motionTarget="@+id/details_appbar_background">
                 <CustomAttribute
                     app:attributeName="cutProgress"
                     app:customFloatValue="0" />
@@ -96,7 +97,7 @@
             android:layout_width="0dp"
             android:layout_height="88dp"
             app:elevation="4dp"
-            app:layout_constraintBottom_toBottomOf="@id/details_poster_container"
+            app:layout_constraintBottom_toBottomOf="@id/details_poster"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -108,7 +109,7 @@
             android:elevation="4dp"
             app:layout_constraintBottom_toTopOf="@id/details_subtitle"
             app:layout_constraintEnd_toEndOf="@+id/details_appbar_background"
-            app:layout_constraintStart_toEndOf="@id/details_poster_container"
+            app:layout_constraintStart_toEndOf="@id/details_poster"
             app:layout_constraintTop_toBottomOf="@id/details_appbar_background" />
 
         <Constraint
@@ -119,11 +120,11 @@
             android:layout_marginTop="4dp"
             app:layout_constraintBottom_toTopOf="@id/details_appbar_background"
             app:layout_constraintEnd_toEndOf="@id/details_appbar_background"
-            app:layout_constraintStart_toEndOf="@id/details_poster_container"
+            app:layout_constraintStart_toEndOf="@id/details_poster"
             app:layout_constraintTop_toBottomOf="@id/details_title" />
 
         <Constraint
-            android:id="@id/details_poster_container"
+            android:id="@id/details_poster"
             android:layout_width="80dp"
             android:layout_height="0dp"
             android:layout_marginStart="16dp"
@@ -192,7 +193,7 @@
             app:layout_constraintTop_toBottomOf="@id/details_title" />
 
         <Constraint
-            android:id="@id/details_poster_container"
+            android:id="@id/details_poster"
             android:layout_width="80dp"
             android:layout_height="0dp"
             android:layout_marginStart="16dp"

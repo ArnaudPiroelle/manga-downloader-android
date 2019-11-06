@@ -22,9 +22,10 @@ import android.util.AttributeSet
 import android.view.View
 import com.arnaudpiroelle.manga.R
 import com.arnaudpiroelle.manga.core.utils.lerp
+import com.google.android.material.shape.CornerFamily
+import com.google.android.material.shape.CornerTreatment
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.RoundedCornerTreatment
-import com.google.android.material.shape.ShapeAppearanceModel
 
 class TopRoundedBackgroundView : View {
     private val shapeDrawable = MaterialShapeDrawable()
@@ -60,13 +61,11 @@ class TopRoundedBackgroundView : View {
         }
 
     private fun syncCutSize() {
-        val shapeModel = shapeDrawable.shapeAppearanceModel
         val newCutSize = lerp(0f, maxRadius, cutProgress)
 
-        if (newCutSize != shapeModel.topLeftCorner?.cornerSize) {
-            shapeModel.topLeftCorner = RoundedCornerTreatment(newCutSize)
-            shapeModel.topRightCorner = RoundedCornerTreatment(newCutSize)
-            shapeDrawable.shapeAppearanceModel = shapeModel
-        }
+        shapeDrawable.shapeAppearanceModel = shapeDrawable.shapeAppearanceModel.toBuilder()
+                .setTopLeftCorner(CornerFamily.ROUNDED, newCutSize)
+                .setTopRightCorner(CornerFamily.ROUNDED, newCutSize)
+                .build()
     }
 }

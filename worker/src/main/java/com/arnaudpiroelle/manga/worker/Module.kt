@@ -9,7 +9,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val workerModule = module {
-    single { WorkManager.getInstance() }
+    single { WorkManager.getInstance(androidContext()) }
     single { PreferencesHelper(androidContext(), get()) }
     single { FileHelper(get()) }
     single { TaskManager(get()) }

@@ -13,6 +13,11 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
@@ -38,4 +43,11 @@ dependencies {
 
     androidTestImplementation(Depends.TestRunner)
     androidTestImplementation(Depends.EspressoCore)
+}
+
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }

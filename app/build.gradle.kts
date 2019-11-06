@@ -15,8 +15,8 @@ android {
         minSdkVersion(24)
         targetSdkVersion(28)
 
-        versionCode = 21
-        versionName = "3.0.1"
+        versionCode = 22
+        versionName = "3.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -114,4 +114,10 @@ dependencies {
 
 fun <T> propOrDef(propertyName: String, defaultValue: T): T {
     return if (hasProperty(propertyName)) property(propertyName) as T else defaultValue
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
