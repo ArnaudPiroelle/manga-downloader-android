@@ -14,9 +14,11 @@ class MangaViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         } else {
             itemView.manga_name.text = manga.name
 
-            Glide.with(itemView)
-                    .load(manga.thumbnail)
-                    .into(itemView.manga_thumbnail)
+            if(manga.thumbnail.isNotEmpty()){
+                Glide.with(itemView)
+                        .load(manga.thumbnail)
+                        .into(itemView.manga_thumbnail)
+            }
 
             itemView.setOnClickListener {
                 callback.onMangaClick(manga)

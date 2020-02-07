@@ -132,14 +132,7 @@ class MangaDetailsFragment : Fragment(), ChapterViewHolder.Callback {
 
     private fun onRemovedChanged(newRemoved: Boolean) {
         if (newRemoved) {
-            Snackbar.make(container, "Manga removed", Snackbar.LENGTH_SHORT)
-                    .addCallback(object : Snackbar.Callback() {
-                        override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                            transientBottomBar?.removeCallback(this)
-                            findNavController().navigateUp()
-                        }
-                    })
-                    .show()
+            findNavController().navigateUp()
         }
     }
 
@@ -155,7 +148,7 @@ class MangaDetailsFragment : Fragment(), ChapterViewHolder.Callback {
                     override fun onResourceReady(resource: Bitmap?, model: Any?, target: Target<Bitmap>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                         if (resource != null) {
                             val p = Palette.from(resource).generate()
-                            p.vibrantSwatch?.rgb?.let { details_backdrop.setBackgroundColor(it) }
+                            p.darkMutedSwatch?.rgb?.let { details_backdrop.setBackgroundColor(it) }
                         }
                         return false
                     }

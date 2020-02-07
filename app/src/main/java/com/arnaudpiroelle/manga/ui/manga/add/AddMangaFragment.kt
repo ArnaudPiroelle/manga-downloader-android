@@ -1,5 +1,6 @@
 package com.arnaudpiroelle.manga.ui.manga.add
 
+import android.app.Activity
 import android.app.SearchManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -172,10 +173,14 @@ class AddMangaFragment : Fragment(), SearchView.OnQueryTextListener, ProviderMan
 
     private fun onStatusChanged(status: WizardStatus) {
         when (status) {
-            FINISHED -> findNavController().navigateUp()
-            else -> {
-
+            FINISHED -> {
+                val menu = toolbar.menu
+                val searchView = menu.findItem(R.id.action_search).actionView as? SearchView
+                searchView?.isIconified = true
+                searchView?.clearFocus()
+                findNavController().navigateUp()
             }
+            else -> {  }
         }
     }
 }
