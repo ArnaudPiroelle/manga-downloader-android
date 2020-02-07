@@ -13,7 +13,7 @@ object Depends {
     }
 
     // Gradle Plugins
-    const val AndroidGradlePlugin = "com.android.tools.build:gradle:4.0.0-alpha07"
+    const val AndroidGradlePlugin = "com.android.tools.build:gradle:4.0.0-alpha09"
     const val KotlinGradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlinVersion}"
     const val FabricGradlePlugin = "io.fabric.tools:gradle:1.28.0"
     const val NavigationGradlePlugin = "androidx.navigation:navigation-safe-args-gradle-plugin:${Versions.navigationVersion}"
