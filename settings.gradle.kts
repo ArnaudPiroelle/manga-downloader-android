@@ -1,1 +1,0 @@
-include(":app", ":api", ":data", ":worker", ":interactors", ":provider-japscan-proxy")

@@ -1,0 +1,30 @@
+import config.Depends
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+        maven { url = "https://maven.fabric.io/public" }
+        maven { url = "https://dl.bintray.com/kotlin/kotlin-eap" }
+    }
+
+    dependencies {
+        classpath Depends.AndroidGradlePlugin
+        classpath Depends.KotlinGradlePlugin
+        classpath Depends.FabricGradlePlugin
+        classpath Depends.NavigationGradlePlugin
+        classpath "com.google.gms:google-services:4.3.3"
+        classpath "com.google.firebase:firebase-crashlytics-gradle:2.0.0-beta02"
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        google()
+        maven { url = "https://maven.fabric.io/public" }
+        maven { url = "https://jitpack.io" }
+        maven { url = "https://dl.bintray.com/kotlin/kotlin-eap" }
+    }
+}

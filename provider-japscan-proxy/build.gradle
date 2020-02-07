@@ -1,0 +1,41 @@
+import config.Depends
+
+apply plugin: "com.android.library"
+apply plugin: "kotlin-android"
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        minSdkVersion 24
+        targetSdkVersion 28
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "JAPSCAN_PROXY_BASE_URL", "\"http://seed.arnaudpiroelle.com:5000\""
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled = false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    api project(":api")
+
+    implementation Depends.KotlinStdLib
+    implementation Depends.KotlinCoroutines
+    implementation Depends.KoinScope
+    implementation Depends.Gson
+    implementation Depends.Retrofit
+    implementation Depends.RetrofitGsonConverter
+    implementation Depends.RetrofitCoroutinesAdapter
+
+    testImplementation Depends.JUnit
+
+    androidTestImplementation Depends.TestRunner
+    androidTestImplementation Depends.EspressoCore
+}

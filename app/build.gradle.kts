@@ -1,9 +1,13 @@
+import config.Depends
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
     id("kotlin-android-extensions")
     id("kotlin-kapt")
     id("androidx.navigation.safeargs")
+    id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -105,6 +109,8 @@ dependencies {
     implementation(Depends.KoinViewModel)
 
     implementation(Depends.IndicatorFastScroll)
+
+    implementation("com.google.firebase:firebase-crashlytics:17.0.0-beta01")
 
     debugImplementation(Depends.LeakCanary)
 
