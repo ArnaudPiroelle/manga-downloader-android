@@ -1,28 +1,26 @@
 import config.Depends
 
-plugins {
-    id("com.android.application")
-    id("kotlin-android")
-    id("kotlin-android-extensions")
-    id("kotlin-kapt")
-    id("androidx.navigation.safeargs")
-    id("com.google.gms.google-services")
-    id("com.google.firebase.crashlytics")
-}
+apply plugin: "com.android.application"
+apply plugin: "kotlin-android"
+apply plugin: "kotlin-android-extensions"
+apply plugin: "kotlin-kapt"
+apply plugin: "androidx.navigation.safeargs"
+apply plugin: "com.google.gms.google-services"
+apply plugin: "com.google.firebase.crashlytics"
 
 android {
-    compileSdkVersion(28)
+    compileSdkVersion 28
 
     defaultConfig {
-        applicationId = "com.arnaudpiroelle.manga"
+        applicationId "com.arnaudpiroelle.manga"
 
-        minSdkVersion(24)
-        targetSdkVersion(28)
+        minSdkVersion 24
+        targetSdkVersion 28
 
-        versionCode = 22
-        versionName = "3.1.0"
+        versionCode 22
+        versionName "3.1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     packagingOptions {
@@ -35,39 +33,39 @@ android {
     }
 
     signingConfigs {
-        create("release") {
-            storeFile = file("manga-downloader.keystore")
-            storePassword = propOrDef("APP_KEYSTORE_PASSWORD", "manga-downloader")
-            keyAlias = "manga-downloader"
-            keyPassword = propOrDef("APP_KEYSTORE_PASSWORD", "manga-downloader")
+        release {
+            storeFile file("manga-downloader.keystore")
+            storePassword propOrDef("APP_KEYSTORE_PASSWORD", "manga-downloader")
+            keyAlias "manga-downloader"
+            keyPassword propOrDef("APP_KEYSTORE_PASSWORD", "manga-downloader")
         }
     }
 
     buildTypes {
-        getByName("debug") {
-            applicationIdSuffix = ".dev"
-            isMinifyEnabled = false
-            isTestCoverageEnabled = true
+        debug {
+            applicationIdSuffix ".dev"
+            minifyEnabled false
+            testCoverageEnabled true
 
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig signingConfigs.release
         }
 
-        getByName("release") {
-            isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig signingConfigs.release
         }
     }
 
     lintOptions {
-        isAbortOnError = false
+        abortOnError false
     }
 
 }
 
 kapt {
-    correctErrorTypes = true
+    correctErrorTypes true
 }
 
 dependencies {
@@ -118,11 +116,11 @@ dependencies {
     testImplementation(Depends.Robolectric)
 }
 
-fun <T> propOrDef(propertyName: String, defaultValue: T): T {
-    return if (hasProperty(propertyName)) property(propertyName) as T else defaultValue
+def propOrDef(String propertyName, Object defaultValue) {
+    return hasProperty(propertyName) ? property(propertyName) : defaultValue
 }
 
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     kotlinOptions {
         jvmTarget = "1.8"
     }
