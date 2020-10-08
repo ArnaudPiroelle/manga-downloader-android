@@ -17,6 +17,8 @@ import com.arnaudpiroelle.manga.worker.notification.NotificationCenter.Notificat
 import com.arnaudpiroelle.manga.worker.utils.FileHelper
 import com.arnaudpiroelle.manga.worker.utils.PreferencesHelper
 import okio.Okio
+import okio.buffer
+import okio.sink
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import timber.log.Timber
@@ -76,7 +78,7 @@ class DownloadChapterWorker(context: Context, workerParams: WorkerParameters) : 
                     val response = provider.findPage(page.url)
 
                     val source = response.source()
-                    val sink = Okio.buffer(Okio.sink(pageFile))
+                    val sink = pageFile.sink().buffer()
                     sink.writeAll(source)
                     sink.close()
 

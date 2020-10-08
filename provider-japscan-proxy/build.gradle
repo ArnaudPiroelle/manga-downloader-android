@@ -12,7 +12,7 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField "String", "JAPSCAN_PROXY_BASE_URL", "\"http://seed.arnaudpiroelle.com:5000\""
+        buildConfigField "String", "JAPSCAN_PROXY_BASE_URL", "\"https://seed.arnaudpiroelle.com:5000\""
     }
 
     buildTypes {
@@ -20,6 +20,13 @@ android {
             minifyEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
     }
 }
 
@@ -33,6 +40,7 @@ dependencies {
     implementation Depends.Retrofit
     implementation Depends.RetrofitGsonConverter
     implementation Depends.RetrofitCoroutinesAdapter
+    implementation("com.squareup.okhttp3:okhttp-tls:4.9.0")
 
     testImplementation Depends.JUnit
 

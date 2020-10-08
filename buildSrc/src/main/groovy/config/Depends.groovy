@@ -3,17 +3,17 @@ package config
 interface Depends {
     // Versions
     static final kotlinVersion = "1.3.50"
-    static final okHttpVersion = "3.12.6"
+    static final okHttpVersion = "4.9.0"
     static final lifecycleVersion = "2.2.0-rc01"
     static final roomVersion = "2.2.1"
     static final koinVersion = "2.0.1"
     static final navigationVersion = "2.2.0-rc01"
     static final glideVersion = "4.10.0"
     static final stethoVersion = "1.5.1"
-    static final retrofitVersion = "2.6.2"
+    static final retrofitVersion = "2.9.0"
 
     // Gradle Plugins
-    static final AndroidGradlePlugin = "com.android.tools.build:gradle:4.0.0-alpha09"
+    static final AndroidGradlePlugin = "com.android.tools.build:gradle:4.1.0-beta05"
     static final KotlinGradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
     static final FabricGradlePlugin = "io.fabric.tools:gradle:1.28.0"
     static final NavigationGradlePlugin = "androidx.navigation:navigation-safe-args-gradle-plugin:${navigationVersion}"
